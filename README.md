@@ -21,7 +21,10 @@ assert_eq!(bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"), Ok(Vec::from(&
 
 ## License
 
+`bubblebabble` is licensed under the [MIT License](/LICENSE) (c) Ryan Lopopolo.
+
 `bubblebabble` is derived from `bubble-babble-ts` @
 [v1.0.1](https://github.com/JonathanWilbur/bubble-babble-ts/tree/v1.0.1).
 `bubble-babble-ts` is licensed under the
-[MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt).
+[MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)
+Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
