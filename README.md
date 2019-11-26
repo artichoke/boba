@@ -1,5 +1,11 @@
 # bubblebabble
 
+[![CircleCI](https://circleci.com/gh/artichoke/bubblebabble.svg?style=svg)](https://circleci.com/gh/artichoke/bubblebabble)
+[![Discord](https://img.shields.io/discord/607683947496734760)](https://discord.gg/QCe2tp2)
+[![Twitter](https://img.shields.io/twitter/follow/artichokeruby?label=Follow&style=social)](https://twitter.com/artichokeruby)
+<br>
+[![Documentation](https://img.shields.io/badge/docs-bubblebabble-blue.svg)](https://artichoke.github.io/bubblebabble/bubblebabble)
+
 `bubblebabble` is a Rust implementation of the
 [Bubble Babble binary data encoding](https://github.com/artichoke/bubblebabble/blob/master/spec/Bubble_Babble_Encoding.txt).
 
