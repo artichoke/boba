@@ -1,4 +1,5 @@
-#![deny(clippy::all, clippy::pedantic)]
+#![deny(clippy::all)]
+#![deny(clippy::pedantic)]
 #![deny(missing_docs, warnings, intra_doc_link_resolution_failure)]
 #![doc(deny(warnings))]
 #![forbid(unsafe_code)]
@@ -157,48 +158,51 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, DecodeError> {
     let mut checksum = 1;
     let mut chunks = encoded[1..encoded.len() - 1].as_bytes().chunks_exact(6);
     while let Some(chunk) = chunks.next() {
-        let a = VOWELS
-            .iter()
-            .copied()
-            .position(|x| x == chunk[0])
-            .ok_or(DecodeError::InvalidSymbol(char::from(chunk[0])))
-            .and_then(|x| {
-                u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[0])))
-            })?;
-        let b = CONSONANTS
-            .iter()
-            .copied()
-            .position(|x| x == chunk[1])
-            .ok_or(DecodeError::InvalidSymbol(char::from(chunk[1])))
-            .and_then(|x| {
-                u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[1])))
-            })?;
-        let c = VOWELS
-            .iter()
-            .copied()
-            .position(|x| x == chunk[2])
-            .ok_or(DecodeError::InvalidSymbol(char::from(chunk[2])))
-            .and_then(|x| {
-                u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[2])))
-            })?;
-        let d = CONSONANTS
-            .iter()
-            .copied()
-            .position(|x| x == chunk[3])
-            .ok_or(DecodeError::InvalidSymbol(char::from(chunk[3])))
-            .and_then(|x| {
-                u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[3])))
-            })?;
-        let e = CONSONANTS
-            .iter()
-            .copied()
-            .position(|x| x == chunk[5])
-            .ok_or(DecodeError::InvalidSymbol(char::from(chunk[5])))
-            .and_then(|x| {
-                u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[5])))
-            })?;
-        let byte1 = decode_3_tuple(a, b, c, checksum)?;
-        let byte2 = decode_2_tuple(d, e)?;
+        let byte1 = decode_3_tuple(
+            VOWELS
+                .iter()
+                .copied()
+                .position(|x| x == chunk[0])
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(chunk[0])))
+                .and_then(|x| {
+                    u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[0])))
+                })?,
+            CONSONANTS
+                .iter()
+                .copied()
+                .position(|x| x == chunk[1])
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(chunk[1])))
+                .and_then(|x| {
+                    u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[1])))
+                })?,
+            VOWELS
+                .iter()
+                .copied()
+                .position(|x| x == chunk[2])
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(chunk[2])))
+                .and_then(|x| {
+                    u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[2])))
+                })?,
+            checksum,
+        )?;
+        let byte2 = decode_2_tuple(
+            CONSONANTS
+                .iter()
+                .copied()
+                .position(|x| x == chunk[3])
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(chunk[3])))
+                .and_then(|x| {
+                    u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[3])))
+                })?,
+            CONSONANTS
+                .iter()
+                .copied()
+                .position(|x| x == chunk[5])
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(chunk[5])))
+                .and_then(|x| {
+                    u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(chunk[5])))
+                })?,
+        )?;
         checksum = ((checksum * 5) + (isize::from(byte1) * 7) + isize::from(byte2)) % 36;
         decoded.push(byte1);
         decoded.push(byte2);
@@ -208,21 +212,21 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, DecodeError> {
             let a = VOWELS
                 .iter()
                 .position(|x| x == byte0)
-                .ok_or(DecodeError::InvalidSymbol(char::from(*byte0)))
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*byte0)))
                 .and_then(|x| {
                     u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(*byte0)))
                 })?;
             let b = CONSONANTS
                 .iter()
                 .position(|x| x == byte1)
-                .ok_or(DecodeError::InvalidSymbol(char::from(*byte1)))
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*byte1)))
                 .and_then(|x| {
                     u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(*byte1)))
                 })?;
             let c = VOWELS
                 .iter()
                 .position(|x| x == byte2)
-                .ok_or(DecodeError::InvalidSymbol(char::from(*byte2)))
+                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*byte2)))
                 .and_then(|x| {
                     u8::try_from(x).map_err(|_| DecodeError::InvalidSymbol(char::from(*byte2)))
                 })?;
