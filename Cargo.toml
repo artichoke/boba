@@ -1,6 +1,6 @@
 [package]
 name = "bubblebabble"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Ryan Lopopolo <rjl@hyperbo.la>"]
 edition = "2018"
 description = "Rust implementation of the Bubble Babble binary data encoding"
