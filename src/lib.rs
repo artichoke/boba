@@ -1,5 +1,6 @@
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
+#![deny(clippy::cargo)]
 #![deny(missing_docs, warnings, intra_doc_link_resolution_failure)]
 #![doc(deny(warnings))]
 #![forbid(unsafe_code)]

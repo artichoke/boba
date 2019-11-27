@@ -3,7 +3,11 @@ name = "bubblebabble"
 version = "1.0.1"
 authors = ["Ryan Lopopolo <rjl@hyperbo.la>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Rust implementation of the Bubble Babble binary data encoding"
+repository = "https://github.com/artichoke/bubblebabble"
+readme = "README.md"
+license = "MIT"
+keywords = ["encoding", "bubblebabble"]
+categories = ["encoding"]
 
 [dependencies]
