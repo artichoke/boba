@@ -88,7 +88,7 @@ jobs:
           name: Deploy docs to gh-pages branch
           command: |
             gh-pages \
-              --user "ci-build <ci-build@hyperbo.la>" \
+              --user "Artichoke CI <ci@artichokeruby.org>" \
               --message "[skip ci] build docs" \
               --dist target/doc
 workflows:
