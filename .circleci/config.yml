@@ -80,7 +80,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "42:fd:d3:6a:91:d4:0a:6f:b5:48:87:0e:2e:89:32:a3"
+            - "55:f0:9b:74:3a:ff:3b:33:1e:bc:98:e7:63:6c:ed:bd"
       - attach_workspace:
           at: target
       - run: npm install -g gh-pages@2.1.1
