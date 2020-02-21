@@ -108,6 +108,7 @@ impl fmt::Display for DecodeError {
 /// assert_eq!(bubblebabble::encode(&b"1234567890"[..]), String::from("xesef-disof-gytuf-katof-movif-baxux"));
 /// assert_eq!(bubblebabble::encode(&b"Pineapple"[..]), String::from("xigak-nyryk-humil-bosek-sonax"));
 /// ```
+#[must_use]
 pub fn encode(data: &[u8]) -> String {
     let mut encoded = String::new();
     encoded.push(char::from(HEADER));
@@ -137,6 +138,8 @@ pub fn encode(data: &[u8]) -> String {
 /// assert_eq!(bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(Vec::from(&b"1234567890"[..])));
 /// assert_eq!(bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"), Ok(Vec::from(&b"Pineapple"[..])));
 /// ```
+///
+/// # Errors
 ///
 /// Decoding is fallible and might return [`DecodeError`].
 ///
