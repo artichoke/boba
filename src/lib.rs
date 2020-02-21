@@ -1,8 +1,7 @@
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
 #![deny(clippy::cargo)]
-#![deny(missing_docs, warnings, intra_doc_link_resolution_failure)]
-#![doc(deny(warnings))]
+#![deny(missing_docs, intra_doc_link_resolution_failure)]
 #![forbid(unsafe_code)]
 
 //! # bubblebabble
