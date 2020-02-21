@@ -331,12 +331,13 @@
 <span id="331">331</span>
 <span id="332">332</span>
 <span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">cargo</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>, <span class="ident">warnings</span>, <span class="ident">intra_doc_link_resolution_failure</span>)]</span>
-<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">deny</span>(<span class="ident">warnings</span>))]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>, <span class="ident">intra_doc_link_resolution_failure</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">unsafe_code</span>)]</span>
 
 <span class="doccomment">//! # bubblebabble</span>
@@ -443,6 +444,7 @@
 <span class="doccomment">/// assert_eq!(bubblebabble::encode(&amp;b&quot;1234567890&quot;[..]), String::from(&quot;xesef-disof-gytuf-katof-movif-baxux&quot;));</span>
 <span class="doccomment">/// assert_eq!(bubblebabble::encode(&amp;b&quot;Pineapple&quot;[..]), String::from(&quot;xigak-nyryk-humil-bosek-sonax&quot;));</span>
 <span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">must_use</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
     <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">HEADER</span>));
@@ -472,6 +474,8 @@
 <span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;xesef-disof-gytuf-katof-movif-baxux&quot;), Ok(Vec::from(&amp;b&quot;1234567890&quot;[..])));</span>
 <span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;xigak-nyryk-humil-bosek-sonax&quot;), Ok(Vec::from(&amp;b&quot;Pineapple&quot;[..])));</span>
 <span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Decoding is fallible and might return [`DecodeError`].</span>
 <span class="doccomment">///</span>
