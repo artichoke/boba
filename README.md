@@ -12,17 +12,35 @@
 The spec defines the following test vectors:
 
 ```rust
-assert_eq!(bubblebabble::encode(&[]), String::from("xexax"));
-assert_eq!(bubblebabble::encode(&b"1234567890"[..]), String::from("xesef-disof-gytuf-katof-movif-baxux"));
-assert_eq!(bubblebabble::encode(&b"Pineapple"[..]), String::from("xigak-nyryk-humil-bosek-sonax"));
+assert_eq!(
+    bubblebabble::encode(&[]),
+    String::from("xexax")
+);
+assert_eq!(
+    bubblebabble::encode(&b"1234567890"[..]),
+    String::from("xesef-disof-gytuf-katof-movif-baxux")
+);
+assert_eq!(
+    bubblebabble::encode(&b"Pineapple"[..]),
+    String::from("xigak-nyryk-humil-bosek-sonax")
+);
 ```
 
 `bubblebabble` supports decoding to a byte vector:
 
 ```rust
-assert_eq!(bubblebabble::decode("xexax"), Ok(vec![]));
-assert_eq!(bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(Vec::from(&b"1234567890"[..])));
-assert_eq!(bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"), Ok(Vec::from(&b"Pineapple"[..])));
+assert_eq!(
+    bubblebabble::decode("xexax"),
+    Ok(vec![])
+);
+assert_eq!(
+    bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"),
+    Ok(Vec::from(&b"1234567890"[..]))
+);
+assert_eq!(
+    bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"),
+    Ok(Vec::from(&b"Pineapple"[..]))
+);
 ```
 
 ## License
