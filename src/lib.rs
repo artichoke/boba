@@ -69,7 +69,7 @@ const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
 
 /// Decoding errors from [`bubblebabble::decode`](decode).
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DecodeError {
     /// Checksum mismatch when decoding input.
     ChecksumMismatch,
@@ -82,20 +82,12 @@ pub enum DecodeError {
     /// Input was missing a final `x` trailer.
     MalformedTrailer,
     /// Input contained non-ASCII characters.
-    NonASCII,
+    NonAscii(char),
 }
 
-impl error::Error for DecodeError {
-    fn description(&self) -> &str {
-        "Bubble Babble decoding error"
-    }
+impl error::Error for DecodeError {}
 
-    fn cause(&self) -> Option<&dyn error::Error> {
-        None
-    }
-}
-
-impl fmt::Debug for DecodeError {
+impl fmt::Display for DecodeError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::ChecksumMismatch => write!(f, "Checksum mismatch"),
@@ -105,17 +97,12 @@ impl fmt::Debug for DecodeError {
             }
             Self::MalformedHeader => write!(f, "Missing required 'x' header"),
             Self::MalformedTrailer => write!(f, "Missing required 'x' trailer"),
-            Self::NonASCII => write!(
+            Self::NonAscii(c) => write!(
                 f,
-                "Non-ASCII character outside of encoding alphabet encountered"
+                "Encountered non-ASCII character outside of encoding alphabet: {}",
+                c
             ),
         }
-    }
-}
-
-impl fmt::Display for DecodeError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
     }
 }
 
@@ -167,7 +154,7 @@ pub fn encode(data: &[u8]) -> String {
 /// assert_eq!(bubblebabble::decode("z"), Err(DecodeError::MalformedHeader));
 /// assert_eq!(bubblebabble::decode("xy"), Err(DecodeError::MalformedTrailer));
 /// assert_eq!(bubblebabble::decode("xx"), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonASCII));
+/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii('💎')));
 /// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol('9')));
 /// ```
 pub fn decode(encoded: &str) -> Result<Vec<u8>, DecodeError> {
@@ -177,8 +164,8 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, DecodeError> {
     if !encoded.ends_with('x') || encoded.len() < 2 {
         return Err(DecodeError::MalformedTrailer);
     }
-    if encoded.len() != encoded.chars().count() {
-        return Err(DecodeError::NonASCII);
+    if let Some(c) = encoded.chars().find(|c| c.len_utf8() > 1) {
+        return Err(DecodeError::NonAscii(c));
     }
     let mut decoded = vec![];
     let mut checksum = 1;
@@ -344,7 +331,10 @@ mod tests {
             Err(super::DecodeError::MalformedTrailer)
         );
         assert_eq!(super::decode("xx"), Err(super::DecodeError::Corrupted));
-        assert_eq!(super::decode("x💎🦀x"), Err(super::DecodeError::NonASCII));
+        assert_eq!(
+            super::decode("x💎🦀x"),
+            Err(super::DecodeError::NonAscii('💎'))
+        );
         assert_eq!(
             super::decode("x999x"),
             Err(super::DecodeError::InvalidSymbol('9'))
