@@ -2,6 +2,7 @@
 #![deny(clippy::pedantic)]
 #![deny(clippy::cargo)]
 #![deny(missing_docs, intra_doc_link_resolution_failure)]
+#![warn(rust_2018_idioms)]
 #![forbid(unsafe_code)]
 
 //! # bubblebabble
@@ -88,7 +89,7 @@ pub enum DecodeError {
 impl error::Error for DecodeError {}
 
 impl fmt::Display for DecodeError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::ChecksumMismatch => write!(f, "Checksum mismatch"),
             Self::Corrupted => write!(f, "Corrupted input"),
