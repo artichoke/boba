@@ -15,14 +15,14 @@
     "description": "Area: Core decoder implementation."
   },
   {
-    "name": "A-encode",
-    "color": "f7e101",
-    "description": "Area: Core encoder implementation."
-  },
-  {
     "name": "A-deps",
     "color": "f7e101",
     "description": "Area: Source and library dependencies."
+  },
+  {
+    "name": "A-encode",
+    "color": "f7e101",
+    "description": "Area: Core encoder implementation."
   },
   {
     "name": "A-performance",
@@ -33,6 +33,11 @@
     "name": "A-project",
     "color": "f7e101",
     "description": "Area: Infrastructure for running an open source project."
+  },
+  {
+    "name": "A-release",
+    "color": "f7e101",
+    "description": "Area: crates.io releases and version bumps."
   },
   {
     "name": "C-bug",
