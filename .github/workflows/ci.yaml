@@ -38,6 +38,12 @@ jobs:
       - name: Test
         run: cargo test
 
+      - name: Test with all features
+        run: cargo test --all-features
+
+      - name: Test with no default features
+        run: cargo test --no-default-features
+
   rust:
     name: Lint and format Rust
     runs-on: ubuntu-latest
@@ -53,7 +59,8 @@ jobs:
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
+          override: true
           profile: minimal
           components: rustfmt, clippy
 
@@ -64,7 +71,7 @@ jobs:
         uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
+          args: --all-features --all-targets
 
   text:
     name: Lint and format text

@@ -297,6 +297,7 @@ fn decode_2_tuple(byte1: u8, byte2: u8) -> Result<u8, DecodeError> {
 }
 
 #[cfg(test)]
+#[allow(clippy::non_ascii_literal)]
 mod tests {
     #[test]
     fn encode() {
