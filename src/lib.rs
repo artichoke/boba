@@ -159,6 +159,7 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii('💎')));
 /// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol('9')));
 /// ```
+#[allow(clippy::too_many_lines)]
 pub fn decode<T: AsRef<str>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
     if encoded == "xexax" {
