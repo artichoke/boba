@@ -5,9 +5,29 @@
     "description": "Area: CI build infrastructure."
   },
   {
+    "name": "A-crate-features",
+    "color": "f7e101",
+    "description": "Area: Compile-time features or attributes."
+  },
+  {
+    "name": "A-decode",
+    "color": "f7e101",
+    "description": "Area: Core decoder implementation."
+  },
+  {
+    "name": "A-encode",
+    "color": "f7e101",
+    "description": "Area: Core encoder implementation."
+  },
+  {
     "name": "A-deps",
     "color": "f7e101",
     "description": "Area: Source and library dependencies."
+  },
+  {
+    "name": "A-performance",
+    "color": "f7e101",
+    "description": "Area: Performance improvements and optimizations."
   },
   {
     "name": "A-project",
