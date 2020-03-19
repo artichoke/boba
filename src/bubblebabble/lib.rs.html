@@ -344,6 +344,12 @@
 <span id="344">344</span>
 <span id="345">345</span>
 <span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -413,8 +419,8 @@
     <span class="string">b&#39;x&#39;</span>,
 ];
 
-<span class="kw">const</span> <span class="ident">HEADER</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="string">b&#39;x&#39;</span>;
-<span class="kw">const</span> <span class="ident">TRAILER</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="string">b&#39;x&#39;</span>;
+<span class="kw">const</span> <span class="ident">HEADER</span>: <span class="ident">char</span> <span class="op">=</span> <span class="string">&#39;x&#39;</span>;
+<span class="kw">const</span> <span class="ident">TRAILER</span>: <span class="ident">char</span> <span class="op">=</span> <span class="string">&#39;x&#39;</span>;
 
 <span class="doccomment">/// Decoding errors from [`bubblebabble::decode`](decode).</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
@@ -463,10 +469,11 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">must_use</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">HEADER</span>));
+    <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ref</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">with_capacity</span>(<span class="number">6</span> <span class="op">*</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>) <span class="op">+</span> <span class="number">3</span> <span class="op">+</span> <span class="number">2</span>);
+    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">HEADER</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ref</span>().<span class="ident">chunks_exact</span>(<span class="number">2</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">chunks_exact</span>(<span class="number">2</span>);
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">chunk</span>) <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">next</span>() {
         <span class="ident">odd_partial</span>(<span class="ident">chunk</span>[<span class="number">0</span>], <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
         <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> (<span class="ident">chunk</span>[<span class="number">1</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>) <span class="op">&amp;</span> <span class="number">15</span>;
@@ -480,7 +487,7 @@
         [<span class="ident">byte1</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="ident">odd_partial</span>(<span class="kw-2">*</span><span class="ident">byte1</span>, <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>),
         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>),
     }
-    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">TRAILER</span>));
+    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">TRAILER</span>);
     <span class="ident">encoded</span>
 }
 
@@ -505,18 +512,23 @@
 <span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;x💎🦀x&quot;), Err(DecodeError::NonAscii(&#39;💎&#39;)));</span>
 <span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;x999x&quot;), Err(DecodeError::InvalidSymbol(&#39;9&#39;)));</span>
 <span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">too_many_lines</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">encoded</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">as_ref</span>();
+    <span class="kw">if</span> <span class="ident">encoded</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;xexax&quot;</span> {
+        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Vec</span>::<span class="ident">new</span>());
+    }
+    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">chars</span>().<span class="ident">count</span>();
     <span class="kw">if</span> <span class="op">!</span><span class="ident">encoded</span>.<span class="ident">starts_with</span>(<span class="string">&#39;x&#39;</span>) {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>);
     }
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">encoded</span>.<span class="ident">ends_with</span>(<span class="string">&#39;x&#39;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">encoded</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">2</span> {
+    <span class="kw">if</span> <span class="op">!</span><span class="ident">encoded</span>.<span class="ident">ends_with</span>(<span class="string">&#39;x&#39;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">2</span> {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>);
     }
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">chars</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">len_utf8</span>() <span class="op">&gt;</span> <span class="number">1</span>) {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">NonAscii</span>(<span class="ident">c</span>));
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="kw">if</span> <span class="ident">len</span> <span class="op">=</span><span class="op">=</span> <span class="number">5</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">2</span> <span class="op">*</span> ((<span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">/</span> <span class="number">6</span>) });
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">encoded</span>[<span class="number">1</span>..<span class="ident">encoded</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>].<span class="ident">as_bytes</span>().<span class="ident">chunks_exact</span>(<span class="number">6</span>);
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">chunk</span>) <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">next</span>() {
