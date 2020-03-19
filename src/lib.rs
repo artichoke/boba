@@ -66,8 +66,8 @@ const CONSONANTS: &[u8] = &[
     b'x',
 ];
 
-const HEADER: u8 = b'x';
-const TRAILER: u8 = b'x';
+const HEADER: char = 'x';
+const TRAILER: char = 'x';
 
 /// Decoding errors from [`bubblebabble::decode`](decode).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -116,10 +116,11 @@ impl fmt::Display for DecodeError {
 /// ```
 #[must_use]
 pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
-    let mut encoded = String::new();
-    encoded.push(char::from(HEADER));
+    let data = data.as_ref();
+    let mut encoded = String::with_capacity(6 * (data.len() / 2) + 3 + 2);
+    encoded.push(HEADER);
     let mut checksum = 1;
-    let mut chunks = data.as_ref().chunks_exact(2);
+    let mut chunks = data.chunks_exact(2);
     while let Some(chunk) = chunks.next() {
         odd_partial(chunk[0], checksum, &mut encoded);
         let d = (chunk[1] >> 4) & 15;
@@ -133,7 +134,7 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         [byte1] => odd_partial(*byte1, checksum, &mut encoded),
         _ => even_partial(checksum, &mut encoded),
     }
-    encoded.push(char::from(TRAILER));
+    encoded.push(TRAILER);
     encoded
 }
 
@@ -158,18 +159,23 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii('💎')));
 /// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol('9')));
 /// ```
+#[allow(clippy::too_many_lines)]
 pub fn decode<T: AsRef<str>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
+    if encoded == "xexax" {
+        return Ok(Vec::new());
+    }
+    let len = encoded.chars().count();
     if !encoded.starts_with('x') {
         return Err(DecodeError::MalformedHeader);
     }
-    if !encoded.ends_with('x') || encoded.len() < 2 {
+    if !encoded.ends_with('x') || len < 2 {
         return Err(DecodeError::MalformedTrailer);
     }
     if let Some(c) = encoded.chars().find(|c| c.len_utf8() > 1) {
         return Err(DecodeError::NonAscii(c));
     }
-    let mut decoded = vec![];
+    let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
     let mut checksum = 1;
     let mut chunks = encoded[1..encoded.len() - 1].as_bytes().chunks_exact(6);
     while let Some(chunk) = chunks.next() {
