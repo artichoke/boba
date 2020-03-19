@@ -115,11 +115,11 @@ impl fmt::Display for DecodeError {
 /// assert_eq!(bubblebabble::encode(&b"Pineapple"[..]), String::from("xigak-nyryk-humil-bosek-sonax"));
 /// ```
 #[must_use]
-pub fn encode(data: &[u8]) -> String {
+pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     let mut encoded = String::new();
     encoded.push(char::from(HEADER));
     let mut checksum = 1;
-    let mut chunks = data.chunks_exact(2);
+    let mut chunks = data.as_ref().chunks_exact(2);
     while let Some(chunk) = chunks.next() {
         odd_partial(chunk[0], checksum, &mut encoded);
         let d = (chunk[1] >> 4) & 15;
@@ -158,7 +158,8 @@ pub fn encode(data: &[u8]) -> String {
 /// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii('💎')));
 /// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol('9')));
 /// ```
-pub fn decode(encoded: &str) -> Result<Vec<u8>, DecodeError> {
+pub fn decode<T: AsRef<str>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
+    let encoded = encoded.as_ref();
     if !encoded.starts_with('x') {
         return Err(DecodeError::MalformedHeader);
     }
