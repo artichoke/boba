@@ -117,21 +117,19 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         odd_partial(*left, checksum, &mut encoded);
         let d = (*right >> 4) & 15;
         let e = *right & 15;
-        encoded.extend(&[
-            // Safety:
-            //
-            // - `d` is constructed with a mask of `0b1111`.
-            // - `CONSONANTS` is a fixed size array with 17 elements.
-            // - Maximum value of `d` is 16.
-            unsafe { *CONSONANTS.get_unchecked(d as usize) },
-            b'-',
-            // Safety:
-            //
-            // - `e` is constructed with a mask of `0b1111`.
-            // - `CONSONANTS` is a fixed size array with 17 elements.
-            // - Maximum value of `e` is 16.
-            unsafe { *CONSONANTS.get_unchecked(e as usize) },
-        ]);
+        // Panic safety:
+        //
+        // - `d` is constructed with a mask of `0b1111`.
+        // - `CONSONANTS` is a fixed size array with 17 elements.
+        // - Maximum value of `d` is 16.
+        encoded.push(CONSONANTS[d as usize]);
+        encoded.push(b'-');
+        // Panic safety:
+        //
+        // - `e` is constructed with a mask of `0b1111`.
+        // - `CONSONANTS` is a fixed size array with 17 elements.
+        // - Maximum value of `e` is 15.
+        encoded.push(CONSONANTS[e as usize]);
         checksum =
             ((u16::from(checksum * 5) + u16::from(*left) * 7 + u16::from(*right)) % 36) as u8;
     }
@@ -252,26 +250,24 @@ fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut Vec<u8>) {
     let a = (((raw_byte >> 6) & 3) + checksum) % 6;
     let b = (raw_byte >> 2) & 15;
     let c = ((raw_byte & 3) + checksum / 6) % 6;
-    buf.extend(&[
-        // Safety:
-        //
-        // - `a` is constructed with mod 6.
-        // - `VOWELS` is a fixed size array with 6 elements.
-        // - Maximum value of `a` is 5.
-        unsafe { *VOWELS.get_unchecked(a as usize) },
-        // Safety:
-        //
-        // - `b` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 17 elements.
-        // - Maximum value of `e` is 16.
-        unsafe { *CONSONANTS.get_unchecked(b as usize) },
-        // Safety:
-        //
-        // - `c` is constructed with mod 6.
-        // - `VOWELS` is a fixed size array with 6 elements.
-        // - Maximum value of `c` is 5.
-        unsafe { *VOWELS.get_unchecked(c as usize) },
-    ]);
+    // Panic safety:
+    //
+    // - `a` is constructed with mod 6.
+    // - `VOWELS` is a fixed size array with 6 elements.
+    // - Maximum value of `a` is 5.
+    buf.push(VOWELS[a as usize]);
+    // Panic safety:
+    //
+    // - `b` is constructed with a mask of `0b1111`.
+    // - `CONSONANTS` is a fixed size array with 17 elements.
+    // - Maximum value of `e` is 15.
+    buf.push(CONSONANTS[b as usize]);
+    // Panic safety:
+    //
+    // - `c` is constructed with mod 6.
+    // - `VOWELS` is a fixed size array with 6 elements.
+    // - Maximum value of `c` is 5.
+    buf.push(VOWELS[c as usize]);
 }
 
 #[inline]
@@ -279,22 +275,20 @@ fn even_partial(checksum: u8, buf: &mut Vec<u8>) {
     let a = checksum % 6;
     // let b = 16;
     let c = checksum / 6;
-    buf.extend(&[
-        // Safety:
-        //
-        // - `a` is constructed with mod 6.
-        // - `VOWELS` is a fixed size array with 6 elements.
-        // - Maximum value of `a` is 5.
-        unsafe { *VOWELS.get_unchecked(a as usize) },
-        b'x',
-        // Safety:
-        //
-        // - `c` is constructed with divide by 6.
-        // - Maximum value of `checksum` is 36 -- see `encode` loop.
-        // - `VOWELS` is a fixed size array with 6 elements.
-        // - Maximum value of `c` is 5.
-        unsafe { *VOWELS.get_unchecked(c as usize) },
-    ]);
+    // Panic safety:
+    //
+    // - `a` is constructed with mod 6.
+    // - `VOWELS` is a fixed size array with 6 elements.
+    // - Maximum value of `a` is 5.
+    buf.push(VOWELS[a as usize]);
+    buf.push(b'x');
+    // Panic safety:
+    //
+    // - `c` is constructed with divide by 6.
+    // - Maximum value of `checksum` is 36 -- see `encode` loop.
+    // - `VOWELS` is a fixed size array with 6 elements.
+    // - Maximum value of `c` is 5.
+    buf.push(VOWELS[c as usize]);
 }
 
 #[inline]
