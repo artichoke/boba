@@ -57,7 +57,6 @@
 //! Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
 
 use bstr::ByteSlice;
-use std::convert::TryFrom;
 use std::error;
 use std::fmt;
 
@@ -74,14 +73,14 @@ pub enum DecodeError {
     ChecksumMismatch,
     /// Corrupted input caused a decoding failure.
     Corrupted,
-    /// Input contained a symbol not in the encoding alphabet.
-    InvalidSymbol(char),
+    /// Input contained a symbol not in the encoding alphabet at this position.
+    InvalidSymbol(usize),
     /// Input was missing a leading `x` header.
     MalformedHeader,
     /// Input was missing a final `x` trailer.
     MalformedTrailer,
-    /// Input contained non-ASCII characters.
-    NonAscii(char),
+    /// Input contained non-ASCII characters at this position.
+    NonAscii(usize),
 }
 
 impl error::Error for DecodeError {}
@@ -91,15 +90,17 @@ impl fmt::Display for DecodeError {
         match self {
             Self::ChecksumMismatch => write!(f, "Checksum mismatch"),
             Self::Corrupted => write!(f, "Corrupted input"),
-            Self::InvalidSymbol(c) => {
-                write!(f, "Encountered symbol not in encoding alphabet: {}", c)
-            }
+            Self::InvalidSymbol(pos) => write!(
+                f,
+                "Encountered ASCII character outside of encoding alphabet at position {}",
+                pos
+            ),
             Self::MalformedHeader => write!(f, "Missing required 'x' header"),
             Self::MalformedTrailer => write!(f, "Missing required 'x' trailer"),
-            Self::NonAscii(c) => write!(
+            Self::NonAscii(pos) => write!(
                 f,
-                "Encountered non-ASCII character outside of encoding alphabet: {}",
-                c
+                "Encountered non-ASCII character outside of encoding alphabet at position {}",
+                pos
             ),
         }
     }
@@ -170,70 +171,78 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 ///
 /// ```rust
 /// # use bubblebabble::DecodeError;
-/// assert_eq!(bubblebabble::decode(""), Err(DecodeError::MalformedHeader));
-/// assert_eq!(bubblebabble::decode("z"), Err(DecodeError::MalformedHeader));
+/// assert_eq!(bubblebabble::decode(""), Err(DecodeError::Corrupted));
+/// assert_eq!(bubblebabble::decode("z"), Err(DecodeError::Corrupted));
 /// assert_eq!(bubblebabble::decode("xy"), Err(DecodeError::MalformedTrailer));
+/// assert_eq!(bubblebabble::decode("yx"), Err(DecodeError::MalformedHeader));
 /// assert_eq!(bubblebabble::decode("xx"), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii('💎')));
-/// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol('9')));
+/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii(1)));
+/// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol(1)));
 /// ```
-#[allow(clippy::too_many_lines)]
-pub fn decode<T: AsRef<str>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
+pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
-    if encoded == "xexax" {
+    if encoded == b"xexax" {
         return Ok(Vec::new());
     }
-    let len = encoded.chars().count();
-    if !encoded.starts_with('x') {
-        return Err(DecodeError::MalformedHeader);
+    let enc = match encoded {
+        [b'x', enc @ ..] => {
+            if let [enc @ .., b'x'] = enc {
+                enc
+            } else {
+                return Err(DecodeError::MalformedTrailer);
+            }
+        }
+        [.., b'x'] => return Err(DecodeError::MalformedHeader),
+        _ => return Err(DecodeError::Corrupted),
+    };
+    if let Some(pos) = encoded.find_non_ascii_byte() {
+        return Err(DecodeError::NonAscii(pos));
     }
-    if !encoded.ends_with('x') || len < 2 {
-        return Err(DecodeError::MalformedTrailer);
-    }
-    if let Some(c) = encoded.chars().find(|c| c.len_utf8() > 1) {
-        return Err(DecodeError::NonAscii(c));
-    }
+    let len = encoded.len();
     let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
-    let mut checksum = 1;
-    let mut chunks = encoded[1..encoded.len() - 1].as_bytes().chunks_exact(6);
+    let mut checksum = 1_u8;
+    let mut chunks = enc.chunks_exact(6);
+    let mut pos = 1;
     while let Some([left, mid, right, up, _, down]) = chunks.next() {
         let byte1 = decode_3_tuple(
             VOWELS
                 .find_byte(*left)
-                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*left)))? as u8,
+                .ok_or_else(|| DecodeError::InvalidSymbol(pos))? as u8,
             CONSONANTS
                 .find_byte(*mid)
-                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*mid)))? as u8,
+                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 1))? as u8,
             VOWELS
                 .find_byte(*right)
-                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*right)))? as u8,
+                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 2))? as u8,
             checksum,
         )?;
         let byte2 = decode_2_tuple(
             CONSONANTS
                 .find_byte(*up)
-                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*up)))? as u8,
+                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 3))? as u8,
             CONSONANTS
                 .find_byte(*down)
-                .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*down)))? as u8,
-        )?;
-        checksum = ((checksum * 5) + (isize::from(byte1) * 7) + isize::from(byte2)) % 36;
+                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 5))? as u8,
+        );
+        pos += 6;
+        checksum =
+            ((u16::from(checksum * 5) + (u16::from(byte1) * 7) + u16::from(byte2)) % 36) as u8;
         decoded.push(byte1);
         decoded.push(byte2);
     }
     if let [left, mid, right] = chunks.remainder() {
         let a = VOWELS
             .find_byte(*left)
-            .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*left)))? as u8;
+            .ok_or_else(|| DecodeError::InvalidSymbol(pos))? as u8;
         let b = CONSONANTS
             .find_byte(*mid)
-            .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*mid)))? as u8;
+            .ok_or_else(|| DecodeError::InvalidSymbol(pos + 1))? as u8;
         let c = VOWELS
             .find_byte(*right)
-            .ok_or_else(|| DecodeError::InvalidSymbol(char::from(*right)))? as u8;
+            .ok_or_else(|| DecodeError::InvalidSymbol(pos + 2))? as u8;
 
         if b == 16 {
-            if isize::from(a) != checksum % 6 || isize::from(c) != checksum / 6 {
+            if a != checksum % 6 || c != checksum / 6 {
                 return Err(DecodeError::ChecksumMismatch);
             }
         } else {
@@ -296,20 +305,28 @@ fn even_partial(checksum: u8, buf: &mut Vec<u8>) {
 }
 
 #[inline]
-fn decode_3_tuple(byte1: u8, byte2: u8, byte3: u8, checksum: isize) -> Result<u8, DecodeError> {
-    let high = (isize::from(byte1) - (checksum % 6) + 6) % 6;
-    let mid = isize::from(byte2);
-    let low = (isize::from(byte3) - ((checksum / 6) % 6) + 6) % 6;
+fn decode_3_tuple(byte1: u8, byte2: u8, byte3: u8, checksum: u8) -> Result<u8, DecodeError> {
+    // Will not overflow since:
+    // - byte1 is guaranteed to be ASCII or < 128.
+    // Will not underflow since:
+    // - 6 - (checksum % 6) > 0
+    let high = (byte1 + 6 - (checksum % 6)) % 6;
+    let mid = byte2;
+    // Will not overflow since:
+    // - byte3 is guaranteed to be ASCII or < 128.
+    // Will not underflow since:
+    // - 6 - ((checksum / 6) % 6) > 0
+    let low = (byte3 + 6 - ((checksum / 6) % 6)) % 6;
     if high >= 4 || low >= 4 {
         Err(DecodeError::Corrupted)
     } else {
-        u8::try_from((high << 6) | (mid << 2) | low).map_err(|_| DecodeError::Corrupted)
+        Ok((high << 6) | (mid << 2) | low)
     }
 }
 
 #[inline]
-fn decode_2_tuple(byte1: u8, byte2: u8) -> Result<u8, DecodeError> {
-    u8::try_from((byte1 << 4) | byte2).map_err(|_| DecodeError::Corrupted)
+fn decode_2_tuple(byte1: u8, byte2: u8) -> u8 {
+    (byte1 << 4) | byte2
 }
 
 #[cfg(test)]
@@ -343,20 +360,24 @@ mod tests {
 
     #[test]
     fn decode_error() {
-        assert_eq!(super::decode(""), Err(super::DecodeError::MalformedHeader));
-        assert_eq!(super::decode("z"), Err(super::DecodeError::MalformedHeader));
+        assert_eq!(super::decode(""), Err(super::DecodeError::Corrupted));
+        assert_eq!(super::decode("z"), Err(super::DecodeError::Corrupted));
         assert_eq!(
             super::decode("xy"),
             Err(super::DecodeError::MalformedTrailer)
         );
+        assert_eq!(
+            super::decode("yx"),
+            Err(super::DecodeError::MalformedHeader)
+        );
         assert_eq!(super::decode("xx"), Err(super::DecodeError::Corrupted));
         assert_eq!(
             super::decode("x💎🦀x"),
-            Err(super::DecodeError::NonAscii('💎'))
+            Err(super::DecodeError::NonAscii(1))
         );
         assert_eq!(
             super::decode("x999x"),
-            Err(super::DecodeError::InvalidSymbol('9'))
+            Err(super::DecodeError::InvalidSymbol(1))
         );
     }
 }
