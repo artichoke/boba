@@ -11,3 +11,4 @@ keywords = ["encoding", "bubblebabble"]
 categories = ["encoding"]
 
 [dependencies]
+bstr = { version = "0.2", default-features = false }
