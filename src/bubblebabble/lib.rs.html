@@ -368,12 +368,6 @@
 <span id="368">368</span>
 <span id="369">369</span>
 <span id="370">370</span>
-<span id="371">371</span>
-<span id="372">372</span>
-<span id="373">373</span>
-<span id="374">374</span>
-<span id="375">375</span>
-<span id="376">376</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -494,21 +488,19 @@
         <span class="ident">odd_partial</span>(<span class="kw-2">*</span><span class="ident">left</span>, <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
         <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">right</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>) <span class="op">&amp;</span> <span class="number">15</span>;
         <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">right</span> <span class="op">&amp;</span> <span class="number">15</span>;
-        <span class="ident">encoded</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span>[
-            <span class="comment">// Safety:</span>
-            <span class="comment">//</span>
-            <span class="comment">// - `d` is constructed with a mask of `0b1111`.</span>
-            <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
-            <span class="comment">// - Maximum value of `d` is 16.</span>
-            <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">CONSONANTS</span>.<span class="ident">get_unchecked</span>(<span class="ident">d</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-            <span class="string">b&#39;-&#39;</span>,
-            <span class="comment">// Safety:</span>
-            <span class="comment">//</span>
-            <span class="comment">// - `e` is constructed with a mask of `0b1111`.</span>
-            <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
-            <span class="comment">// - Maximum value of `e` is 16.</span>
-            <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">CONSONANTS</span>.<span class="ident">get_unchecked</span>(<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-        ]);
+        <span class="comment">// Panic safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `d` is constructed with a mask of `0b1111`.</span>
+        <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+        <span class="comment">// - Maximum value of `d` is 16.</span>
+        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">d</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="string">b&#39;-&#39;</span>);
+        <span class="comment">// Panic safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `e` is constructed with a mask of `0b1111`.</span>
+        <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+        <span class="comment">// - Maximum value of `e` is 15.</span>
+        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>]);
         <span class="ident">checksum</span> <span class="op">=</span>
             ((<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">left</span>) <span class="op">*</span> <span class="number">7</span> <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">right</span>)) <span class="op">%</span> <span class="number">36</span>) <span class="kw">as</span> <span class="ident">u8</span>;
     }
@@ -629,26 +621,24 @@
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> (((<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">6</span>) <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span>) <span class="op">%</span> <span class="number">6</span>;
     <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> (<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">2</span>) <span class="op">&amp;</span> <span class="number">15</span>;
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> ((<span class="ident">raw_byte</span> <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>;
-    <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span>[
-        <span class="comment">// Safety:</span>
-        <span class="comment">//</span>
-        <span class="comment">// - `a` is constructed with mod 6.</span>
-        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
-        <span class="comment">// - Maximum value of `a` is 5.</span>
-        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-        <span class="comment">// Safety:</span>
-        <span class="comment">//</span>
-        <span class="comment">// - `b` is constructed with a mask of `0b1111`.</span>
-        <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
-        <span class="comment">// - Maximum value of `e` is 16.</span>
-        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">CONSONANTS</span>.<span class="ident">get_unchecked</span>(<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-        <span class="comment">// Safety:</span>
-        <span class="comment">//</span>
-        <span class="comment">// - `c` is constructed with mod 6.</span>
-        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
-        <span class="comment">// - Maximum value of `c` is 5.</span>
-        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-    ]);
+    <span class="comment">// Panic safety:</span>
+    <span class="comment">//</span>
+    <span class="comment">// - `a` is constructed with mod 6.</span>
+    <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+    <span class="comment">// - Maximum value of `a` is 5.</span>
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="comment">// Panic safety:</span>
+    <span class="comment">//</span>
+    <span class="comment">// - `b` is constructed with a mask of `0b1111`.</span>
+    <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+    <span class="comment">// - Maximum value of `e` is 15.</span>
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="comment">// Panic safety:</span>
+    <span class="comment">//</span>
+    <span class="comment">// - `c` is constructed with mod 6.</span>
+    <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+    <span class="comment">// - Maximum value of `c` is 5.</span>
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>]);
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -656,22 +646,20 @@
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span>;
     <span class="comment">// let b = 16;</span>
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>;
-    <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span>[
-        <span class="comment">// Safety:</span>
-        <span class="comment">//</span>
-        <span class="comment">// - `a` is constructed with mod 6.</span>
-        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
-        <span class="comment">// - Maximum value of `a` is 5.</span>
-        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-        <span class="string">b&#39;x&#39;</span>,
-        <span class="comment">// Safety:</span>
-        <span class="comment">//</span>
-        <span class="comment">// - `c` is constructed with divide by 6.</span>
-        <span class="comment">// - Maximum value of `checksum` is 36 -- see `encode` loop.</span>
-        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
-        <span class="comment">// - Maximum value of `c` is 5.</span>
-        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>) },
-    ]);
+    <span class="comment">// Panic safety:</span>
+    <span class="comment">//</span>
+    <span class="comment">// - `a` is constructed with mod 6.</span>
+    <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+    <span class="comment">// - Maximum value of `a` is 5.</span>
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="string">b&#39;x&#39;</span>);
+    <span class="comment">// Panic safety:</span>
+    <span class="comment">//</span>
+    <span class="comment">// - `c` is constructed with divide by 6.</span>
+    <span class="comment">// - Maximum value of `checksum` is 36 -- see `encode` loop.</span>
+    <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+    <span class="comment">// - Maximum value of `c` is 5.</span>
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>]);
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
