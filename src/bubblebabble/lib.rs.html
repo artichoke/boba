@@ -311,6 +311,54 @@
 <span id="311">311</span>
 <span id="312">312</span>
 <span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -318,7 +366,6 @@
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">cargo</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>, <span class="ident">intra_doc_link_resolution_failure</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">rust_2018_idioms</span>)]</span>
-<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">unsafe_code</span>)]</span>
 
 <span class="doccomment">//! # bubblebabble</span>
 <span class="doccomment">//!</span>
@@ -379,8 +426,8 @@
 <span class="kw">const</span> <span class="ident">VOWELS</span>: [<span class="ident">u8</span>; <span class="number">6</span>] <span class="op">=</span> <span class="kw-2">*</span><span class="string">b&quot;aeiouy&quot;</span>;
 <span class="kw">const</span> <span class="ident">CONSONANTS</span>: [<span class="ident">u8</span>; <span class="number">17</span>] <span class="op">=</span> <span class="kw-2">*</span><span class="string">b&quot;bcdfghklmnprstvzx&quot;</span>;
 
-<span class="kw">const</span> <span class="ident">HEADER</span>: <span class="ident">char</span> <span class="op">=</span> <span class="string">&#39;x&#39;</span>;
-<span class="kw">const</span> <span class="ident">TRAILER</span>: <span class="ident">char</span> <span class="op">=</span> <span class="string">&#39;x&#39;</span>;
+<span class="kw">const</span> <span class="ident">HEADER</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="string">b&#39;x&#39;</span>;
+<span class="kw">const</span> <span class="ident">TRAILER</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="string">b&#39;x&#39;</span>;
 
 <span class="doccomment">/// Decoding errors from [`bubblebabble::decode`](decode).</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
@@ -430,25 +477,44 @@
 <span class="attribute">#[<span class="ident">must_use</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ref</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">with_capacity</span>(<span class="number">6</span> <span class="op">*</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>) <span class="op">+</span> <span class="number">3</span> <span class="op">+</span> <span class="number">2</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">6</span> <span class="op">*</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>) <span class="op">+</span> <span class="number">3</span> <span class="op">+</span> <span class="number">2</span>);
     <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">HEADER</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1_u8</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">chunks_exact</span>(<span class="number">2</span>);
-    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">chunk</span>) <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">next</span>() {
-        <span class="ident">odd_partial</span>(<span class="ident">chunk</span>[<span class="number">0</span>], <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
-        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> (<span class="ident">chunk</span>[<span class="number">1</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>) <span class="op">&amp;</span> <span class="number">15</span>;
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">chunk</span>[<span class="number">1</span>] <span class="op">&amp;</span> <span class="number">15</span>;
-        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">CONSONANTS</span>[<span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">d</span>)]));
-        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="string">&#39;-&#39;</span>);
-        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">CONSONANTS</span>[<span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">e</span>)]));
-        <span class="ident">checksum</span> <span class="op">=</span> ((<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> <span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">chunk</span>[<span class="number">0</span>]) <span class="op">*</span> <span class="number">7</span> <span class="op">+</span> <span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">chunk</span>[<span class="number">1</span>])) <span class="op">%</span> <span class="number">36</span>;
+    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>([<span class="ident">left</span>, <span class="ident">right</span>]) <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">next</span>() {
+        <span class="ident">odd_partial</span>(<span class="kw-2">*</span><span class="ident">left</span>, <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
+        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">right</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>) <span class="op">&amp;</span> <span class="number">15</span>;
+        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">right</span> <span class="op">&amp;</span> <span class="number">15</span>;
+        <span class="ident">encoded</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span>[
+            <span class="comment">// Safety:</span>
+            <span class="comment">//</span>
+            <span class="comment">// - `d` is constructed with a mask of `0b1111`.</span>
+            <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+            <span class="comment">// - Maximum value of `d` is 16.</span>
+            <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">CONSONANTS</span>.<span class="ident">get_unchecked</span>(<span class="ident">d</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+            <span class="string">b&#39;-&#39;</span>,
+            <span class="comment">// Safety:</span>
+            <span class="comment">//</span>
+            <span class="comment">// - `e` is constructed with a mask of `0b1111`.</span>
+            <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+            <span class="comment">// - Maximum value of `e` is 16.</span>
+            <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">CONSONANTS</span>.<span class="ident">get_unchecked</span>(<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+        ]);
+        <span class="ident">checksum</span> <span class="op">=</span>
+            ((<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">left</span>) <span class="op">*</span> <span class="number">7</span> <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">right</span>)) <span class="op">%</span> <span class="number">36</span>) <span class="kw">as</span> <span class="ident">u8</span>;
     }
     <span class="kw">match</span> <span class="ident">chunks</span>.<span class="ident">remainder</span>() {
         [<span class="ident">byte1</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="ident">odd_partial</span>(<span class="kw-2">*</span><span class="ident">byte1</span>, <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>),
         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>),
     }
     <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">TRAILER</span>);
-    <span class="ident">encoded</span>
+    <span class="comment">// Safety:</span>
+    <span class="comment">//</span>
+    <span class="comment">// - `encoded` is pushed to by indexing into the `VOWELS` and `CONSONANTS`</span>
+    <span class="comment">//   arrays.</span>
+    <span class="comment">// - `VOWELS` only contains bytes that are valid ASCII.</span>
+    <span class="comment">// - `CONSONANTS` only contains bytes that are valid ASCII.</span>
+    <span class="kw">unsafe</span> { <span class="ident">String</span>::<span class="ident">from_utf8_unchecked</span>(<span class="ident">encoded</span>) }
 }
 
 <span class="doccomment">/// Decode a string slice to a vector of bytes.</span>
@@ -541,23 +607,53 @@
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">odd_partial</span>(<span class="ident">raw_byte</span>: <span class="ident">u8</span>, <span class="ident">checksum</span>: <span class="ident">usize</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">String</span>) {
-    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> (<span class="ident">usize</span>::<span class="ident">from</span>((<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">6</span>) <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span>) <span class="op">%</span> <span class="number">6</span>;
-    <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">from</span>((<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">2</span>) <span class="op">&amp;</span> <span class="number">15</span>);
-    <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> (<span class="ident">usize</span>::<span class="ident">from</span>(<span class="ident">raw_byte</span> <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>;
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span>]));
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">CONSONANTS</span>[<span class="ident">b</span>]));
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span>]));
+<span class="kw">fn</span> <span class="ident">odd_partial</span>(<span class="ident">raw_byte</span>: <span class="ident">u8</span>, <span class="ident">checksum</span>: <span class="ident">u8</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> (((<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">6</span>) <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span>) <span class="op">%</span> <span class="number">6</span>;
+    <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> (<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">2</span>) <span class="op">&amp;</span> <span class="number">15</span>;
+    <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> ((<span class="ident">raw_byte</span> <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>;
+    <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span>[
+        <span class="comment">// Safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `a` is constructed with mod 6.</span>
+        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+        <span class="comment">// - Maximum value of `a` is 5.</span>
+        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+        <span class="comment">// Safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `b` is constructed with a mask of `0b1111`.</span>
+        <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+        <span class="comment">// - Maximum value of `e` is 16.</span>
+        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">CONSONANTS</span>.<span class="ident">get_unchecked</span>(<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+        <span class="comment">// Safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `c` is constructed with mod 6.</span>
+        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+        <span class="comment">// - Maximum value of `c` is 5.</span>
+        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+    ]);
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>: <span class="ident">usize</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">String</span>) {
+<span class="kw">fn</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>: <span class="ident">u8</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span>;
-    <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="number">16</span>;
+    <span class="comment">// let b = 16;</span>
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>;
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span>]));
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">CONSONANTS</span>[<span class="ident">b</span>]));
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span>]));
+    <span class="ident">buf</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span>[
+        <span class="comment">// Safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `a` is constructed with mod 6.</span>
+        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+        <span class="comment">// - Maximum value of `a` is 5.</span>
+        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+        <span class="string">b&#39;x&#39;</span>,
+        <span class="comment">// Safety:</span>
+        <span class="comment">//</span>
+        <span class="comment">// - `c` is constructed with divide by 6.</span>
+        <span class="comment">// - Maximum value of `checksum` is 36 -- see `encode` loop.</span>
+        <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
+        <span class="comment">// - Maximum value of `c` is 5.</span>
+        <span class="kw">unsafe</span> { <span class="kw-2">*</span><span class="ident">VOWELS</span>.<span class="ident">get_unchecked</span>(<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>) },
+    ]);
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
