@@ -359,6 +359,7 @@
 <span id="359">359</span>
 <span id="360">360</span>
 <span id="361">361</span>
+<span id="362">362</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -503,9 +504,10 @@
         <span class="ident">checksum</span> <span class="op">=</span>
             ((<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">left</span>) <span class="op">*</span> <span class="number">7</span> <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">right</span>)) <span class="op">%</span> <span class="number">36</span>) <span class="kw">as</span> <span class="ident">u8</span>;
     }
-    <span class="kw">match</span> <span class="ident">chunks</span>.<span class="ident">remainder</span>() {
-        [<span class="ident">byte1</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="ident">odd_partial</span>(<span class="kw-2">*</span><span class="ident">byte1</span>, <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>),
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>),
+    <span class="kw">if</span> <span class="kw">let</span> [<span class="ident">byte</span>] <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">remainder</span>() {
+        <span class="ident">odd_partial</span>(<span class="kw-2">*</span><span class="ident">byte</span>, <span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
+    } <span class="kw">else</span> {
+        <span class="ident">even_partial</span>(<span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
     }
     <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">TRAILER</span>);
     <span class="comment">// Safety:</span>
