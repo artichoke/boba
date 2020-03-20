@@ -141,9 +141,10 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         checksum =
             ((u16::from(checksum * 5) + u16::from(*left) * 7 + u16::from(*right)) % 36) as u8;
     }
-    match chunks.remainder() {
-        [byte1] => odd_partial(*byte1, checksum, &mut encoded),
-        _ => even_partial(checksum, &mut encoded),
+    if let [byte] = chunks.remainder() {
+        odd_partial(*byte, checksum, &mut encoded);
+    } else {
+        even_partial(checksum, &mut encoded);
     }
     encoded.push(TRAILER);
     // Safety:
