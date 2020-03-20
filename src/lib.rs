@@ -73,14 +73,12 @@ pub enum DecodeError {
     ChecksumMismatch,
     /// Corrupted input caused a decoding failure.
     Corrupted,
-    /// Input contained a symbol not in the encoding alphabet at this position.
-    InvalidSymbol(usize),
+    /// Input contained a byte not in the encoding alphabet at this position.
+    InvalidByte(usize),
     /// Input was missing a leading `x` header.
     MalformedHeader,
     /// Input was missing a final `x` trailer.
     MalformedTrailer,
-    /// Input contained non-ASCII characters at this position.
-    NonAscii(usize),
 }
 
 impl error::Error for DecodeError {}
@@ -90,18 +88,13 @@ impl fmt::Display for DecodeError {
         match self {
             Self::ChecksumMismatch => write!(f, "Checksum mismatch"),
             Self::Corrupted => write!(f, "Corrupted input"),
-            Self::InvalidSymbol(pos) => write!(
+            Self::InvalidByte(pos) => write!(
                 f,
-                "Encountered ASCII character outside of encoding alphabet at position {}",
+                "Encountered byte outside of encoding alphabet at position {}",
                 pos
             ),
             Self::MalformedHeader => write!(f, "Missing required 'x' header"),
             Self::MalformedTrailer => write!(f, "Missing required 'x' trailer"),
-            Self::NonAscii(pos) => write!(
-                f,
-                "Encountered non-ASCII character outside of encoding alphabet at position {}",
-                pos
-            ),
         }
     }
 }
@@ -176,8 +169,8 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// assert_eq!(bubblebabble::decode("xy"), Err(DecodeError::MalformedTrailer));
 /// assert_eq!(bubblebabble::decode("yx"), Err(DecodeError::MalformedHeader));
 /// assert_eq!(bubblebabble::decode("xx"), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::NonAscii(1)));
-/// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidSymbol(1)));
+/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidByte(1)));
 /// ```
 pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
@@ -196,7 +189,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         _ => return Err(DecodeError::Corrupted),
     };
     if let Some(pos) = encoded.find_non_ascii_byte() {
-        return Err(DecodeError::NonAscii(pos));
+        return Err(DecodeError::InvalidByte(pos));
     }
     let len = encoded.len();
     let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
@@ -207,22 +200,22 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         let byte1 = decode_3_tuple(
             VOWELS
                 .find_byte(*left)
-                .ok_or_else(|| DecodeError::InvalidSymbol(pos))? as u8,
+                .ok_or_else(|| DecodeError::InvalidByte(pos))? as u8,
             CONSONANTS
                 .find_byte(*mid)
-                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 1))? as u8,
+                .ok_or_else(|| DecodeError::InvalidByte(pos + 1))? as u8,
             VOWELS
                 .find_byte(*right)
-                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 2))? as u8,
+                .ok_or_else(|| DecodeError::InvalidByte(pos + 2))? as u8,
             checksum,
         )?;
         let byte2 = decode_2_tuple(
             CONSONANTS
                 .find_byte(*up)
-                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 3))? as u8,
+                .ok_or_else(|| DecodeError::InvalidByte(pos + 3))? as u8,
             CONSONANTS
                 .find_byte(*down)
-                .ok_or_else(|| DecodeError::InvalidSymbol(pos + 5))? as u8,
+                .ok_or_else(|| DecodeError::InvalidByte(pos + 5))? as u8,
         );
         pos += 6;
         checksum =
@@ -233,13 +226,13 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     if let [left, mid, right] = chunks.remainder() {
         let a = VOWELS
             .find_byte(*left)
-            .ok_or_else(|| DecodeError::InvalidSymbol(pos))? as u8;
+            .ok_or_else(|| DecodeError::InvalidByte(pos))? as u8;
         let b = CONSONANTS
             .find_byte(*mid)
-            .ok_or_else(|| DecodeError::InvalidSymbol(pos + 1))? as u8;
+            .ok_or_else(|| DecodeError::InvalidByte(pos + 1))? as u8;
         let c = VOWELS
             .find_byte(*right)
-            .ok_or_else(|| DecodeError::InvalidSymbol(pos + 2))? as u8;
+            .ok_or_else(|| DecodeError::InvalidByte(pos + 2))? as u8;
 
         if b == 16 {
             if a != checksum % 6 || c != checksum / 6 {
@@ -373,11 +366,11 @@ mod tests {
         assert_eq!(super::decode("xx"), Err(super::DecodeError::Corrupted));
         assert_eq!(
             super::decode("x💎🦀x"),
-            Err(super::DecodeError::NonAscii(1))
+            Err(super::DecodeError::InvalidByte(1))
         );
         assert_eq!(
             super::decode("x999x"),
-            Err(super::DecodeError::InvalidSymbol(1))
+            Err(super::DecodeError::InvalidByte(1))
         );
     }
 }
