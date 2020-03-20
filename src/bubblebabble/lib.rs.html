@@ -360,6 +360,27 @@
 <span id="360">360</span>
 <span id="361">361</span>
 <span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -420,7 +441,6 @@
 <span class="doccomment">//! Copyright (c) 2018 Jonathan M. Wilbur \&lt;jonathan@wilbur.space\&gt;.</span>
 
 <span class="kw">use</span> <span class="ident">bstr</span>::<span class="ident">ByteSlice</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">error</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
@@ -437,14 +457,14 @@
     <span class="ident">ChecksumMismatch</span>,
     <span class="doccomment">/// Corrupted input caused a decoding failure.</span>
     <span class="ident">Corrupted</span>,
-    <span class="doccomment">/// Input contained a symbol not in the encoding alphabet.</span>
-    <span class="ident">InvalidSymbol</span>(<span class="ident">char</span>),
+    <span class="doccomment">/// Input contained a symbol not in the encoding alphabet at this position.</span>
+    <span class="ident">InvalidSymbol</span>(<span class="ident">usize</span>),
     <span class="doccomment">/// Input was missing a leading `x` header.</span>
     <span class="ident">MalformedHeader</span>,
     <span class="doccomment">/// Input was missing a final `x` trailer.</span>
     <span class="ident">MalformedTrailer</span>,
-    <span class="doccomment">/// Input contained non-ASCII characters.</span>
-    <span class="ident">NonAscii</span>(<span class="ident">char</span>),
+    <span class="doccomment">/// Input contained non-ASCII characters at this position.</span>
+    <span class="ident">NonAscii</span>(<span class="ident">usize</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {}
@@ -454,15 +474,17 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="self">Self</span>::<span class="ident">ChecksumMismatch</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Checksum mismatch&quot;</span>),
             <span class="self">Self</span>::<span class="ident">Corrupted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Corrupted input&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">c</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Encountered symbol not in encoding alphabet: {}&quot;</span>, <span class="ident">c</span>)
-            }
+            <span class="self">Self</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
+                <span class="ident">f</span>,
+                <span class="string">&quot;Encountered ASCII character outside of encoding alphabet at position {}&quot;</span>,
+                <span class="ident">pos</span>
+            ),
             <span class="self">Self</span>::<span class="ident">MalformedHeader</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Missing required &#39;x&#39; header&quot;</span>),
             <span class="self">Self</span>::<span class="ident">MalformedTrailer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Missing required &#39;x&#39; trailer&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">NonAscii</span>(<span class="ident">c</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
+            <span class="self">Self</span>::<span class="ident">NonAscii</span>(<span class="ident">pos</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
                 <span class="ident">f</span>,
-                <span class="string">&quot;Encountered non-ASCII character outside of encoding alphabet: {}&quot;</span>,
-                <span class="ident">c</span>
+                <span class="string">&quot;Encountered non-ASCII character outside of encoding alphabet at position {}&quot;</span>,
+                <span class="ident">pos</span>
             ),
         }
     }
@@ -533,70 +555,78 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```rust</span>
 <span class="doccomment">/// # use bubblebabble::DecodeError;</span>
-<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;&quot;), Err(DecodeError::MalformedHeader));</span>
-<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;z&quot;), Err(DecodeError::MalformedHeader));</span>
+<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;&quot;), Err(DecodeError::Corrupted));</span>
+<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;z&quot;), Err(DecodeError::Corrupted));</span>
 <span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;xy&quot;), Err(DecodeError::MalformedTrailer));</span>
+<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;yx&quot;), Err(DecodeError::MalformedHeader));</span>
 <span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;xx&quot;), Err(DecodeError::Corrupted));</span>
-<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;x💎🦀x&quot;), Err(DecodeError::NonAscii(&#39;💎&#39;)));</span>
-<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;x999x&quot;), Err(DecodeError::InvalidSymbol(&#39;9&#39;)));</span>
+<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;x💎🦀x&quot;), Err(DecodeError::NonAscii(1)));</span>
+<span class="doccomment">/// assert_eq!(bubblebabble::decode(&quot;x999x&quot;), Err(DecodeError::InvalidSymbol(1)));</span>
 <span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">too_many_lines</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">encoded</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">encoded</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">as_ref</span>();
-    <span class="kw">if</span> <span class="ident">encoded</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;xexax&quot;</span> {
+    <span class="kw">if</span> <span class="ident">encoded</span> <span class="op">=</span><span class="op">=</span> <span class="string">b&quot;xexax&quot;</span> {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Vec</span>::<span class="ident">new</span>());
     }
-    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">chars</span>().<span class="ident">count</span>();
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">encoded</span>.<span class="ident">starts_with</span>(<span class="string">&#39;x&#39;</span>) {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>);
+    <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">encoded</span> {
+        [<span class="string">b&#39;x&#39;</span>, <span class="ident">enc</span> @ ..] <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="kw">if</span> <span class="kw">let</span> [<span class="ident">enc</span> @ .., <span class="string">b&#39;x&#39;</span>] <span class="op">=</span> <span class="ident">enc</span> {
+                <span class="ident">enc</span>
+            } <span class="kw">else</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>);
+            }
+        }
+        [.., <span class="string">b&#39;x&#39;</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>),
+    };
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">pos</span>) <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">find_non_ascii_byte</span>() {
+        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">NonAscii</span>(<span class="ident">pos</span>));
     }
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">encoded</span>.<span class="ident">ends_with</span>(<span class="string">&#39;x&#39;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">2</span> {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>);
-    }
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">chars</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">len_utf8</span>() <span class="op">&gt;</span> <span class="number">1</span>) {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">NonAscii</span>(<span class="ident">c</span>));
-    }
+    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="kw">if</span> <span class="ident">len</span> <span class="op">=</span><span class="op">=</span> <span class="number">5</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">2</span> <span class="op">*</span> ((<span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">/</span> <span class="number">6</span>) });
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">encoded</span>[<span class="number">1</span>..<span class="ident">encoded</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>].<span class="ident">as_bytes</span>().<span class="ident">chunks_exact</span>(<span class="number">6</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1_u8</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">enc</span>.<span class="ident">chunks_exact</span>(<span class="number">6</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos</span> <span class="op">=</span> <span class="number">1</span>;
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>([<span class="ident">left</span>, <span class="ident">mid</span>, <span class="ident">right</span>, <span class="ident">up</span>, <span class="kw">_</span>, <span class="ident">down</span>]) <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">next</span>() {
         <span class="kw">let</span> <span class="ident">byte1</span> <span class="op">=</span> <span class="ident">decode_3_tuple</span>(
             <span class="ident">VOWELS</span>
                 .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">left</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">left</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
             <span class="ident">CONSONANTS</span>
                 .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">mid</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">mid</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">1</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
             <span class="ident">VOWELS</span>
                 .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">right</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">right</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">2</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
             <span class="ident">checksum</span>,
         )<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">byte2</span> <span class="op">=</span> <span class="ident">decode_2_tuple</span>(
             <span class="ident">CONSONANTS</span>
                 .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">up</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">up</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">3</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
             <span class="ident">CONSONANTS</span>
                 .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">down</span>)
-                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">down</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
-        )<span class="question-mark">?</span>;
-        <span class="ident">checksum</span> <span class="op">=</span> ((<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> (<span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">byte1</span>) <span class="op">*</span> <span class="number">7</span>) <span class="op">+</span> <span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">byte2</span>)) <span class="op">%</span> <span class="number">36</span>;
+                .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">5</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>,
+        );
+        <span class="ident">pos</span> <span class="op">+</span><span class="op">=</span> <span class="number">6</span>;
+        <span class="ident">checksum</span> <span class="op">=</span>
+            ((<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> (<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">byte1</span>) <span class="op">*</span> <span class="number">7</span>) <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">byte2</span>)) <span class="op">%</span> <span class="number">36</span>) <span class="kw">as</span> <span class="ident">u8</span>;
         <span class="ident">decoded</span>.<span class="ident">push</span>(<span class="ident">byte1</span>);
         <span class="ident">decoded</span>.<span class="ident">push</span>(<span class="ident">byte2</span>);
     }
     <span class="kw">if</span> <span class="kw">let</span> [<span class="ident">left</span>, <span class="ident">mid</span>, <span class="ident">right</span>] <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">remainder</span>() {
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">VOWELS</span>
             .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">left</span>)
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">left</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
         <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">CONSONANTS</span>
             .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">mid</span>)
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">mid</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">1</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
         <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">VOWELS</span>
             .<span class="ident">find_byte</span>(<span class="kw-2">*</span><span class="ident">right</span>)
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">char</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">right</span>)))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
+            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">2</span>))<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u8</span>;
 
         <span class="kw">if</span> <span class="ident">b</span> <span class="op">=</span><span class="op">=</span> <span class="number">16</span> {
-            <span class="kw">if</span> <span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">a</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span> <span class="op">|</span><span class="op">|</span> <span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">c</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span> {
+            <span class="kw">if</span> <span class="ident">a</span> <span class="op">!</span><span class="op">=</span> <span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span> <span class="op">|</span><span class="op">|</span> <span class="ident">c</span> <span class="op">!</span><span class="op">=</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">ChecksumMismatch</span>);
             }
         } <span class="kw">else</span> {
@@ -659,20 +689,28 @@
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">decode_3_tuple</span>(<span class="ident">byte1</span>: <span class="ident">u8</span>, <span class="ident">byte2</span>: <span class="ident">u8</span>, <span class="ident">byte3</span>: <span class="ident">u8</span>, <span class="ident">checksum</span>: <span class="ident">isize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">high</span> <span class="op">=</span> (<span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">byte1</span>) <span class="op">-</span> (<span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span>) <span class="op">+</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>;
-    <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">byte2</span>);
-    <span class="kw">let</span> <span class="ident">low</span> <span class="op">=</span> (<span class="ident">isize</span>::<span class="ident">from</span>(<span class="ident">byte3</span>) <span class="op">-</span> ((<span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>) <span class="op">+</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>;
+<span class="kw">fn</span> <span class="ident">decode_3_tuple</span>(<span class="ident">byte1</span>: <span class="ident">u8</span>, <span class="ident">byte2</span>: <span class="ident">u8</span>, <span class="ident">byte3</span>: <span class="ident">u8</span>, <span class="ident">checksum</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
+    <span class="comment">// Will not overflow since:</span>
+    <span class="comment">// - byte1 is guaranteed to be ASCII or &lt; 128.</span>
+    <span class="comment">// Will not underflow since:</span>
+    <span class="comment">// - 6 - (checksum % 6) &gt; 0</span>
+    <span class="kw">let</span> <span class="ident">high</span> <span class="op">=</span> (<span class="ident">byte1</span> <span class="op">+</span> <span class="number">6</span> <span class="op">-</span> (<span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span>)) <span class="op">%</span> <span class="number">6</span>;
+    <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">byte2</span>;
+    <span class="comment">// Will not overflow since:</span>
+    <span class="comment">// - byte3 is guaranteed to be ASCII or &lt; 128.</span>
+    <span class="comment">// Will not underflow since:</span>
+    <span class="comment">// - 6 - ((checksum / 6) % 6) &gt; 0</span>
+    <span class="kw">let</span> <span class="ident">low</span> <span class="op">=</span> (<span class="ident">byte3</span> <span class="op">+</span> <span class="number">6</span> <span class="op">-</span> ((<span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>)) <span class="op">%</span> <span class="number">6</span>;
     <span class="kw">if</span> <span class="ident">high</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">4</span> <span class="op">|</span><span class="op">|</span> <span class="ident">low</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">4</span> {
         <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>)
     } <span class="kw">else</span> {
-        <span class="ident">u8</span>::<span class="ident">try_from</span>((<span class="ident">high</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">6</span>) <span class="op">|</span> (<span class="ident">mid</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">2</span>) <span class="op">|</span> <span class="ident">low</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>)
+        <span class="prelude-val">Ok</span>((<span class="ident">high</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">6</span>) <span class="op">|</span> (<span class="ident">mid</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">2</span>) <span class="op">|</span> <span class="ident">low</span>)
     }
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">decode_2_tuple</span>(<span class="ident">byte1</span>: <span class="ident">u8</span>, <span class="ident">byte2</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
-    <span class="ident">u8</span>::<span class="ident">try_from</span>((<span class="ident">byte1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>) <span class="op">|</span> <span class="ident">byte2</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>)
+<span class="kw">fn</span> <span class="ident">decode_2_tuple</span>(<span class="ident">byte1</span>: <span class="ident">u8</span>, <span class="ident">byte2</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+    (<span class="ident">byte1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>) <span class="op">|</span> <span class="ident">byte2</span>
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -706,20 +744,24 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_error</span>() {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;z&quot;</span>), <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;z&quot;</span>), <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;xy&quot;</span>),
             <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>)
         );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;yx&quot;</span>),
+            <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>)
+        );
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;xx&quot;</span>), <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;x💎🦀x&quot;</span>),
-            <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">NonAscii</span>(<span class="string">&#39;💎&#39;</span>))
+            <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">NonAscii</span>(<span class="number">1</span>))
         );
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="kw">super</span>::<span class="ident">decode</span>(<span class="string">&quot;x999x&quot;</span>),
-            <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="string">&#39;9&#39;</span>))
+            <span class="prelude-val">Err</span>(<span class="kw">super</span>::<span class="ident">DecodeError</span>::<span class="ident">InvalidSymbol</span>(<span class="number">1</span>))
         );
     }
 }
