@@ -60,11 +60,8 @@ use std::convert::TryFrom;
 use std::error;
 use std::fmt;
 
-const VOWELS: &[u8] = &[b'a', b'e', b'i', b'o', b'u', b'y'];
-const CONSONANTS: &[u8] = &[
-    b'b', b'c', b'd', b'f', b'g', b'h', b'k', b'l', b'm', b'n', b'p', b'r', b's', b't', b'v', b'z',
-    b'x',
-];
+const VOWELS: [u8; 6] = *b"aeiouy";
+const CONSONANTS: [u8; 17] = *b"bcdfghklmnprstvzx";
 
 const HEADER: char = 'x';
 const TRAILER: char = 'x';
