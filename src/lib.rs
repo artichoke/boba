@@ -1,5 +1,6 @@
 #![deny(clippy::all)]
 #![deny(clippy::pedantic)]
+#![allow(clippy::cast_possible_truncation)]
 #![deny(clippy::cargo)]
 #![deny(missing_docs, intra_doc_link_resolution_failure)]
 #![warn(rust_2018_idioms)]
@@ -221,7 +222,7 @@ pub fn decode<T: AsRef<str>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         }
         Ok(decoded)
     } else {
-        return Err(DecodeError::Corrupted);
+        Err(DecodeError::Corrupted)
     }
 }
 
