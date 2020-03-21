@@ -57,7 +57,7 @@ use std::error;
 use std::fmt;
 
 const VOWELS: [u8; 6] = *b"aeiouy";
-const CONSONANTS: [u8; 17] = *b"bcdfghklmnprstvzx";
+const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
 
 const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
@@ -183,18 +183,13 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         return Ok(Vec::new());
     }
     let enc = match encoded {
-        [b'x', enc @ ..] => {
-            if let [enc @ .., b'x'] = enc {
-                enc
-            } else {
-                return Err(DecodeError::MalformedTrailer);
-            }
-        }
+        [b'x', enc @ .., b'x'] => enc,
+        [b'x', ..] => return Err(DecodeError::MalformedTrailer),
         [.., b'x'] => return Err(DecodeError::MalformedHeader),
         _ => return Err(DecodeError::Corrupted),
     };
-    if let Some(pos) = encoded.find_non_ascii_byte() {
-        return Err(DecodeError::InvalidByte(pos));
+    if let Some(pos) = enc.find_non_ascii_byte() {
+        return Err(DecodeError::InvalidByte(pos + 1));
     }
     let len = encoded.len();
     let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
@@ -232,18 +227,18 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         let a = VOWELS
             .find_byte(*left)
             .ok_or_else(|| DecodeError::InvalidByte(pos))? as u8;
-        let b = CONSONANTS
-            .find_byte(*mid)
-            .ok_or_else(|| DecodeError::InvalidByte(pos + 1))? as u8;
         let c = VOWELS
             .find_byte(*right)
             .ok_or_else(|| DecodeError::InvalidByte(pos + 2))? as u8;
 
-        if b == 16 {
+        if *mid == b'x' {
             if a != checksum % 6 || c != checksum / 6 {
                 return Err(DecodeError::ChecksumMismatch);
             }
         } else {
+            let b = CONSONANTS
+                .find_byte(*mid)
+                .ok_or_else(|| DecodeError::InvalidByte(pos + 1))? as u8;
             decoded.push(decode_3_tuple(a, b, c, checksum)?);
         }
         Ok(decoded)
