@@ -1,14 +1,19 @@
 [package]
 name = "bubblebabble"
-version = "2.0.0"
+version = "2.0.0" # remember to set `html_root_url` in `src/lib.rs`.
 authors = ["Ryan Lopopolo <rjl@hyperbo.la>"]
-edition = "2018"
-description = "Rust implementation of the Bubble Babble binary data encoding"
-repository = "https://github.com/artichoke/bubblebabble"
-readme = "README.md"
 license = "MIT"
-keywords = ["encoding", "bubblebabble"]
+edition = "2018"
+readme = "README.md"
+repository = "https://github.com/artichoke/bubblebabble"
+homepage = "https://github.com/artichoke/bubblebabble"
+description = "Encoder and decoder for the Bubble Babble binary data encoding"
+keywords = ["encode", "decode", "utf8", "bubblebabble"]
 categories = ["encoding"]
 
 [dependencies]
 bstr = { version = "0.2", default-features = false }
+
+[dev-dependencies]
+doc-comment = "0.3"
+version-sync = "0.8"
