@@ -1,8 +1,9 @@
-#![deny(clippy::all)]
-#![deny(clippy::pedantic)]
+#![warn(clippy::all)]
+#![warn(clippy::pedantic)]
 #![allow(clippy::cast_possible_truncation)]
-#![deny(clippy::cargo)]
-#![deny(missing_docs, intra_doc_link_resolution_failure)]
+#![warn(clippy::cargo)]
+#![warn(missing_docs, intra_doc_link_resolution_failure)]
+#![warn(missing_debug_implementations)]
 #![warn(rust_2018_idioms)]
 
 //! # bubblebabble
@@ -55,6 +56,11 @@
 //! `bubble-babble-ts` is licensed under the
 //! [MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)
 //! Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
+
+#![doc(html_root_url = "https://artichoke.github.io/bubblebabble")]
+
+#[cfg(doctest)]
+doc_comment::doctest!("../README.md");
 
 use bstr::ByteSlice;
 use std::error;

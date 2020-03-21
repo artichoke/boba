@@ -4,44 +4,51 @@
 [![Discord](https://img.shields.io/discord/607683947496734760)](https://discord.gg/QCe2tp2)
 [![Twitter](https://img.shields.io/twitter/follow/artichokeruby?label=Follow&style=social)](https://twitter.com/artichokeruby)
 <br>
-[![Documentation](https://img.shields.io/badge/docs-bubblebabble-blue.svg)](https://artichoke.github.io/bubblebabble/bubblebabble)
+[![API master](https://img.shields.io/badge/docs-master-blue.svg)](https://artichoke.github.io/bubblebabble/bubblebabble/)
 
-`bubblebabble` is a Rust implementation of the
-[Bubble Babble binary data encoding](https://github.com/artichoke/bubblebabble/blob/master/spec/Bubble_Babble_Encoding.txt).
+Implements the the
+[Bubble Babble binary data encoding](/spec/Bubble_Babble_Encoding.txt).
 
-The spec defines the following test vectors:
+> The Bubble Babble Encoding encodes arbitrary binary data into pseudowords that
+> are more natural to humans and that can be pronounced relatively easily.
 
-```rust
-assert_eq!(
-    bubblebabble::encode(&[]),
-    String::from("xexax")
-);
-assert_eq!(
-    bubblebabble::encode(&b"1234567890"[..]),
-    String::from("xesef-disof-gytuf-katof-movif-baxux")
-);
-assert_eq!(
-    bubblebabble::encode(&b"Pineapple"[..]),
-    String::from("xigak-nyryk-humil-bosek-sonax")
-);
+Bubble Babble encodes 6 characters in 16 bits and includes a checksum embedded
+in the encoded data. See the
+[Bubble Babble spec](/spec/Bubble_Babble_Encoding.txt).
+
+This crate depends on [bstr](https://crates.io/crates/bstr).
+
+## Usage
+
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+bubblebabble = "2"
 ```
 
-`bubblebabble` supports decoding to a byte vector:
+Then encode and decode data like:
 
 ```rust
-assert_eq!(
-    bubblebabble::decode("xexax"),
-    Ok(vec![])
-);
-assert_eq!(
-    bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"),
-    Ok(Vec::from(&b"1234567890"[..]))
-);
-assert_eq!(
-    bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"),
-    Ok(Vec::from(&b"Pineapple"[..]))
-);
+assert_eq!(bubblebabble::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
+assert_eq!(bubblebabble::decode(b"xexax"), Ok(vec![]));
 ```
+
+## Crate Features
+
+`bubblebabble` has a `std` feature which is enabled by default that adds `Vec`
+and `String` support as well as `std::error::Error` impls. `bubblebabble` does
+not compile if this feature is disabled, but exists so this crate can add
+`no_std` support backwards compatibly.
+
+`bubblebabble` is [fuzzed](/fuzz/fuzz_targets) with
+[cargo-fuzz](https://crates.io/crates/cargo-fuzz).
+
+## Minimum Rust Version Policy
+
+This crate's minimum supported `rustc` version (MSRV) is `1.42.0`.
+
+MSRV may be bumped in minor version releases.
 
 ## License
 
