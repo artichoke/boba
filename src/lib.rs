@@ -6,56 +6,46 @@
 #![warn(missing_debug_implementations)]
 #![warn(rust_2018_idioms)]
 
-//! # bubblebabble
+//! The Bubble Babble binary data encoding.
 //!
-//! `bubblebabble` is a Rust implementation of the
-//! [Bubble Babble binary data encoding](https://github.com/artichoke/bubblebabble/blob/master/spec/Bubble_Babble_Encoding.txt).
+//! This is a native Rust implementation of a Bubble Babble encoder and decoder.
 //!
-//! The spec defines the following test vectors:
+//! # Usage
 //!
-//! ```rust
-//! assert_eq!(
-//!     bubblebabble::encode(&[]),
-//!     String::from("xexax")
-//! );
-//! assert_eq!(
-//!     bubblebabble::encode(&b"1234567890"[..]),
-//!     String::from("xesef-disof-gytuf-katof-movif-baxux")
-//! );
-//! assert_eq!(
-//!     bubblebabble::encode(&b"Pineapple"[..]),
-//!     String::from("xigak-nyryk-humil-bosek-sonax")
-//! );
+//! You can encode binary data by calling [`encode`]:
+//!
+//! ```
+//! let enc = bubblebabble::encode("Pineapple");
+//! assert_eq!(enc, "xigak-nyryk-humil-bosek-sonax");
 //! ```
 //!
-//! `bubblebabble` supports decoding to a byte vector:
+//! Decoding binary data is done by calling [`decode`]:
 //!
-//! ```rust
-//! assert_eq!(
-//!     bubblebabble::decode("xexax"),
-//!     Ok(vec![])
-//! );
-//! assert_eq!(
-//!     bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"),
-//!     Ok(Vec::from(&b"1234567890"[..]))
-//! );
-//! assert_eq!(
-//!     bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"),
-//!     Ok(Vec::from(&b"Pineapple"[..]))
-//! );
+//! ```
+//! # fn main() -> Result<(), bubblebabble::DecodeError> {
+//! let dec = bubblebabble::decode("xexax")?;
+//! assert_eq!(dec, vec![]);
+//! # Ok(())
+//! # }
 //! ```
 //!
-//! ## License
+//! Decode is fallible and can return [`DecodeError`]. For example, all Bubble
+//! Babble-encoded data has an ASCII alphabet, so attempting to decode an emoji
+//! will fail.
 //!
-//! `bubblebabble` is licensed under the
-//! [MIT License](https://github.com/artichoke/bubblebabble/blob/master/LICENSE)
-//! (c) Ryan Lopopolo.
+//! ```
+//! # use bubblebabble::DecodeError;
+//! let dec = bubblebabble::decode("x🦀x");
+//! // The `DecodeError` contains the offset of the first invalid byte.
+//! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);
+//! ```
 //!
-//! `bubblebabble` is derived from `bubble-babble-ts` @
-//! [v1.0.1](https://github.com/JonathanWilbur/bubble-babble-ts/tree/v1.0.1).
-//! `bubble-babble-ts` is licensed under the
-//! [MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)
-//! Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
+//! ## Safety
+//!
+//! This crate operates on byte slices, but [`encode`] returns a [`String`].
+//! This crate contains a single line of unsafe code to turn the encode buffer
+//! into a `String`. This is known to be safe since the buffer is populated from
+//! a fixed, ASCII-only alpahabet.
 
 #![doc(html_root_url = "https://artichoke.github.io/bubblebabble")]
 
@@ -105,12 +95,14 @@ impl fmt::Display for DecodeError {
     }
 }
 
-/// Encode a vector of bytes with the Bubble Babble encoding to a `String`.
+/// Encode a byte slice with the Bubble Babble encoding to a [`String`].
 ///
-/// ```rust
-/// assert_eq!(bubblebabble::encode(&[]), String::from("xexax"));
-/// assert_eq!(bubblebabble::encode(&b"1234567890"[..]), String::from("xesef-disof-gytuf-katof-movif-baxux"));
-/// assert_eq!(bubblebabble::encode(&b"Pineapple"[..]), String::from("xigak-nyryk-humil-bosek-sonax"));
+/// # Examples
+///
+/// ```
+/// assert_eq!(bubblebabble::encode([]), "xexax");
+/// assert_eq!(bubblebabble::encode("1234567890"), "xesef-disof-gytuf-katof-movif-baxux");
+/// assert_eq!(bubblebabble::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
 /// ```
 #[must_use]
 pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
@@ -154,27 +146,36 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     unsafe { String::from_utf8_unchecked(encoded) }
 }
 
-/// Decode a string slice to a vector of bytes.
+/// Decode Bubble Babble-encoded byte slice to a `Vec<u8>`.
 ///
-/// ```rust
+/// # Examples
+///
+/// ```
 /// assert_eq!(bubblebabble::decode("xexax"), Ok(vec![]));
-/// assert_eq!(bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(Vec::from(&b"1234567890"[..])));
-/// assert_eq!(bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"), Ok(Vec::from(&b"Pineapple"[..])));
+/// assert_eq!(bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(b"1234567890".to_vec()));
+/// assert_eq!(bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"), Ok(b"Pineapple".to_vec()));
 /// ```
 ///
 /// # Errors
 ///
-/// Decoding is fallible and might return [`DecodeError`].
+/// Decoding is fallible and might return [`DecodeError`]:
 ///
-/// ```rust
+/// - If the input is not an ASCII string, an error is returned.
+/// - If the input contains an ASCII character outside of the Bubble Babble
+///   encoding alphabet, an error is returned.
+/// - If the input does not start with a leading 'x', an error is returned.
+/// - If the input does not end with a trailing 'x', an error is returned.
+/// - If the decoded result does not checksum properly, an error is returned.
+///
+/// ```
 /// # use bubblebabble::DecodeError;
+/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(bubblebabble::decode("x789x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(bubblebabble::decode("yx"), Err(DecodeError::MalformedHeader));
+/// assert_eq!(bubblebabble::decode("xy"), Err(DecodeError::MalformedTrailer));
 /// assert_eq!(bubblebabble::decode(""), Err(DecodeError::Corrupted));
 /// assert_eq!(bubblebabble::decode("z"), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("xy"), Err(DecodeError::MalformedTrailer));
-/// assert_eq!(bubblebabble::decode("yx"), Err(DecodeError::MalformedHeader));
 /// assert_eq!(bubblebabble::decode("xx"), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
-/// assert_eq!(bubblebabble::decode("x999x"), Err(DecodeError::InvalidByte(1)));
 /// ```
 pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
@@ -325,52 +326,39 @@ fn decode_2_tuple(byte1: u8, byte2: u8) -> u8 {
 #[cfg(test)]
 #[allow(clippy::non_ascii_literal)]
 mod tests {
+    use crate::DecodeError;
+
     #[test]
     fn encode() {
-        assert_eq!(super::encode(&[]), "xexax");
+        assert_eq!(crate::encode([]), "xexax");
         assert_eq!(
-            super::encode(&b"1234567890"[..]),
+            crate::encode("1234567890"),
             "xesef-disof-gytuf-katof-movif-baxux"
         );
-        assert_eq!(
-            super::encode(&b"Pineapple"[..]),
-            "xigak-nyryk-humil-bosek-sonax"
-        );
+        assert_eq!(crate::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
     }
 
     #[test]
     fn decode() {
-        assert_eq!(super::decode("xexax"), Ok(vec![]));
+        assert_eq!(crate::decode("xexax"), Ok(vec![]));
         assert_eq!(
-            super::decode("xesef-disof-gytuf-katof-movif-baxux"),
-            Ok(String::from("1234567890").into_bytes())
+            crate::decode("xesef-disof-gytuf-katof-movif-baxux"),
+            Ok(b"1234567890".to_vec())
         );
         assert_eq!(
-            super::decode("xigak-nyryk-humil-bosek-sonax"),
-            Ok(String::from("Pineapple").into_bytes())
+            crate::decode("xigak-nyryk-humil-bosek-sonax"),
+            Ok(b"Pineapple".to_vec())
         );
     }
 
     #[test]
     fn decode_error() {
-        assert_eq!(super::decode(""), Err(super::DecodeError::Corrupted));
-        assert_eq!(super::decode("z"), Err(super::DecodeError::Corrupted));
-        assert_eq!(
-            super::decode("xy"),
-            Err(super::DecodeError::MalformedTrailer)
-        );
-        assert_eq!(
-            super::decode("yx"),
-            Err(super::DecodeError::MalformedHeader)
-        );
-        assert_eq!(super::decode("xx"), Err(super::DecodeError::Corrupted));
-        assert_eq!(
-            super::decode("x💎🦀x"),
-            Err(super::DecodeError::InvalidByte(1))
-        );
-        assert_eq!(
-            super::decode("x999x"),
-            Err(super::DecodeError::InvalidByte(1))
-        );
+        assert_eq!(crate::decode(""), Err(DecodeError::Corrupted));
+        assert_eq!(crate::decode("z"), Err(DecodeError::Corrupted));
+        assert_eq!(crate::decode("xy"), Err(DecodeError::MalformedTrailer));
+        assert_eq!(crate::decode("yx"), Err(DecodeError::MalformedHeader));
+        assert_eq!(crate::decode("xx"), Err(DecodeError::Corrupted));
+        assert_eq!(crate::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
+        assert_eq!(crate::decode("x789x"), Err(DecodeError::InvalidByte(1)));
     }
 }
