@@ -87,8 +87,5 @@ jobs:
         with:
           node-version: "12.x"
 
-      - name: Install prettier
-        run: npm install -g prettier
-
       - name: Format markdown with prettier
-        run: prettier --prose-wrap always --check '**/*.md' '*.md'
+        run: npx prettier --prose-wrap always --check '**/*.md' '*.md'
