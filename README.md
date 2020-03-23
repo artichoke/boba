@@ -1,10 +1,12 @@
-# bubblebabble
+# boba
 
-[![GitHub Actions](https://github.com/artichoke/bubblebabble/workflows/CI/badge.svg)](https://github.com/artichoke/bubblebabble/actions)
+[![GitHub Actions](https://github.com/artichoke/boba/workflows/CI/badge.svg)](https://github.com/artichoke/boba/actions)
 [![Discord](https://img.shields.io/discord/607683947496734760)](https://discord.gg/QCe2tp2)
 [![Twitter](https://img.shields.io/twitter/follow/artichokeruby?label=Follow&style=social)](https://twitter.com/artichokeruby)
 <br>
-[![API master](https://img.shields.io/badge/docs-master-blue.svg)](https://artichoke.github.io/bubblebabble/bubblebabble/)
+[![Crate](https://img.shields.io/crates/v/boba.svg)](https://crates.io/crates/boba)
+[![API](https://docs.rs/boba/badge.svg)](https://docs.rs/boba)
+[![API master](https://img.shields.io/badge/docs-master-blue.svg)](https://artichoke.github.io/boba/boba/)
 
 Implements the the
 [Bubble Babble binary data encoding](/spec/Bubble_Babble_Encoding.txt).
@@ -14,7 +16,7 @@ Implements the the
 
 Bubble Babble encodes 6 characters in 16 bits and includes a checksum embedded
 in the encoded data. See the
-[Bubble Babble spec](/spec/Bubble_Babble_Encoding.txt).
+[Bubble Babble spec](spec/Bubble_Babble_Encoding.txt).
 
 This crate depends on [bstr](https://crates.io/crates/bstr).
 
@@ -24,24 +26,24 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bubblebabble = "2"
+boba = "2"
 ```
 
 Then encode and decode data like:
 
 ```rust
-assert_eq!(bubblebabble::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
-assert_eq!(bubblebabble::decode(b"xexax"), Ok(vec![]));
+assert_eq!(boba::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
+assert_eq!(boba::decode(b"xexax"), Ok(vec![]));
 ```
 
 ## Crate Features
 
-`bubblebabble` has a `std` feature which is enabled by default that adds `Vec`
-and `String` support as well as `std::error::Error` impls. `bubblebabble` does
-not compile if this feature is disabled, but exists so this crate can add
-`no_std` support backwards compatibly.
+`boba` has a `std` feature which is enabled by default that adds `Vec` and
+`String` support as well as `std::error::Error` impls. `boba` does not compile
+if this feature is disabled, but exists so this crate can add `no_std` support
+backwards compatibly.
 
-`bubblebabble` is [fuzzed](/fuzz/fuzz_targets) with
+`boba` is [fuzzed](fuzz/fuzz_targets) with
 [cargo-fuzz](https://crates.io/crates/cargo-fuzz).
 
 ## Minimum Rust Version Policy
@@ -52,9 +54,9 @@ MSRV may be bumped in minor version releases.
 
 ## License
 
-`bubblebabble` is licensed under the [MIT License](/LICENSE) (c) Ryan Lopopolo.
+`boba` is licensed under the [MIT License](LICENSE) (c) Ryan Lopopolo.
 
-`bubblebabble` is derived from `bubble-babble-ts` @
+`boba` is derived from `bubble-babble-ts` @
 [v1.0.1](https://github.com/JonathanWilbur/bubble-babble-ts/tree/v1.0.1).
 `bubble-babble-ts` is licensed under the
 [MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)

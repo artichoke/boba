@@ -15,15 +15,15 @@
 //! You can encode binary data by calling [`encode`]:
 //!
 //! ```
-//! let enc = bubblebabble::encode("Pineapple");
+//! let enc = boba::encode("Pineapple");
 //! assert_eq!(enc, "xigak-nyryk-humil-bosek-sonax");
 //! ```
 //!
 //! Decoding binary data is done by calling [`decode`]:
 //!
 //! ```
-//! # fn main() -> Result<(), bubblebabble::DecodeError> {
-//! let dec = bubblebabble::decode("xexax")?;
+//! # fn main() -> Result<(), boba::DecodeError> {
+//! let dec = boba::decode("xexax")?;
 //! assert_eq!(dec, vec![]);
 //! # Ok(())
 //! # }
@@ -34,8 +34,8 @@
 //! will fail.
 //!
 //! ```
-//! # use bubblebabble::DecodeError;
-//! let dec = bubblebabble::decode("x🦀x");
+//! # use boba::DecodeError;
+//! let dec = boba::decode("x🦀x");
 //! // The `DecodeError` contains the offset of the first invalid byte.
 //! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);
 //! ```
@@ -62,7 +62,7 @@ const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
 const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
 
-/// Decoding errors from [`bubblebabble::decode`](decode).
+/// Decoding errors from [`boba::decode`](decode).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum DecodeError {
     /// Checksum mismatch when decoding input.
@@ -100,9 +100,9 @@ impl fmt::Display for DecodeError {
 /// # Examples
 ///
 /// ```
-/// assert_eq!(bubblebabble::encode([]), "xexax");
-/// assert_eq!(bubblebabble::encode("1234567890"), "xesef-disof-gytuf-katof-movif-baxux");
-/// assert_eq!(bubblebabble::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
+/// assert_eq!(boba::encode([]), "xexax");
+/// assert_eq!(boba::encode("1234567890"), "xesef-disof-gytuf-katof-movif-baxux");
+/// assert_eq!(boba::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
 /// ```
 #[must_use]
 pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
@@ -151,9 +151,9 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// # Examples
 ///
 /// ```
-/// assert_eq!(bubblebabble::decode("xexax"), Ok(vec![]));
-/// assert_eq!(bubblebabble::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(b"1234567890".to_vec()));
-/// assert_eq!(bubblebabble::decode("xigak-nyryk-humil-bosek-sonax"), Ok(b"Pineapple".to_vec()));
+/// assert_eq!(boba::decode("xexax"), Ok(vec![]));
+/// assert_eq!(boba::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(b"1234567890".to_vec()));
+/// assert_eq!(boba::decode("xigak-nyryk-humil-bosek-sonax"), Ok(b"Pineapple".to_vec()));
 /// ```
 ///
 /// # Errors
@@ -168,14 +168,14 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// - If the decoded result does not checksum properly, an error is returned.
 ///
 /// ```
-/// # use bubblebabble::DecodeError;
-/// assert_eq!(bubblebabble::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
-/// assert_eq!(bubblebabble::decode("x789x"), Err(DecodeError::InvalidByte(1)));
-/// assert_eq!(bubblebabble::decode("yx"), Err(DecodeError::MalformedHeader));
-/// assert_eq!(bubblebabble::decode("xy"), Err(DecodeError::MalformedTrailer));
-/// assert_eq!(bubblebabble::decode(""), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("z"), Err(DecodeError::Corrupted));
-/// assert_eq!(bubblebabble::decode("xx"), Err(DecodeError::Corrupted));
+/// # use boba::DecodeError;
+/// assert_eq!(boba::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(boba::decode("x789x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(boba::decode("yx"), Err(DecodeError::MalformedHeader));
+/// assert_eq!(boba::decode("xy"), Err(DecodeError::MalformedTrailer));
+/// assert_eq!(boba::decode(""), Err(DecodeError::Corrupted));
+/// assert_eq!(boba::decode("z"), Err(DecodeError::Corrupted));
+/// assert_eq!(boba::decode("xx"), Err(DecodeError::Corrupted));
 /// ```
 pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
