@@ -17,6 +17,11 @@ mod encode {
     fn benchmark_encode_vector_pineapple(b: &mut ::test::Bencher) {
         b.iter(|| boba::encode("Pineapple"))
     }
+
+    #[bench]
+    fn benchmark_encode_emoji(b: &mut ::test::Bencher) {
+        b.iter(|| boba::encode("💎🦀❤️✨💪"))
+    }
 }
 
 mod decode {
