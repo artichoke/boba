@@ -1,13 +1,7 @@
 name: Fuzz
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
   schedule:
-    - cron: "0 0 * * TUE"
+    - cron: "0 9 * * *"
 jobs:
   encode:
     name: Fuzz encode
@@ -30,7 +24,7 @@ jobs:
         run: cargo install cargo-fuzz
 
       - name: Fuzz
-        run: cargo fuzz run encode -- -max_total_time=90
+        run: cargo fuzz run encode -- -max_total_time=1800 # 30 minutes
 
   decode:
     name: Fuzz decode
@@ -53,7 +47,7 @@ jobs:
         run: cargo install cargo-fuzz
 
       - name: Fuzz
-        run: cargo fuzz run decode -- -max_total_time=90
+        run: cargo fuzz run decode -- -max_total_time=1800 # 30 minutes
 
   roundtrip:
     name: Fuzz encode/decode roundtrip
@@ -76,4 +70,4 @@ jobs:
         run: cargo install cargo-fuzz
 
       - name: Fuzz
-        run: cargo fuzz run roundtrip -- -max_total_time=90
+        run: cargo fuzz run roundtrip -- -max_total_time=1800 # 30 minutes
