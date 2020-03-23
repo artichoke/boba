@@ -357,6 +357,16 @@
 <span id="357">357</span>
 <span id="358">358</span>
 <span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -691,6 +701,11 @@
             <span class="string">&quot;xesef-disof-gytuf-katof-movif-baxux&quot;</span>
         );
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">encode</span>(<span class="string">&quot;Pineapple&quot;</span>), <span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>);
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="kw">crate</span>::<span class="ident">encode</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>),
+            <span class="string">&quot;xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux&quot;</span>
+        );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -703,6 +718,11 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>),
             <span class="prelude-val">Ok</span>(<span class="string">b&quot;Pineapple&quot;</span>.<span class="ident">to_vec</span>())
+        );
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux&quot;</span>),
+            <span class="prelude-val">Ok</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>())
         );
     }
 
