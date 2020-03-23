@@ -47,7 +47,7 @@
 //! into a `String`. This is known to be safe since the buffer is populated from
 //! a fixed, ASCII-only alpahabet.
 
-#![doc(html_root_url = "https://artichoke.github.io/bubblebabble")]
+#![doc(html_root_url = "https://docs.rs/boba/3.0.0")]
 
 #[cfg(doctest)]
 doc_comment::doctest!("../README.md");
