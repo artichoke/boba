@@ -38,10 +38,10 @@ assert_eq!(boba::decode(b"xexax"), Ok(vec![]));
 
 ## Crate Features
 
-`boba` has a `std` feature which is enabled by default that adds `Vec`
-and `String` support as well as `std::error::Error` impls. `boba` does
-not compile if this feature is disabled, but exists so this crate can add
-`no_std` support backwards compatibly.
+`boba` has a `std` feature which is enabled by default that adds `Vec` and
+`String` support as well as `std::error::Error` impls. `boba` does not compile
+if this feature is disabled, but exists so this crate can add `no_std` support
+backwards compatibly.
 
 `boba` is [fuzzed](fuzz/fuzz_targets) with
 [cargo-fuzz](https://crates.io/crates/cargo-fuzz).
