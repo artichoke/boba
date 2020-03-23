@@ -1,6 +1,6 @@
 
 [package]
-name = "bubblebabble-fuzz"
+name = "boba-fuzz"
 version = "0.0.0"
 authors = ["Automatically generated"]
 publish = false
@@ -12,7 +12,7 @@ cargo-fuzz = true
 [dependencies]
 libfuzzer-sys = "0.3"
 
-[dependencies.bubblebabble]
+[dependencies.boba]
 path = ".."
 
 # Prevent this from interfering with workspaces

@@ -1,15 +1,22 @@
 [package]
-name = "bubblebabble"
+name = "boba"
 version = "2.0.0" # remember to set `html_root_url` in `src/lib.rs`.
 authors = ["Ryan Lopopolo <rjl@hyperbo.la>"]
 license = "MIT"
 edition = "2018"
 readme = "README.md"
-repository = "https://github.com/artichoke/bubblebabble"
-homepage = "https://github.com/artichoke/bubblebabble"
+repository = "https://github.com/artichoke/boba"
+documentation = "https://docs.rs/boba"
+homepage = "https://github.com/artichoke/boba"
 description = "Encoder and decoder for the Bubble Babble binary data encoding"
 keywords = ["encode", "decode", "utf8", "bubblebabble"]
 categories = ["encoding"]
+exclude = [
+  ".github",
+  ".gitignore",
+  "deny.toml",
+  "fuzz",
+]
 
 [features]
 default = ["std"]
