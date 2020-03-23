@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["DecodeError","Decoding errors from `bubblebabble::decode`."]],"fn":[["decode","Decode Bubble Babble-encoded byte slice to a `Vec<u8>`."],["encode","Encode a byte slice with the Bubble Babble encoding to a [`String`]."]]});
