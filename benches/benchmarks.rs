@@ -39,4 +39,9 @@ mod decode {
     fn benchmark_decode_vector_pineapple(b: &mut ::test::Bencher) {
         b.iter(|| boba::decode("xigak-nyryk-humil-bosek-sonax"))
     }
+
+    #[bench]
+    fn benchmark_decode_emoji(b: &mut ::test::Bencher) {
+        b.iter(|| boba::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"))
+    }
 }

@@ -331,6 +331,11 @@ mod tests {
             "xesef-disof-gytuf-katof-movif-baxux"
         );
         assert_eq!(crate::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
+
+        assert_eq!(
+            crate::encode("💎🦀❤️✨💪"),
+            "xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"
+        );
     }
 
     #[test]
@@ -343,6 +348,11 @@ mod tests {
         assert_eq!(
             crate::decode("xigak-nyryk-humil-bosek-sonax"),
             Ok(b"Pineapple".to_vec())
+        );
+
+        assert_eq!(
+            crate::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
+            Ok("💎🦀❤️✨💪".to_string().into_bytes())
         );
     }
 
