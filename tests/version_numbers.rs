@@ -4,7 +4,6 @@ fn test_readme_deps() {
 }
 
 #[test]
-#[should_panic] // Not supported yet since not on crates.io
 fn test_html_root_url() {
     version_sync::assert_html_root_url_updated!("src/lib.rs");
 }
