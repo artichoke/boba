@@ -22,11 +22,11 @@ exclude = [
 default = ["std"]
 # Enable dependency on the Rust standard library.
 #
-# This feature exists to support the possiblity that `bubblebabble` may
+# This feature exists to support the possiblity that `boba` may
 # eventually support compiling in `no_std` environments.
 #
-# Currently, this feature is required to build `bubblebabble`.
-std = ["bstr/std"]
+# Currently, this feature is required to build `boba`.
+std = []
 
 [dependencies]
 bstr = { version = "0.2", default-features = false }
