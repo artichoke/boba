@@ -197,7 +197,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
     let mut checksum = 1_u8;
     let mut chunks = enc.chunks_exact(6);
-    while let Some([left, mid, right, up, _, down]) = chunks.next() {
+    while let Some([left, mid, right, up, b'-', down]) = chunks.next() {
         // These unwraps are guaranteed to not panic since we have validated
         // that the bytes in chunks only contain ASCII bytes from the encoding
         // alphabet.
@@ -340,6 +340,14 @@ mod tests {
         assert_eq!(
             crate::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
             Ok("💎🦀❤️✨💪".to_string().into_bytes())
+        );
+    }
+
+    #[test]
+    fn decode_error_sub_dash() {
+        assert_eq!(
+            crate::decode("xesefxdisofxgytufxkatofxmovifxbaxux"),
+            Err(DecodeError::ChecksumMismatch)
         );
     }
 
