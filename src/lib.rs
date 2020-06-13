@@ -122,14 +122,14 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         // Panic safety:
         //
         // - `d` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 17 elements.
-        // - Maximum value of `d` is 16.
+        // - `CONSONANTS` is a fixed size array with 16 elements.
+        // - Maximum value of `d` is 15.
         encoded.push(CONSONANTS[d as usize].into());
         encoded.push('-');
         // Panic safety:
         //
         // - `e` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 17 elements.
+        // - `CONSONANTS` is a fixed size array with 16 elements.
         // - Maximum value of `e` is 15.
         encoded.push(CONSONANTS[e as usize].into());
         checksum =
@@ -253,7 +253,7 @@ fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut String) {
     // Panic safety:
     //
     // - `b` is constructed with a mask of `0b1111`.
-    // - `CONSONANTS` is a fixed size array with 17 elements.
+    // - `CONSONANTS` is a fixed size array with 16 elements.
     // - Maximum value of `e` is 15.
     buf.push(CONSONANTS[b as usize].into());
     // Panic safety:
