@@ -58,7 +58,7 @@ const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
 
 /// Decoding errors from [`boba::decode`](decode).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DecodeError {
     /// Checksum mismatch when decoding input.
     ChecksumMismatch,
