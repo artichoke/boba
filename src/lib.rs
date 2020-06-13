@@ -58,6 +58,7 @@ use core::fmt;
 
 const VOWELS: [u8; 6] = *b"aeiouy";
 const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
+const ALPHABET: [u8; 24] = *b"aeiouybcdfghklmnprstvzx-";
 
 const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
@@ -189,57 +190,42 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         [.., b'x'] => return Err(DecodeError::MalformedHeader),
         _ => return Err(DecodeError::Corrupted),
     };
-    if let Some(pos) = enc.find_non_ascii_byte() {
+    if let Some(pos) = enc.find_not_byteset(ALPHABET) {
         return Err(DecodeError::InvalidByte(pos + 1));
     }
     let len = encoded.len();
     let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
     let mut checksum = 1_u8;
     let mut chunks = enc.chunks_exact(6);
-    let mut pos = 1;
-    while let Some([left, mid, right, up, _, down]) = chunks.next() {
+    while let Some([left, mid, right, up, b'-', down]) = chunks.next() {
+        // These unwraps are guaranteed to not panic since we have validated
+        // that the bytes in chunks only contain ASCII bytes from the encoding
+        // alphabet.
         let byte1 = decode_3_tuple(
-            VOWELS
-                .find_byte(*left)
-                .ok_or_else(|| DecodeError::InvalidByte(pos))? as u8,
-            CONSONANTS
-                .find_byte(*mid)
-                .ok_or_else(|| DecodeError::InvalidByte(pos + 1))? as u8,
-            VOWELS
-                .find_byte(*right)
-                .ok_or_else(|| DecodeError::InvalidByte(pos + 2))? as u8,
+            VOWELS.find_byte(*left).unwrap() as u8,
+            CONSONANTS.find_byte(*mid).unwrap() as u8,
+            VOWELS.find_byte(*right).unwrap() as u8,
             checksum,
         )?;
         let byte2 = decode_2_tuple(
-            CONSONANTS
-                .find_byte(*up)
-                .ok_or_else(|| DecodeError::InvalidByte(pos + 3))? as u8,
-            CONSONANTS
-                .find_byte(*down)
-                .ok_or_else(|| DecodeError::InvalidByte(pos + 5))? as u8,
+            CONSONANTS.find_byte(*up).unwrap() as u8,
+            CONSONANTS.find_byte(*down).unwrap() as u8,
         );
-        pos += 6;
         checksum =
             ((u16::from(checksum * 5) + (u16::from(byte1) * 7) + u16::from(byte2)) % 36) as u8;
         decoded.push(byte1);
         decoded.push(byte2);
     }
     if let [left, mid, right] = chunks.remainder() {
-        let a = VOWELS
-            .find_byte(*left)
-            .ok_or_else(|| DecodeError::InvalidByte(pos))? as u8;
-        let c = VOWELS
-            .find_byte(*right)
-            .ok_or_else(|| DecodeError::InvalidByte(pos + 2))? as u8;
+        let a = VOWELS.find_byte(*left).unwrap() as u8;
+        let c = VOWELS.find_byte(*right).unwrap() as u8;
 
         if *mid == b'x' {
             if a != checksum % 6 || c != checksum / 6 {
                 return Err(DecodeError::ChecksumMismatch);
             }
         } else {
-            let b = CONSONANTS
-                .find_byte(*mid)
-                .ok_or_else(|| DecodeError::InvalidByte(pos + 1))? as u8;
+            let b = CONSONANTS.find_byte(*mid).unwrap() as u8;
             decoded.push(decode_3_tuple(a, b, c, checksum)?);
         }
         Ok(decoded)
@@ -354,6 +340,14 @@ mod tests {
         assert_eq!(
             crate::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
             Ok("💎🦀❤️✨💪".to_string().into_bytes())
+        );
+    }
+
+    #[test]
+    fn decode_error_sub_dash() {
+        assert_eq!(
+            crate::decode("xesefxdisofxgytufxkatofxmovifxbaxux"),
+            Err(DecodeError::ChecksumMismatch)
         );
     }
 
