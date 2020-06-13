@@ -48,13 +48,13 @@
 //! a fixed, ASCII-only alpahabet.
 
 #![doc(html_root_url = "https://docs.rs/boba/3.0.0")]
+#![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(doctest)]
 doc_comment::doctest!("../README.md");
 
 use bstr::ByteSlice;
-use std::error;
-use std::fmt;
+use core::fmt;
 
 const VOWELS: [u8; 6] = *b"aeiouy";
 const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
@@ -77,7 +77,8 @@ pub enum DecodeError {
     MalformedTrailer,
 }
 
-impl error::Error for DecodeError {}
+#[cfg(feature = "std")]
+impl std::error::Error for DecodeError {}
 
 impl fmt::Display for DecodeError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
