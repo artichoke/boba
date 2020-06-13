@@ -42,6 +42,7 @@ jobs:
         run: cargo test --all-features
 
       - name: Test with no default features
+        shell: bash
         run: |
           # known failing since boba requires the std feature to build
           cargo test --no-default-features || :
