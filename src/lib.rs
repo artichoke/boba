@@ -41,7 +41,7 @@
 //! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/boba/3.0.0")]
+#![doc(html_root_url = "https://docs.rs/boba/4.0.0")]
 // without the `std` feature, build `boba` with `no_std`.
 #![cfg_attr(not(feature = "std"), no_std)]
 
