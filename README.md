@@ -26,7 +26,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-boba = "3"
+boba = "4"
 ```
 
 Then encode and decode data like:
