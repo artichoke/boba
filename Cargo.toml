@@ -11,11 +11,10 @@ homepage = "https://github.com/artichoke/boba"
 description = "Encoder and decoder for the Bubble Babble binary data encoding"
 keywords = ["encode", "decode", "utf8", "bubblebabble"]
 categories = ["encoding"]
-exclude = [
-  ".github",
-  ".gitignore",
-  "deny.toml",
-  "fuzz",
+include = [
+  "src/**/*.rs",
+  "LICENSE",
+  "README.md",
 ]
 
 [features]
