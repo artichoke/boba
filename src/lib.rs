@@ -42,6 +42,7 @@
 //! ```
 
 #![doc(html_root_url = "https://docs.rs/boba/3.0.0")]
+// without the `std` feature, build `boba` with `no_std`.
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(doctest)]
@@ -58,7 +59,7 @@ const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
 
 /// Decoding errors from [`boba::decode`](decode).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DecodeError {
     /// Checksum mismatch when decoding input.
     ChecksumMismatch,
@@ -122,14 +123,14 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         // Panic safety:
         //
         // - `d` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 17 elements.
-        // - Maximum value of `d` is 16.
+        // - `CONSONANTS` is a fixed size array with 16 elements.
+        // - Maximum value of `d` is 15.
         encoded.push(CONSONANTS[d as usize].into());
         encoded.push('-');
         // Panic safety:
         //
         // - `e` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 17 elements.
+        // - `CONSONANTS` is a fixed size array with 16 elements.
         // - Maximum value of `e` is 15.
         encoded.push(CONSONANTS[e as usize].into());
         checksum =
@@ -177,13 +178,15 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// ```
 pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
+    // `xexax` is the encoded representation of an empty bytestring. Test for it
+    // directly to short circuit.
     if encoded == b"xexax" {
         return Ok(Vec::new());
     }
     let enc = match encoded {
-        [b'x', enc @ .., b'x'] => enc,
-        [b'x', ..] => return Err(DecodeError::MalformedTrailer),
-        [.., b'x'] => return Err(DecodeError::MalformedHeader),
+        [HEADER, enc @ .., TRAILER] => enc,
+        [HEADER, ..] => return Err(DecodeError::MalformedTrailer),
+        [.., TRAILER] => return Err(DecodeError::MalformedHeader),
         _ => return Err(DecodeError::Corrupted),
     };
     // This validation step ensures that the encoded bytestring only contains
@@ -253,7 +256,7 @@ fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut String) {
     // Panic safety:
     //
     // - `b` is constructed with a mask of `0b1111`.
-    // - `CONSONANTS` is a fixed size array with 17 elements.
+    // - `CONSONANTS` is a fixed size array with 16 elements.
     // - Maximum value of `e` is 15.
     buf.push(CONSONANTS[b as usize].into());
     // Panic safety:
