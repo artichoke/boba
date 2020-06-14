@@ -383,6 +383,9 @@
 <span id="383">383</span>
 <span id="384">384</span>
 <span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -428,6 +431,7 @@
 <span class="doccomment">//! ```</span>
 
 <span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/boba/3.0.0&quot;</span>)]</span>
+<span class="comment">// without the `std` feature, build `boba` with `no_std`.</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">doctest</span>)]</span>
@@ -444,7 +448,7 @@
 <span class="kw">const</span> <span class="ident">TRAILER</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="string">b&#39;x&#39;</span>;
 
 <span class="doccomment">/// Decoding errors from [`boba::decode`](decode).</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DecodeError</span> {
     <span class="doccomment">/// Checksum mismatch when decoding input.</span>
     <span class="ident">ChecksumMismatch</span>,
@@ -508,14 +512,14 @@
         <span class="comment">// Panic safety:</span>
         <span class="comment">//</span>
         <span class="comment">// - `d` is constructed with a mask of `0b1111`.</span>
-        <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
-        <span class="comment">// - Maximum value of `d` is 16.</span>
+        <span class="comment">// - `CONSONANTS` is a fixed size array with 16 elements.</span>
+        <span class="comment">// - Maximum value of `d` is 15.</span>
         <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">d</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
         <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="string">&#39;-&#39;</span>);
         <span class="comment">// Panic safety:</span>
         <span class="comment">//</span>
         <span class="comment">// - `e` is constructed with a mask of `0b1111`.</span>
-        <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+        <span class="comment">// - `CONSONANTS` is a fixed size array with 16 elements.</span>
         <span class="comment">// - Maximum value of `e` is 15.</span>
         <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
         <span class="ident">checksum</span> <span class="op">=</span>
@@ -563,13 +567,15 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">encoded</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">DecodeError</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">as_ref</span>();
+    <span class="comment">// `xexax` is the encoded representation of an empty bytestring. Test for it</span>
+    <span class="comment">// directly to short circuit.</span>
     <span class="kw">if</span> <span class="ident">encoded</span> <span class="op">=</span><span class="op">=</span> <span class="string">b&quot;xexax&quot;</span> {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Vec</span>::<span class="ident">new</span>());
     }
     <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">encoded</span> {
-        [<span class="string">b&#39;x&#39;</span>, <span class="ident">enc</span> @ .., <span class="string">b&#39;x&#39;</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="ident">enc</span>,
-        [<span class="string">b&#39;x&#39;</span>, ..] <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>),
-        [.., <span class="string">b&#39;x&#39;</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>),
+        [<span class="ident">HEADER</span>, <span class="ident">enc</span> @ .., <span class="ident">TRAILER</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="ident">enc</span>,
+        [<span class="ident">HEADER</span>, ..] <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>),
+        [.., <span class="ident">TRAILER</span>] <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>),
         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>),
     };
     <span class="comment">// This validation step ensures that the encoded bytestring only contains</span>
@@ -639,7 +645,7 @@
     <span class="comment">// Panic safety:</span>
     <span class="comment">//</span>
     <span class="comment">// - `b` is constructed with a mask of `0b1111`.</span>
-    <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
+    <span class="comment">// - `CONSONANTS` is a fixed size array with 16 elements.</span>
     <span class="comment">// - Maximum value of `e` is 15.</span>
     <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
     <span class="comment">// Panic safety:</span>
