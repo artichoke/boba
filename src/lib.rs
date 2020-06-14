@@ -233,7 +233,9 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
                 return Err(DecodeError::ChecksumMismatch);
             }
         } else {
-            let b = CONSONANTS.find_byte(*mid).unwrap() as u8;
+            let b = CONSONANTS
+                .find_byte(*mid)
+                .ok_or(DecodeError::ExpectedConsonant)? as u8;
             decoded.push(decode_3_tuple(a, b, c, checksum)?);
         }
         Ok(decoded)
