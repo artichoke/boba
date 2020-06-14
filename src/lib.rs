@@ -178,13 +178,15 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// ```
 pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let encoded = encoded.as_ref();
+    // `xexax` is the encoded representation of an empty bytestring. Test for it
+    // directly to short circuit.
     if encoded == b"xexax" {
         return Ok(Vec::new());
     }
     let enc = match encoded {
-        [b'x', enc @ .., b'x'] => enc,
-        [b'x', ..] => return Err(DecodeError::MalformedTrailer),
-        [.., b'x'] => return Err(DecodeError::MalformedHeader),
+        [HEADER, enc @ .., TRAILER] => enc,
+        [HEADER, ..] => return Err(DecodeError::MalformedTrailer),
+        [.., TRAILER] => return Err(DecodeError::MalformedHeader),
         _ => return Err(DecodeError::Corrupted),
     };
     // This validation step ensures that the encoded bytestring only contains
