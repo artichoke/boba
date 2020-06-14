@@ -64,6 +64,12 @@ pub enum DecodeError {
     ChecksumMismatch,
     /// Corrupted input caused a decoding failure.
     Corrupted,
+    /// Expected to process a consonant from the encoding alphabet, but got
+    /// something else.
+    ExpectedConsonant,
+    /// Expected to process a vowel from the encoding alphabet, but got
+    /// something else.
+    ExpectedVowel,
     /// Input contained a byte not in the encoding alphabet at this position.
     InvalidByte(usize),
     /// Input was missing a leading `x` header.
@@ -80,6 +86,8 @@ impl fmt::Display for DecodeError {
         match self {
             Self::ChecksumMismatch => write!(f, "Checksum mismatch"),
             Self::Corrupted => write!(f, "Corrupted input"),
+            Self::ExpectedConsonant => write!(f, "Expected consonant, got something else"),
+            Self::ExpectedVowel => write!(f, "Expected vowel, got something else"),
             Self::InvalidByte(pos) => write!(
                 f,
                 "Encountered byte outside of encoding alphabet at position {}",
@@ -178,6 +186,12 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         [.., b'x'] => return Err(DecodeError::MalformedHeader),
         _ => return Err(DecodeError::Corrupted),
     };
+    // This validation step ensures that the encoded bytestring only contains
+    // ASCII bytes in the 24 character encoding alphabet.
+    //
+    // Code below must still handle None results from find_byte because bytes
+    // may not be from the right subset of the alphabet, e.g. a vowel present
+    // when a consonant is expected.
     if let Some(pos) = enc.find_not_byteset(ALPHABET) {
         return Err(DecodeError::InvalidByte(pos + 1));
     }
@@ -186,18 +200,21 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let mut checksum = 1_u8;
     let mut chunks = enc.chunks_exact(6);
     while let Some([left, mid, right, up, b'-', down]) = chunks.next() {
-        // These unwraps are guaranteed to not panic since we have validated
-        // that the bytes in chunks only contain ASCII bytes from the encoding
-        // alphabet.
         let byte1 = decode_3_tuple(
-            VOWELS.find_byte(*left).unwrap() as u8,
-            CONSONANTS.find_byte(*mid).unwrap() as u8,
-            VOWELS.find_byte(*right).unwrap() as u8,
+            VOWELS.find_byte(*left).ok_or(DecodeError::ExpectedVowel)? as u8,
+            CONSONANTS
+                .find_byte(*mid)
+                .ok_or(DecodeError::ExpectedConsonant)? as u8,
+            VOWELS.find_byte(*right).ok_or(DecodeError::ExpectedVowel)? as u8,
             checksum,
         )?;
         let byte2 = decode_2_tuple(
-            CONSONANTS.find_byte(*up).unwrap() as u8,
-            CONSONANTS.find_byte(*down).unwrap() as u8,
+            CONSONANTS
+                .find_byte(*up)
+                .ok_or(DecodeError::ExpectedConsonant)? as u8,
+            CONSONANTS
+                .find_byte(*down)
+                .ok_or(DecodeError::ExpectedConsonant)? as u8,
         );
         checksum =
             ((u16::from(checksum * 5) + (u16::from(byte1) * 7) + u16::from(byte2)) % 36) as u8;
@@ -205,8 +222,8 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         decoded.push(byte2);
     }
     if let [left, mid, right] = chunks.remainder() {
-        let a = VOWELS.find_byte(*left).unwrap() as u8;
-        let c = VOWELS.find_byte(*right).unwrap() as u8;
+        let a = VOWELS.find_byte(*left).ok_or(DecodeError::ExpectedVowel)? as u8;
+        let c = VOWELS.find_byte(*right).ok_or(DecodeError::ExpectedVowel)? as u8;
 
         if *mid == b'x' {
             if a != checksum % 6 || c != checksum / 6 {
@@ -336,6 +353,22 @@ mod tests {
         assert_eq!(
             crate::decode("xesefxdisofxgytufxkatofxmovifxbaxux"),
             Err(DecodeError::ChecksumMismatch)
+        );
+    }
+
+    #[test]
+    fn decode_sub_vowel_to_consonant() {
+        assert_eq!(
+            crate::decode("xssef-disof-gytuf-katof-movif-baxux"),
+            Err(DecodeError::ExpectedVowel),
+        );
+    }
+
+    #[test]
+    fn decode_sub_consonant_to_vowel() {
+        assert_eq!(
+            crate::decode("xeeef-disof-gytuf-katof-movif-baxux"),
+            Err(DecodeError::ExpectedConsonant)
         );
     }
 
