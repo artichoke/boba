@@ -5,6 +5,7 @@
 #![warn(missing_docs, intra_doc_link_resolution_failure)]
 #![warn(missing_debug_implementations)]
 #![warn(rust_2018_idioms)]
+#![forbid(unsafe_code)]
 
 //! The Bubble Babble binary data encoding.
 //!
@@ -39,13 +40,6 @@
 //! // The `DecodeError` contains the offset of the first invalid byte.
 //! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);
 //! ```
-//!
-//! ## Safety
-//!
-//! This crate operates on byte slices, but [`encode`] returns a [`String`].
-//! This crate contains a single line of unsafe code to turn the encode buffer
-//! into a `String`. This is known to be safe since the buffer is populated from
-//! a fixed, ASCII-only alpahabet.
 
 #![doc(html_root_url = "https://docs.rs/boba/3.0.0")]
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -109,8 +103,8 @@ impl fmt::Display for DecodeError {
 #[must_use]
 pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     let data = data.as_ref();
-    let mut encoded = Vec::with_capacity(6 * (data.len() / 2) + 3 + 2);
-    encoded.push(HEADER);
+    let mut encoded = String::with_capacity(6 * (data.len() / 2) + 3 + 2);
+    encoded.push(HEADER.into());
     let mut checksum = 1_u8;
     let mut chunks = data.chunks_exact(2);
     while let Some([left, right]) = chunks.next() {
@@ -122,14 +116,14 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         // - `d` is constructed with a mask of `0b1111`.
         // - `CONSONANTS` is a fixed size array with 17 elements.
         // - Maximum value of `d` is 16.
-        encoded.push(CONSONANTS[d as usize]);
-        encoded.push(b'-');
+        encoded.push(CONSONANTS[d as usize].into());
+        encoded.push('-');
         // Panic safety:
         //
         // - `e` is constructed with a mask of `0b1111`.
         // - `CONSONANTS` is a fixed size array with 17 elements.
         // - Maximum value of `e` is 15.
-        encoded.push(CONSONANTS[e as usize]);
+        encoded.push(CONSONANTS[e as usize].into());
         checksum =
             ((u16::from(checksum * 5) + u16::from(*left) * 7 + u16::from(*right)) % 36) as u8;
     }
@@ -138,14 +132,8 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     } else {
         even_partial(checksum, &mut encoded);
     }
-    encoded.push(TRAILER);
-    // Safety:
-    //
-    // - `encoded` is pushed to by indexing into the `VOWELS` and `CONSONANTS`
-    //   arrays.
-    // - `VOWELS` only contains bytes that are valid ASCII.
-    // - `CONSONANTS` only contains bytes that are valid ASCII.
-    unsafe { String::from_utf8_unchecked(encoded) }
+    encoded.push(TRAILER.into());
+    encoded
 }
 
 /// Decode Bubble Babble-encoded byte slice to a `Vec<u8>`.
@@ -235,7 +223,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
 }
 
 #[inline]
-fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut Vec<u8>) {
+fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut String) {
     let a = (((raw_byte >> 6) & 3) + checksum) % 6;
     let b = (raw_byte >> 2) & 15;
     let c = ((raw_byte & 3) + checksum / 6) % 6;
@@ -244,23 +232,23 @@ fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut Vec<u8>) {
     // - `a` is constructed with mod 6.
     // - `VOWELS` is a fixed size array with 6 elements.
     // - Maximum value of `a` is 5.
-    buf.push(VOWELS[a as usize]);
+    buf.push(VOWELS[a as usize].into());
     // Panic safety:
     //
     // - `b` is constructed with a mask of `0b1111`.
     // - `CONSONANTS` is a fixed size array with 17 elements.
     // - Maximum value of `e` is 15.
-    buf.push(CONSONANTS[b as usize]);
+    buf.push(CONSONANTS[b as usize].into());
     // Panic safety:
     //
     // - `c` is constructed with mod 6.
     // - `VOWELS` is a fixed size array with 6 elements.
     // - Maximum value of `c` is 5.
-    buf.push(VOWELS[c as usize]);
+    buf.push(VOWELS[c as usize].into());
 }
 
 #[inline]
-fn even_partial(checksum: u8, buf: &mut Vec<u8>) {
+fn even_partial(checksum: u8, buf: &mut String) {
     let a = checksum % 6;
     // let b = 16;
     let c = checksum / 6;
@@ -269,15 +257,15 @@ fn even_partial(checksum: u8, buf: &mut Vec<u8>) {
     // - `a` is constructed with mod 6.
     // - `VOWELS` is a fixed size array with 6 elements.
     // - Maximum value of `a` is 5.
-    buf.push(VOWELS[a as usize]);
-    buf.push(b'x');
+    buf.push(VOWELS[a as usize].into());
+    buf.push('x');
     // Panic safety:
     //
     // - `c` is constructed with divide by 6.
     // - Maximum value of `checksum` is 36 -- see `encode` loop.
     // - `VOWELS` is a fixed size array with 6 elements.
     // - Maximum value of `c` is 5.
-    buf.push(VOWELS[c as usize]);
+    buf.push(VOWELS[c as usize].into());
 }
 
 #[inline]
