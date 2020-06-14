@@ -350,18 +350,6 @@
 <span id="350">350</span>
 <span id="351">351</span>
 <span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
-<span id="359">359</span>
-<span id="360">360</span>
-<span id="361">361</span>
-<span id="362">362</span>
-<span id="363">363</span>
-<span id="364">364</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -370,6 +358,7 @@
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">intra_doc_link_resolution_failure</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">rust_2018_idioms</span>)]</span>
+<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">unsafe_code</span>)]</span>
 
 <span class="doccomment">//! The Bubble Babble binary data encoding.</span>
 <span class="doccomment">//!</span>
@@ -404,13 +393,6 @@
 <span class="doccomment">//! // The `DecodeError` contains the offset of the first invalid byte.</span>
 <span class="doccomment">//! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Safety</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This crate operates on byte slices, but [`encode`] returns a [`String`].</span>
-<span class="doccomment">//! This crate contains a single line of unsafe code to turn the encode buffer</span>
-<span class="doccomment">//! into a `String`. This is known to be safe since the buffer is populated from</span>
-<span class="doccomment">//! a fixed, ASCII-only alpahabet.</span>
 
 <span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/boba/3.0.0&quot;</span>)]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
@@ -474,8 +456,8 @@
 <span class="attribute">#[<span class="ident">must_use</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ref</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">6</span> <span class="op">*</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>) <span class="op">+</span> <span class="number">3</span> <span class="op">+</span> <span class="number">2</span>);
-    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">HEADER</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">with_capacity</span>(<span class="number">6</span> <span class="op">*</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="number">2</span>) <span class="op">+</span> <span class="number">3</span> <span class="op">+</span> <span class="number">2</span>);
+    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">HEADER</span>.<span class="ident">into</span>());
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checksum</span> <span class="op">=</span> <span class="number">1_u8</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chunks</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">chunks_exact</span>(<span class="number">2</span>);
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>([<span class="ident">left</span>, <span class="ident">right</span>]) <span class="op">=</span> <span class="ident">chunks</span>.<span class="ident">next</span>() {
@@ -487,14 +469,14 @@
         <span class="comment">// - `d` is constructed with a mask of `0b1111`.</span>
         <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
         <span class="comment">// - Maximum value of `d` is 16.</span>
-        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">d</span> <span class="kw">as</span> <span class="ident">usize</span>]);
-        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="string">b&#39;-&#39;</span>);
+        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">d</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
+        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="string">&#39;-&#39;</span>);
         <span class="comment">// Panic safety:</span>
         <span class="comment">//</span>
         <span class="comment">// - `e` is constructed with a mask of `0b1111`.</span>
         <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
         <span class="comment">// - Maximum value of `e` is 15.</span>
-        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+        <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
         <span class="ident">checksum</span> <span class="op">=</span>
             ((<span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">checksum</span> <span class="op">*</span> <span class="number">5</span>) <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">left</span>) <span class="op">*</span> <span class="number">7</span> <span class="op">+</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="kw-2">*</span><span class="ident">right</span>)) <span class="op">%</span> <span class="number">36</span>) <span class="kw">as</span> <span class="ident">u8</span>;
     }
@@ -503,14 +485,8 @@
     } <span class="kw">else</span> {
         <span class="ident">even_partial</span>(<span class="ident">checksum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">encoded</span>);
     }
-    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">TRAILER</span>);
-    <span class="comment">// Safety:</span>
-    <span class="comment">//</span>
-    <span class="comment">// - `encoded` is pushed to by indexing into the `VOWELS` and `CONSONANTS`</span>
-    <span class="comment">//   arrays.</span>
-    <span class="comment">// - `VOWELS` only contains bytes that are valid ASCII.</span>
-    <span class="comment">// - `CONSONANTS` only contains bytes that are valid ASCII.</span>
-    <span class="kw">unsafe</span> { <span class="ident">String</span>::<span class="ident">from_utf8_unchecked</span>(<span class="ident">encoded</span>) }
+    <span class="ident">encoded</span>.<span class="ident">push</span>(<span class="ident">TRAILER</span>.<span class="ident">into</span>());
+    <span class="ident">encoded</span>
 }
 
 <span class="doccomment">/// Decode Bubble Babble-encoded byte slice to a `Vec&lt;u8&gt;`.</span>
@@ -600,7 +576,7 @@
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">odd_partial</span>(<span class="ident">raw_byte</span>: <span class="ident">u8</span>, <span class="ident">checksum</span>: <span class="ident">u8</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
+<span class="kw">fn</span> <span class="ident">odd_partial</span>(<span class="ident">raw_byte</span>: <span class="ident">u8</span>, <span class="ident">checksum</span>: <span class="ident">u8</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">String</span>) {
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> (((<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">6</span>) <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span>) <span class="op">%</span> <span class="number">6</span>;
     <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> (<span class="ident">raw_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">2</span>) <span class="op">&amp;</span> <span class="number">15</span>;
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> ((<span class="ident">raw_byte</span> <span class="op">&amp;</span> <span class="number">3</span>) <span class="op">+</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>) <span class="op">%</span> <span class="number">6</span>;
@@ -609,23 +585,23 @@
     <span class="comment">// - `a` is constructed with mod 6.</span>
     <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
     <span class="comment">// - Maximum value of `a` is 5.</span>
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
     <span class="comment">// Panic safety:</span>
     <span class="comment">//</span>
     <span class="comment">// - `b` is constructed with a mask of `0b1111`.</span>
     <span class="comment">// - `CONSONANTS` is a fixed size array with 17 elements.</span>
     <span class="comment">// - Maximum value of `e` is 15.</span>
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">CONSONANTS</span>[<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
     <span class="comment">// Panic safety:</span>
     <span class="comment">//</span>
     <span class="comment">// - `c` is constructed with mod 6.</span>
     <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
     <span class="comment">// - Maximum value of `c` is 5.</span>
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="kw">fn</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>: <span class="ident">u8</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
+<span class="kw">fn</span> <span class="ident">even_partial</span>(<span class="ident">checksum</span>: <span class="ident">u8</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">String</span>) {
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">checksum</span> <span class="op">%</span> <span class="number">6</span>;
     <span class="comment">// let b = 16;</span>
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">checksum</span> <span class="op">/</span> <span class="number">6</span>;
@@ -634,15 +610,15 @@
     <span class="comment">// - `a` is constructed with mod 6.</span>
     <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
     <span class="comment">// - Maximum value of `a` is 5.</span>
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>]);
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="string">b&#39;x&#39;</span>);
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="string">&#39;x&#39;</span>);
     <span class="comment">// Panic safety:</span>
     <span class="comment">//</span>
     <span class="comment">// - `c` is constructed with divide by 6.</span>
     <span class="comment">// - Maximum value of `checksum` is 36 -- see `encode` loop.</span>
     <span class="comment">// - `VOWELS` is a fixed size array with 6 elements.</span>
     <span class="comment">// - Maximum value of `c` is 5.</span>
-    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+    <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">VOWELS</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">into</span>());
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
