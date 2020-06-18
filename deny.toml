@@ -9,6 +9,7 @@ unlicensed = "deny"
 allow = [
   "BSD-2-Clause",
   "MIT",
+  "Zlib",
 ]
 deny = []
 copyleft = "deny"
