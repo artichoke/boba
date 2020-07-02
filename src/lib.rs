@@ -45,8 +45,19 @@
 // without the `std` feature, build `boba` with `no_std`.
 #![cfg_attr(not(feature = "std"), no_std)]
 
+// Ensure code blocks in README.md compile
 #[cfg(doctest)]
-doc_comment::doctest!("../README.md");
+macro_rules! readme {
+    ($x:expr) => {
+        #[doc = $x]
+        mod readme {}
+    };
+    () => {
+        readme!(include_str!("../README.md"));
+    };
+}
+#[cfg(doctest)]
+readme!();
 
 use bstr::ByteSlice;
 use core::fmt;
