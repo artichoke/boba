@@ -32,5 +32,4 @@ bstr = { version = "0.2", default-features = false }
 
 [dev-dependencies]
 bubblebabble = "0.1"
-doc-comment = "0.3"
 version-sync = "0.9"
