@@ -4,7 +4,11 @@
 #![warn(clippy::cargo)]
 #![warn(missing_docs, intra_doc_link_resolution_failure)]
 #![warn(missing_debug_implementations)]
+#![warn(missing_copy_implementations)]
 #![warn(rust_2018_idioms)]
+#![warn(trivial_casts, trivial_numeric_casts)]
+#![warn(unused_qualifications)]
+#![warn(variant_size_differences)]
 #![forbid(unsafe_code)]
 
 //! The Bubble Babble binary data encoding.
@@ -23,11 +27,12 @@
 //! Decoding binary data is done by calling [`decode`]:
 //!
 //! ```
-//! # fn main() -> Result<(), boba::DecodeError> {
+//! # fn example() -> Result<(), boba::DecodeError> {
 //! let dec = boba::decode("xexax")?;
 //! assert_eq!(dec, vec![]);
 //! # Ok(())
 //! # }
+//! # example().unwrap();
 //! ```
 //!
 //! Decode is fallible and can return [`DecodeError`]. For example, all Bubble
