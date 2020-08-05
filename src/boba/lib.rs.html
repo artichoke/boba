@@ -405,6 +405,35 @@
 <span id="405">405</span>
 <span id="406">406</span>
 <span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -444,9 +473,9 @@
 <span class="doccomment">//! # example().unwrap();</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Decode is fallible and can return [`DecodeError`]. For example, all Bubble</span>
-<span class="doccomment">//! Babble-encoded data has an ASCII alphabet, so attempting to decode an emoji</span>
-<span class="doccomment">//! will fail.</span>
+<span class="doccomment">//! Decoding data is fallible and can return [`DecodeError`]. For example, all</span>
+<span class="doccomment">//! Bubble Babble–encoded data has an ASCII alphabet, so attempting to decode an</span>
+<span class="doccomment">//! emoji will fail.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # use boba::DecodeError;</span>
@@ -454,10 +483,37 @@
 <span class="doccomment">//! // The `DecodeError` contains the offset of the first invalid byte.</span>
 <span class="doccomment">//! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);</span>
 <span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Crate Features</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Boba is `no_std` compatible with a required dependency on the [`alloc`]</span>
+<span class="doccomment">//! crate.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Boba has several Cargo features, all of which are enabled by default:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! - **std** - Adds a dependency on [`std`], the Rust Standard Library. This</span>
+<span class="doccomment">//!   feature enables [`std::error::Error`] implementations on error types in</span>
+<span class="doccomment">//!   this crate. Enabling the **std** feature also enables the **alloc**</span>
+<span class="doccomment">//!   feature.</span>
+<span class="doccomment">//! - **alloc** - Adds a dependenct on [`alloc`], the Rust allocation and</span>
+<span class="doccomment">//!   collections library. Currently, Boba requires this feature to build, but</span>
+<span class="doccomment">//!   may relax this requirement in the future.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! [`std`]: https://doc.rust-lang.org/stable/std/index.html</span>
+<span class="doccomment">//! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html</span>
 
 <span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/boba/4.0.0&quot;</span>)]</span>
-<span class="comment">// without the `std` feature, build `boba` with `no_std`.</span>
+<span class="comment">// Without the `std` feature, build `boba` with `no_std`.</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
+
+<span class="comment">// Without the `alloc` feature, build `boba` without alloc.</span>
+<span class="comment">// This configuration is unsupported and will result in a compile error.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">alloc</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">string</span>::<span class="ident">String</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">vec</span>::<span class="ident">Vec</span>;
 
 <span class="comment">// Ensure code blocks in README.md compile</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">doctest</span>)]</span>
@@ -570,7 +626,7 @@
     <span class="ident">encoded</span>
 }
 
-<span class="doccomment">/// Decode Bubble Babble-encoded byte slice to a `Vec&lt;u8&gt;`.</span>
+<span class="doccomment">/// Decode Bubble Babble-encoded byte slice to a [`Vec&lt;u8&gt;`](Vec).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
@@ -744,6 +800,8 @@
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">non_ascii_literal</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">DecodeError</span>;
+    <span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">string</span>::<span class="ident">String</span>;
+    <span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">vec</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">encode</span>() {
@@ -774,7 +832,7 @@
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux&quot;</span>),
-            <span class="prelude-val">Ok</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>())
+            <span class="prelude-val">Ok</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>).<span class="ident">into_bytes</span>())
         );
     }
 
