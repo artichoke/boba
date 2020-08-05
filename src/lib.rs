@@ -363,6 +363,8 @@ fn decode_2_tuple(byte1: u8, byte2: u8) -> u8 {
 #[allow(clippy::non_ascii_literal)]
 mod tests {
     use crate::DecodeError;
+    use alloc::string::String;
+    use alloc::vec;
 
     #[test]
     fn encode() {
@@ -393,7 +395,7 @@ mod tests {
 
         assert_eq!(
             crate::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
-            Ok("💎🦀❤️✨💪".to_string().into_bytes())
+            Ok(String::from("💎🦀❤️✨💪").into_bytes())
         );
     }
 
