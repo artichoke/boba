@@ -1,4 +1,4 @@
 (function() {var implementors = {};
-implementors["boba"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html\" title=\"trait core::cmp::Ord\">Ord</a> for <a class=\"enum\" href=\"boba/enum.DecodeError.html\" title=\"enum boba::DecodeError\">DecodeError</a>","synthetic":false,"types":["boba::DecodeError"]}];
-implementors["bstr"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html\" title=\"trait core::cmp::Ord\">Ord</a> for <a class=\"struct\" href=\"bstr/struct.BStr.html\" title=\"struct bstr::BStr\">BStr</a>","synthetic":false,"types":["bstr::bstr::BStr"]}];
+implementors["boba"] = [{"text":"impl Ord for DecodeError","synthetic":false,"types":[]}];
+implementors["bstr"] = [{"text":"impl Ord for BStr","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

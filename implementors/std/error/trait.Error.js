@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["boba"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/std/error/trait.Error.html\" title=\"trait std::error::Error\">Error</a> for <a class=\"enum\" href=\"boba/enum.DecodeError.html\" title=\"enum boba::DecodeError\">DecodeError</a>","synthetic":false,"types":["boba::DecodeError"]}];
+implementors["boba"] = [{"text":"impl Error for DecodeError","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
