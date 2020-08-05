@@ -41,10 +41,14 @@ jobs:
       - name: Test with all features
         run: cargo test --all-features
 
+      - name: Test with only alloc feature
+        shell: bash
+        run: cargo test --no-default-features --features alloc
+
       - name: Test with no default features
         shell: bash
         run: |
-          # known failing since boba requires the std feature to build
+          # known failing since boba requires the alloc feature to build
           cargo test --no-default-features || :
 
   rust:

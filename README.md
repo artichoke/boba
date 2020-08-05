@@ -18,7 +18,7 @@ Bubble Babble encodes 6 characters in 16 bits and includes a checksum embedded
 in the encoded data. See the
 [Bubble Babble spec](spec/Bubble_Babble_Encoding.txt).
 
-This crate depends on [bstr](https://crates.io/crates/bstr).
+This crate depends on [`bstr`].
 
 ## Usage
 
@@ -38,13 +38,18 @@ assert_eq!(boba::decode(b"xexax"), Ok(vec![]));
 
 ## Crate Features
 
-`boba` has a `std` feature which is enabled by default that adds `Vec` and
-`String` support as well as `std::error::Error` impls. `boba` does not compile
-if this feature is disabled, but exists so this crate can add `no_std` support
-backwards compatibly.
+Boba is `no_std` compatible with a required dependency on the [`alloc`] crate.
 
-`boba` is [fuzzed](fuzz/fuzz_targets) with
-[cargo-fuzz](https://crates.io/crates/cargo-fuzz).
+Boba has several Cargo features, all of which are enabled by default:
+
+- **std** - Adds a dependency on [`std`], the Rust Standard Library. This
+  feature enables [`std::error::Error`] implementations on error types in this
+  crate. Enabling the **std** feature also enables the **alloc** feature.
+- **alloc** - Adds a dependenct on [`alloc`], the Rust allocation and
+  collections library. Currently, Boba requires this feature to build, but may
+  relax this requirement in the future.
+
+`boba` is [fuzzed](fuzz/fuzz_targets) with [cargo-fuzz].
 
 ## Minimum Rust Version Policy
 
@@ -61,3 +66,10 @@ MSRV may be bumped in minor version releases.
 `bubble-babble-ts` is licensed under the
 [MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)
 Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
+
+[`bstr`]: https://crates.io/crates/bstr
+[`alloc`]: https://doc.rust-lang.org/stable/alloc/index.html
+[`std`]: https://doc.rust-lang.org/stable/std/index.html
+[`std::error::error`]:
+  https://doc.rust-lang.org/stable/std/error/trait.Error.html
+[cargo-fuzz]: https://crates.io/crates/cargo-fuzz

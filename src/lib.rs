@@ -36,9 +36,9 @@
 //! # example().unwrap();
 //! ```
 //!
-//! Decode is fallible and can return [`DecodeError`]. For example, all Bubble
-//! Babble-encoded data has an ASCII alphabet, so attempting to decode an emoji
-//! will fail.
+//! Decoding data is fallible and can return [`DecodeError`]. For example, all
+//! Bubble Babble–encoded data has an ASCII alphabet, so attempting to decode an
+//! emoji will fail.
 //!
 //! ```
 //! # use boba::DecodeError;
@@ -46,10 +46,37 @@
 //! // The `DecodeError` contains the offset of the first invalid byte.
 //! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);
 //! ```
+//!
+//! # Crate Features
+//!
+//! Boba is `no_std` compatible with a required dependency on the [`alloc`]
+//! crate.
+//!
+//! Boba has several Cargo features, all of which are enabled by default:
+//!
+//! - **std** - Adds a dependency on [`std`], the Rust Standard Library. This
+//!   feature enables [`std::error::Error`] implementations on error types in
+//!   this crate. Enabling the **std** feature also enables the **alloc**
+//!   feature.
+//! - **alloc** - Adds a dependenct on [`alloc`], the Rust allocation and
+//!   collections library. Currently, Boba requires this feature to build, but
+//!   may relax this requirement in the future.
+//!
+//! [`std`]: https://doc.rust-lang.org/stable/std/index.html
+//! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
 #![doc(html_root_url = "https://docs.rs/boba/4.0.0")]
-// without the `std` feature, build `boba` with `no_std`.
+// Without the `std` feature, build `boba` with `no_std`.
 #![cfg_attr(not(feature = "std"), no_std)]
+
+// Without the `alloc` feature, build `boba` without alloc.
+// This configuration is unsupported and will result in a compile error.
+#[cfg(feature = "alloc")]
+extern crate alloc;
+#[cfg(feature = "alloc")]
+use alloc::string::String;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 // Ensure code blocks in README.md compile
 #[cfg(doctest)]
@@ -162,7 +189,7 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     encoded
 }
 
-/// Decode Bubble Babble-encoded byte slice to a `Vec<u8>`.
+/// Decode Bubble Babble-encoded byte slice to a [`Vec<u8>`](Vec).
 ///
 /// # Examples
 ///
@@ -336,6 +363,8 @@ fn decode_2_tuple(byte1: u8, byte2: u8) -> u8 {
 #[allow(clippy::non_ascii_literal)]
 mod tests {
     use crate::DecodeError;
+    use alloc::string::String;
+    use alloc::vec;
 
     #[test]
     fn encode() {
@@ -366,7 +395,7 @@ mod tests {
 
         assert_eq!(
             crate::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
-            Ok("💎🦀❤️✨💪".to_string().into_bytes())
+            Ok(String::from("💎🦀❤️✨💪").into_bytes())
         );
     }
 

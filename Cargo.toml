@@ -9,8 +9,8 @@ repository = "https://github.com/artichoke/boba"
 documentation = "https://docs.rs/boba"
 homepage = "https://github.com/artichoke/boba"
 description = "Encoder and decoder for the Bubble Babble binary data encoding"
-keywords = ["encode", "decode", "utf8", "bubblebabble"]
-categories = ["encoding"]
+keywords = ["encode", "decode", "utf8", "bubblebabble", "no_std"]
+categories = ["encoding", "no-std"]
 include = [
   "src/**/*.rs",
   "LICENSE",
@@ -19,13 +19,14 @@ include = [
 
 [features]
 default = ["std"]
-# Enable dependency on the Rust standard library.
-#
-# This feature exists to support the possiblity that `boba` may
-# eventually support compiling in `no_std` environments.
-#
-# Currently, this feature is required to build `boba`.
-std = []
+# Enable dependency on `std`, the Rust standard library. This feature enables
+# `std::error::Error` implementations on the error types in `boba`.
+std = ["alloc"]
+# Enable a dependency on the `alloc` crate. This feature grants `boba` access to
+# the `Vec` and `String` types. This feature is currently required to build
+# `boba`, but exists to enable adding a slice-based, no allocator API in a
+# backwards-compatible way.
+alloc = []
 
 [dependencies]
 bstr = { version = "0.2", default-features = false }
