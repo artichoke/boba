@@ -12,25 +12,31 @@
 #![warn(variant_size_differences)]
 #![forbid(unsafe_code)]
 
-//! The Bubble Babble binary data encoding.
+//! This crate provides an implementation of a Bubble Babble encoder and
+//! decoder.
 //!
-//! This is a native Rust implementation of a Bubble Babble encoder and decoder.
+//! The Bubble Babble encoding uses alternation of consonants and vowels to
+//! encode binary data to pseudowords that can be pronounced more easily than
+//! arbitrary lists of hexadecimal digits.
+//!
+//! Bubble Babble is part of the Digest libraries in Perl and Ruby.
 //!
 //! # Usage
 //!
 //! You can encode binary data by calling [`encode`]:
 //!
 //! ```
-//! let enc = boba::encode("Pineapple");
-//! assert_eq!(enc, "xigak-nyryk-humil-bosek-sonax");
+//! let encoded = boba::encode("Pineapple");
+//! assert_eq!(encoded, "xigak-nyryk-humil-bosek-sonax");
 //! ```
 //!
 //! Decoding binary data is done by calling [`decode`]:
 //!
 //! ```
-//! # fn example() -> Result<(), boba::DecodeError> {
-//! let dec = boba::decode("xexax")?;
-//! assert_eq!(dec, vec![]);
+//! # use boba::DecodeError;
+//! # fn example() -> Result<(), DecodeError> {
+//! let decoded = boba::decode("xexax")?;
+//! assert_eq!(decoded, vec![]);
 //! # Ok(())
 //! # }
 //! # example().unwrap();
@@ -42,9 +48,9 @@
 //!
 //! ```
 //! # use boba::DecodeError;
-//! let dec = boba::decode("x🦀x");
+//! let decoded = boba::decode("x🦀x");
 //! // The `DecodeError` contains the offset of the first invalid byte.
-//! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);
+//! assert_eq!(decoded, Err(DecodeError::InvalidByte(1)));
 //! ```
 //!
 //! # Crate Features
@@ -103,6 +109,28 @@ const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
 
 /// Decoding errors from [`boba::decode`](decode).
+///
+/// `decode` will return a `DecodeError` if:
+///
+/// - The input is not an ASCII string, an error is returned.
+/// - The input contains an ASCII character outside of the Bubble Babble
+///   encoding alphabet, an error is returned.
+/// - The input does not start with a leading 'x', an error is returned.
+/// - The input does not end with a trailing 'x', an error is returned.
+/// - The decoded result does not checksum properly, an error is returned.
+///
+/// # Examples
+///
+/// ```
+/// # use boba::DecodeError;
+/// assert_eq!(boba::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(boba::decode("x789x"), Err(DecodeError::InvalidByte(1)));
+/// assert_eq!(boba::decode("yx"), Err(DecodeError::MalformedHeader));
+/// assert_eq!(boba::decode("xy"), Err(DecodeError::MalformedTrailer));
+/// assert_eq!(boba::decode(""), Err(DecodeError::Corrupted));
+/// assert_eq!(boba::decode("z"), Err(DecodeError::Corrupted));
+/// assert_eq!(boba::decode("xx"), Err(DecodeError::Corrupted));
+/// ```
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DecodeError {
     /// Checksum mismatch when decoding input.
@@ -194,21 +222,26 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// # Examples
 ///
 /// ```
-/// assert_eq!(boba::decode("xexax"), Ok(vec![]));
-/// assert_eq!(boba::decode("xesef-disof-gytuf-katof-movif-baxux"), Ok(b"1234567890".to_vec()));
-/// assert_eq!(boba::decode("xigak-nyryk-humil-bosek-sonax"), Ok(b"Pineapple".to_vec()));
+/// # use boba::DecodeError;
+/// # fn example() -> Result<(), DecodeError> {
+/// assert_eq!(boba::decode("xexax")?, vec![]);
+/// assert_eq!(boba::decode("xesef-disof-gytuf-katof-movif-baxux")?, b"1234567890");
+/// assert_eq!(boba::decode("xigak-nyryk-humil-bosek-sonax")?, b"Pineapple");
+/// # Ok(())
+/// # }
+/// # example().unwrap();
 /// ```
 ///
 /// # Errors
 ///
-/// Decoding is fallible and might return [`DecodeError`]:
+/// Decoding is fallible and might return [`DecodeError`] if:
 ///
-/// - If the input is not an ASCII string, an error is returned.
-/// - If the input contains an ASCII character outside of the Bubble Babble
+/// - The input is not an ASCII string, an error is returned.
+/// - The input contains an ASCII character outside of the Bubble Babble
 ///   encoding alphabet, an error is returned.
-/// - If the input does not start with a leading 'x', an error is returned.
-/// - If the input does not end with a trailing 'x', an error is returned.
-/// - If the decoded result does not checksum properly, an error is returned.
+/// - The input does not start with a leading 'x', an error is returned.
+/// - The input does not end with a trailing 'x', an error is returned.
+/// - The decoded result does not checksum properly, an error is returned.
 ///
 /// ```
 /// # use boba::DecodeError;
