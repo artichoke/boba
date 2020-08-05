@@ -434,6 +434,39 @@
 <span id="434">434</span>
 <span id="435">435</span>
 <span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -449,25 +482,31 @@
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">variant_size_differences</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">unsafe_code</span>)]</span>
 
-<span class="doccomment">//! The Bubble Babble binary data encoding.</span>
+<span class="doccomment">//! This crate provides an implementation of a Bubble Babble encoder and</span>
+<span class="doccomment">//! decoder.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! This is a native Rust implementation of a Bubble Babble encoder and decoder.</span>
+<span class="doccomment">//! The Bubble Babble encoding uses alternation of consonants and vowels to</span>
+<span class="doccomment">//! encode binary data to pseudowords that can be pronounced more easily than</span>
+<span class="doccomment">//! arbitrary lists of hexadecimal digits.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Bubble Babble is part of the Digest libraries in Perl and Ruby.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Usage</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! You can encode binary data by calling [`encode`]:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! let enc = boba::encode(&quot;Pineapple&quot;);</span>
-<span class="doccomment">//! assert_eq!(enc, &quot;xigak-nyryk-humil-bosek-sonax&quot;);</span>
+<span class="doccomment">//! let encoded = boba::encode(&quot;Pineapple&quot;);</span>
+<span class="doccomment">//! assert_eq!(encoded, &quot;xigak-nyryk-humil-bosek-sonax&quot;);</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Decoding binary data is done by calling [`decode`]:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! # fn example() -&gt; Result&lt;(), boba::DecodeError&gt; {</span>
-<span class="doccomment">//! let dec = boba::decode(&quot;xexax&quot;)?;</span>
-<span class="doccomment">//! assert_eq!(dec, vec![]);</span>
+<span class="doccomment">//! # use boba::DecodeError;</span>
+<span class="doccomment">//! # fn example() -&gt; Result&lt;(), DecodeError&gt; {</span>
+<span class="doccomment">//! let decoded = boba::decode(&quot;xexax&quot;)?;</span>
+<span class="doccomment">//! assert_eq!(decoded, vec![]);</span>
 <span class="doccomment">//! # Ok(())</span>
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! # example().unwrap();</span>
@@ -479,9 +518,9 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # use boba::DecodeError;</span>
-<span class="doccomment">//! let dec = boba::decode(&quot;x🦀x&quot;);</span>
+<span class="doccomment">//! let decoded = boba::decode(&quot;x🦀x&quot;);</span>
 <span class="doccomment">//! // The `DecodeError` contains the offset of the first invalid byte.</span>
-<span class="doccomment">//! assert_eq!(Err(DecodeError::InvalidByte(1)), dec);</span>
+<span class="doccomment">//! assert_eq!(decoded, Err(DecodeError::InvalidByte(1)));</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Crate Features</span>
@@ -540,6 +579,28 @@
 <span class="kw">const</span> <span class="ident">TRAILER</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="string">b&#39;x&#39;</span>;
 
 <span class="doccomment">/// Decoding errors from [`boba::decode`](decode).</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// `decode` will return a `DecodeError` if:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The input is not an ASCII string, an error is returned.</span>
+<span class="doccomment">/// - The input contains an ASCII character outside of the Bubble Babble</span>
+<span class="doccomment">///   encoding alphabet, an error is returned.</span>
+<span class="doccomment">/// - The input does not start with a leading &#39;x&#39;, an error is returned.</span>
+<span class="doccomment">/// - The input does not end with a trailing &#39;x&#39;, an error is returned.</span>
+<span class="doccomment">/// - The decoded result does not checksum properly, an error is returned.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// # use boba::DecodeError;</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;x💎🦀x&quot;), Err(DecodeError::InvalidByte(1)));</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;x789x&quot;), Err(DecodeError::InvalidByte(1)));</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;yx&quot;), Err(DecodeError::MalformedHeader));</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;xy&quot;), Err(DecodeError::MalformedTrailer));</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;&quot;), Err(DecodeError::Corrupted));</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;z&quot;), Err(DecodeError::Corrupted));</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;xx&quot;), Err(DecodeError::Corrupted));</span>
+<span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DecodeError</span> {
     <span class="doccomment">/// Checksum mismatch when decoding input.</span>
@@ -631,21 +692,26 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// assert_eq!(boba::decode(&quot;xexax&quot;), Ok(vec![]));</span>
-<span class="doccomment">/// assert_eq!(boba::decode(&quot;xesef-disof-gytuf-katof-movif-baxux&quot;), Ok(b&quot;1234567890&quot;.to_vec()));</span>
-<span class="doccomment">/// assert_eq!(boba::decode(&quot;xigak-nyryk-humil-bosek-sonax&quot;), Ok(b&quot;Pineapple&quot;.to_vec()));</span>
+<span class="doccomment">/// # use boba::DecodeError;</span>
+<span class="doccomment">/// # fn example() -&gt; Result&lt;(), DecodeError&gt; {</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;xexax&quot;)?, vec![]);</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;xesef-disof-gytuf-katof-movif-baxux&quot;)?, b&quot;1234567890&quot;);</span>
+<span class="doccomment">/// assert_eq!(boba::decode(&quot;xigak-nyryk-humil-bosek-sonax&quot;)?, b&quot;Pineapple&quot;);</span>
+<span class="doccomment">/// # Ok(())</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # example().unwrap();</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Errors</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Decoding is fallible and might return [`DecodeError`]:</span>
+<span class="doccomment">/// Decoding is fallible and might return [`DecodeError`] if:</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// - If the input is not an ASCII string, an error is returned.</span>
-<span class="doccomment">/// - If the input contains an ASCII character outside of the Bubble Babble</span>
+<span class="doccomment">/// - The input is not an ASCII string, an error is returned.</span>
+<span class="doccomment">/// - The input contains an ASCII character outside of the Bubble Babble</span>
 <span class="doccomment">///   encoding alphabet, an error is returned.</span>
-<span class="doccomment">/// - If the input does not start with a leading &#39;x&#39;, an error is returned.</span>
-<span class="doccomment">/// - If the input does not end with a trailing &#39;x&#39;, an error is returned.</span>
-<span class="doccomment">/// - If the decoded result does not checksum properly, an error is returned.</span>
+<span class="doccomment">/// - The input does not start with a leading &#39;x&#39;, an error is returned.</span>
+<span class="doccomment">/// - The input does not end with a trailing &#39;x&#39;, an error is returned.</span>
+<span class="doccomment">/// - The decoded result does not checksum properly, an error is returned.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use boba::DecodeError;</span>
