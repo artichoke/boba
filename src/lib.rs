@@ -64,7 +64,7 @@
 //!   feature enables [`std::error::Error`] implementations on error types in
 //!   this crate. Enabling the **std** feature also enables the **alloc**
 //!   feature.
-//! - **alloc** - Adds a dependenct on [`alloc`], the Rust allocation and
+//! - **alloc** - Adds a dependency on [`alloc`], the Rust allocation and
 //!   collections library. Currently, Boba requires this feature to build, but
 //!   may relax this requirement in the future.
 //!
