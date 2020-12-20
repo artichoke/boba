@@ -71,7 +71,7 @@
 //! [`std`]: https://doc.rust-lang.org/stable/std/index.html
 //! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
-#![doc(html_root_url = "https://docs.rs/boba/4.1.0")]
+#![doc(html_root_url = "https://docs.rs/boba/4.1.1")]
 // Without the `std` feature, build `boba` with `no_std`.
 #![cfg_attr(not(feature = "std"), no_std)]
 
