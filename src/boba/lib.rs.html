@@ -470,6 +470,31 @@
 <span id="467">467</span>
 <span id="468">468</span>
 <span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">all</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">clippy</span>::<span class="ident">pedantic</span>)]</span>
@@ -746,6 +771,8 @@
     <span class="comment">// may not be from the right subset of the alphabet, e.g. a vowel present</span>
     <span class="comment">// when a consonant is expected.</span>
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">pos</span>) <span class="op">=</span> <span class="ident">enc</span>.<span class="ident">find_not_byteset</span>(<span class="ident">ALPHABET</span>) {
+        <span class="comment">// Return `pos + 1` because the subslicing above removes the initial &#39;x&#39;</span>
+        <span class="comment">// header byte.</span>
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="number">1</span>));
     }
     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">encoded</span>.<span class="ident">len</span>();
@@ -868,39 +895,37 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">non_ascii_literal</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">DecodeError</span>;
     <span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">string</span>::<span class="ident">String</span>;
     <span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">vec</span>;
 
+    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">decode</span>, <span class="ident">encode</span>, <span class="ident">DecodeError</span>};
+
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">encode</span>() {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">encode</span>([]), <span class="string">&quot;xexax&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">encode</span>(<span class="string">&quot;1234567890&quot;</span>),
-            <span class="string">&quot;xesef-disof-gytuf-katof-movif-baxux&quot;</span>
-        );
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">encode</span>(<span class="string">&quot;Pineapple&quot;</span>), <span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>);
+    <span class="kw">fn</span> <span class="ident">encoder</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">encode</span>([]), <span class="string">&quot;xexax&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">encode</span>(<span class="string">&quot;1234567890&quot;</span>), <span class="string">&quot;xesef-disof-gytuf-katof-movif-baxux&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">encode</span>(<span class="string">&quot;Pineapple&quot;</span>), <span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>);
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">encode</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>),
+            <span class="ident">encode</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>),
             <span class="string">&quot;xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux&quot;</span>
         );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">decode</span>() {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xexax&quot;</span>), <span class="prelude-val">Ok</span>(<span class="macro">vec</span><span class="macro">!</span>[]));
+    <span class="kw">fn</span> <span class="ident">decoder</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;xexax&quot;</span>), <span class="prelude-val">Ok</span>(<span class="macro">vec</span><span class="macro">!</span>[]));
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xesef-disof-gytuf-katof-movif-baxux&quot;</span>),
+            <span class="ident">decode</span>(<span class="string">&quot;xesef-disof-gytuf-katof-movif-baxux&quot;</span>),
             <span class="prelude-val">Ok</span>(<span class="string">b&quot;1234567890&quot;</span>.<span class="ident">to_vec</span>())
         );
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>),
+            <span class="ident">decode</span>(<span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>),
             <span class="prelude-val">Ok</span>(<span class="string">b&quot;Pineapple&quot;</span>.<span class="ident">to_vec</span>())
         );
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux&quot;</span>),
+            <span class="ident">decode</span>(<span class="string">&quot;xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux&quot;</span>),
             <span class="prelude-val">Ok</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;💎🦀❤️✨💪&quot;</span>).<span class="ident">into_bytes</span>())
         );
     }
@@ -908,7 +933,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_error_sub_dash</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xesefxdisofxgytufxkatofxmovifxbaxux&quot;</span>),
+            <span class="ident">decode</span>(<span class="string">&quot;xesefxdisofxgytufxkatofxmovifxbaxux&quot;</span>),
             <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">ChecksumMismatch</span>)
         );
     }
@@ -916,7 +941,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_sub_vowel_to_consonant</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xssef-disof-gytuf-katof-movif-baxux&quot;</span>),
+            <span class="ident">decode</span>(<span class="string">&quot;xssef-disof-gytuf-katof-movif-baxux&quot;</span>),
             <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">ExpectedVowel</span>),
         );
     }
@@ -924,20 +949,45 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_sub_consonant_to_vowel</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xeeef-disof-gytuf-katof-movif-baxux&quot;</span>),
+            <span class="ident">decode</span>(<span class="string">&quot;xeeef-disof-gytuf-katof-movif-baxux&quot;</span>),
             <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">ExpectedConsonant</span>)
         );
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_error</span>() {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;z&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xy&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;yx&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;xx&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;x💎🦀x&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">1</span>)));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">crate</span>::<span class="ident">decode</span>(<span class="string">&quot;x789x&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">1</span>)));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;z&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;xy&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;yx&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedHeader</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;xx&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;x💎🦀x&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">1</span>)));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">&quot;x789x&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">1</span>)));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">decode_error_bad_alphabet</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">decode</span>(<span class="string">&quot;xigak-nyryk-/umil-bosek-sonax&quot;</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">12</span>))
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">decode</span>(<span class="string">b&quot;x\xFFx&quot;</span>), <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">1</span>)));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">decode</span>(<span class="string">&quot;xigak-nyryk-Humil-bosek-sonax&quot;</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">12</span>))
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">decode</span>(<span class="string">&quot;XIGAK-NYRYK-HUMIL-BOSEK-SONAX&quot;</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">Corrupted</span>)
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">decode</span>(<span class="string">&quot;xIGAK-NYRYK-HUMIL-BOSEK-SONAX&quot;</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">MalformedTrailer</span>)
+        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="ident">decode</span>(<span class="string">&quot;xIGAK-NYRYK-HUMIL-BOSEK-SONAx&quot;</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">DecodeError</span>::<span class="ident">InvalidByte</span>(<span class="number">1</span>))
+        );
     }
 }
 </pre></div>
