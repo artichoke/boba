@@ -157,17 +157,17 @@ impl std::error::Error for DecodeError {}
 impl fmt::Display for DecodeError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::ChecksumMismatch => write!(f, "Checksum mismatch"),
-            Self::Corrupted => write!(f, "Corrupted input"),
-            Self::ExpectedConsonant => write!(f, "Expected consonant, got something else"),
-            Self::ExpectedVowel => write!(f, "Expected vowel, got something else"),
+            Self::ChecksumMismatch => f.write_str("Checksum mismatch"),
+            Self::Corrupted => f.write_str("Corrupted input"),
+            Self::ExpectedConsonant => f.write_str("Expected consonant, got something else"),
+            Self::ExpectedVowel => f.write_str("Expected vowel, got something else"),
             Self::InvalidByte(pos) => write!(
                 f,
                 "Encountered byte outside of encoding alphabet at position {}",
                 pos
             ),
-            Self::MalformedHeader => write!(f, "Missing required 'x' header"),
-            Self::MalformedTrailer => write!(f, "Missing required 'x' trailer"),
+            Self::MalformedHeader => f.write_str("Missing required 'x' header"),
+            Self::MalformedTrailer => f.write_str("Missing required 'x' trailer"),
         }
     }
 }
