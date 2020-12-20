@@ -273,6 +273,8 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     // may not be from the right subset of the alphabet, e.g. a vowel present
     // when a consonant is expected.
     if let Some(pos) = enc.find_not_byteset(ALPHABET) {
+        // Return `pos + 1` because the subslicing above removes the initial 'x'
+        // header byte.
         return Err(DecodeError::InvalidByte(pos + 1));
     }
     let len = encoded.len();
@@ -395,39 +397,37 @@ fn decode_2_tuple(byte1: u8, byte2: u8) -> u8 {
 #[cfg(test)]
 #[allow(clippy::non_ascii_literal)]
 mod tests {
-    use crate::DecodeError;
     use alloc::string::String;
     use alloc::vec;
 
+    use crate::{decode, encode, DecodeError};
+
     #[test]
-    fn encode() {
-        assert_eq!(crate::encode([]), "xexax");
-        assert_eq!(
-            crate::encode("1234567890"),
-            "xesef-disof-gytuf-katof-movif-baxux"
-        );
-        assert_eq!(crate::encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
+    fn encoder() {
+        assert_eq!(encode([]), "xexax");
+        assert_eq!(encode("1234567890"), "xesef-disof-gytuf-katof-movif-baxux");
+        assert_eq!(encode("Pineapple"), "xigak-nyryk-humil-bosek-sonax");
 
         assert_eq!(
-            crate::encode("💎🦀❤️✨💪"),
+            encode("💎🦀❤️✨💪"),
             "xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"
         );
     }
 
     #[test]
-    fn decode() {
-        assert_eq!(crate::decode("xexax"), Ok(vec![]));
+    fn decoder() {
+        assert_eq!(decode("xexax"), Ok(vec![]));
         assert_eq!(
-            crate::decode("xesef-disof-gytuf-katof-movif-baxux"),
+            decode("xesef-disof-gytuf-katof-movif-baxux"),
             Ok(b"1234567890".to_vec())
         );
         assert_eq!(
-            crate::decode("xigak-nyryk-humil-bosek-sonax"),
+            decode("xigak-nyryk-humil-bosek-sonax"),
             Ok(b"Pineapple".to_vec())
         );
 
         assert_eq!(
-            crate::decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
+            decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
             Ok(String::from("💎🦀❤️✨💪").into_bytes())
         );
     }
@@ -435,7 +435,7 @@ mod tests {
     #[test]
     fn decode_error_sub_dash() {
         assert_eq!(
-            crate::decode("xesefxdisofxgytufxkatofxmovifxbaxux"),
+            decode("xesefxdisofxgytufxkatofxmovifxbaxux"),
             Err(DecodeError::ChecksumMismatch)
         );
     }
@@ -443,7 +443,7 @@ mod tests {
     #[test]
     fn decode_sub_vowel_to_consonant() {
         assert_eq!(
-            crate::decode("xssef-disof-gytuf-katof-movif-baxux"),
+            decode("xssef-disof-gytuf-katof-movif-baxux"),
             Err(DecodeError::ExpectedVowel),
         );
     }
@@ -451,19 +451,44 @@ mod tests {
     #[test]
     fn decode_sub_consonant_to_vowel() {
         assert_eq!(
-            crate::decode("xeeef-disof-gytuf-katof-movif-baxux"),
+            decode("xeeef-disof-gytuf-katof-movif-baxux"),
             Err(DecodeError::ExpectedConsonant)
         );
     }
 
     #[test]
     fn decode_error() {
-        assert_eq!(crate::decode(""), Err(DecodeError::Corrupted));
-        assert_eq!(crate::decode("z"), Err(DecodeError::Corrupted));
-        assert_eq!(crate::decode("xy"), Err(DecodeError::MalformedTrailer));
-        assert_eq!(crate::decode("yx"), Err(DecodeError::MalformedHeader));
-        assert_eq!(crate::decode("xx"), Err(DecodeError::Corrupted));
-        assert_eq!(crate::decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
-        assert_eq!(crate::decode("x789x"), Err(DecodeError::InvalidByte(1)));
+        assert_eq!(decode(""), Err(DecodeError::Corrupted));
+        assert_eq!(decode("z"), Err(DecodeError::Corrupted));
+        assert_eq!(decode("xy"), Err(DecodeError::MalformedTrailer));
+        assert_eq!(decode("yx"), Err(DecodeError::MalformedHeader));
+        assert_eq!(decode("xx"), Err(DecodeError::Corrupted));
+        assert_eq!(decode("x💎🦀x"), Err(DecodeError::InvalidByte(1)));
+        assert_eq!(decode("x789x"), Err(DecodeError::InvalidByte(1)));
+    }
+
+    #[test]
+    fn decode_error_bad_alphabet() {
+        assert_eq!(
+            decode("xigak-nyryk-/umil-bosek-sonax"),
+            Err(DecodeError::InvalidByte(12))
+        );
+        assert_eq!(decode(b"x\xFFx"), Err(DecodeError::InvalidByte(1)));
+        assert_eq!(
+            decode("xigak-nyryk-Humil-bosek-sonax"),
+            Err(DecodeError::InvalidByte(12))
+        );
+        assert_eq!(
+            decode("XIGAK-NYRYK-HUMIL-BOSEK-SONAX"),
+            Err(DecodeError::Corrupted)
+        );
+        assert_eq!(
+            decode("xIGAK-NYRYK-HUMIL-BOSEK-SONAX"),
+            Err(DecodeError::MalformedTrailer)
+        );
+        assert_eq!(
+            decode("xIGAK-NYRYK-HUMIL-BOSEK-SONAx"),
+            Err(DecodeError::InvalidByte(1))
+        );
     }
 }
