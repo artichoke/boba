@@ -306,17 +306,18 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         let a = VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8;
         let c = VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8;
 
-        if mid == b'x' {
-            if a != checksum % 6 || c != checksum / 6 {
-                return Err(DecodeError::ChecksumMismatch);
+        match mid {
+            b'x' if a != checksum % 6 || c != checksum / 6 => Err(DecodeError::ChecksumMismatch),
+            b'x' => Ok(decoded),
+            _ => {
+                let b = CONSONANTS
+                    .find_byte(mid)
+                    .ok_or(DecodeError::ExpectedConsonant)? as u8;
+                let byte = decode_3_tuple(a, b, c, checksum)?;
+                decoded.push(byte);
+                Ok(decoded)
             }
-        } else {
-            let b = CONSONANTS
-                .find_byte(mid)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8;
-            decoded.push(decode_3_tuple(a, b, c, checksum)?);
         }
-        Ok(decoded)
     } else {
         Err(DecodeError::Corrupted)
     }
