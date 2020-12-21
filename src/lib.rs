@@ -188,10 +188,10 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     encoded.push(HEADER.into());
     let mut checksum = 1_u8;
     let mut chunks = data.chunks_exact(2);
-    while let Some([left, right]) = chunks.next() {
-        odd_partial(*left, checksum, &mut encoded);
-        let d = (*right >> 4) & 15;
-        let e = *right & 15;
+    while let Some(&[left, right]) = chunks.next() {
+        odd_partial(left, checksum, &mut encoded);
+        let d = (right >> 4) & 15;
+        let e = right & 15;
         // Panic safety:
         //
         // - `d` is constructed with a mask of `0b1111`.
@@ -205,8 +205,7 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
         // - `CONSONANTS` is a fixed size array with 16 elements.
         // - Maximum value of `e` is 15.
         encoded.push(CONSONANTS[e as usize].into());
-        checksum =
-            ((u16::from(checksum * 5) + u16::from(*left) * 7 + u16::from(*right)) % 36) as u8;
+        checksum = ((u16::from(checksum * 5) + u16::from(left) * 7 + u16::from(right)) % 36) as u8;
     }
     if let [byte] = chunks.remainder() {
         odd_partial(*byte, checksum, &mut encoded);
@@ -281,21 +280,21 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
     let mut decoded = Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) });
     let mut checksum = 1_u8;
     let mut chunks = enc.chunks_exact(6);
-    while let Some([left, mid, right, up, b'-', down]) = chunks.next() {
+    while let Some(&[left, mid, right, up, b'-', down]) = chunks.next() {
         let byte1 = decode_3_tuple(
-            VOWELS.find_byte(*left).ok_or(DecodeError::ExpectedVowel)? as u8,
+            VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8,
             CONSONANTS
-                .find_byte(*mid)
+                .find_byte(mid)
                 .ok_or(DecodeError::ExpectedConsonant)? as u8,
-            VOWELS.find_byte(*right).ok_or(DecodeError::ExpectedVowel)? as u8,
+            VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8,
             checksum,
         )?;
         let byte2 = decode_2_tuple(
             CONSONANTS
-                .find_byte(*up)
+                .find_byte(up)
                 .ok_or(DecodeError::ExpectedConsonant)? as u8,
             CONSONANTS
-                .find_byte(*down)
+                .find_byte(down)
                 .ok_or(DecodeError::ExpectedConsonant)? as u8,
         );
         checksum =
@@ -303,17 +302,17 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
         decoded.push(byte1);
         decoded.push(byte2);
     }
-    if let [left, mid, right] = chunks.remainder() {
-        let a = VOWELS.find_byte(*left).ok_or(DecodeError::ExpectedVowel)? as u8;
-        let c = VOWELS.find_byte(*right).ok_or(DecodeError::ExpectedVowel)? as u8;
+    if let [left, mid, right] = *chunks.remainder() {
+        let a = VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8;
+        let c = VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8;
 
-        if *mid == b'x' {
+        if mid == b'x' {
             if a != checksum % 6 || c != checksum / 6 {
                 return Err(DecodeError::ChecksumMismatch);
             }
         } else {
             let b = CONSONANTS
-                .find_byte(*mid)
+                .find_byte(mid)
                 .ok_or(DecodeError::ExpectedConsonant)? as u8;
             decoded.push(decode_3_tuple(a, b, c, checksum)?);
         }
