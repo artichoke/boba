@@ -6,7 +6,7 @@
 slices. Its primary utility is in conveniently writing byte string literals
 in a uniform way. For example, consider this code that does not compile:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
 <span class="kw">let</span> <span class="ident">strs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">b&quot;a&quot;</span>, <span class="string">b&quot;xy&quot;</span>];</pre></div>
 <p>The above code doesn't compile because the type of the byte string literal
 <code>b&quot;a&quot;</code> is <code>&amp;'static [u8; 1]</code>, and the type of <code>b&quot;xy&quot;</code> is
@@ -16,7 +16,7 @@ where both <code>&quot;a&quot;</code> and <code>&quot;xy&quot;</code> have the s
 <p>One way of getting the above code to compile is to convert byte strings to
 slices. You might try this:</p>
 
-<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
 <span class="kw">let</span> <span class="ident">strs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="kw-2">&amp;</span><span class="string">b&quot;a&quot;</span>, <span class="kw-2">&amp;</span><span class="string">b&quot;xy&quot;</span>];</pre></div>
 <p>But this just creates values with type <code>&amp; &amp;'static [u8; 1]</code> and
 <code>&amp; &amp;'static [u8; 2]</code>. Instead, you need to force the issue like so:</p>
