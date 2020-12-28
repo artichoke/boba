@@ -11,11 +11,7 @@ homepage = "https://github.com/artichoke/boba"
 description = "Encoder and decoder for the Bubble Babble binary data encoding"
 keywords = ["encode", "decode", "utf8", "bubblebabble", "no_std"]
 categories = ["encoding", "no-std"]
-include = [
-  "src/**/*.rs",
-  "LICENSE",
-  "README.md",
-]
+include = ["src/**/*", "tests/**/*", "LICENSE", "README.md"]
 
 [features]
 default = ["std"]
