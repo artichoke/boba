@@ -25,7 +25,8 @@ std = ["alloc"]
 alloc = []
 
 [dependencies]
-bstr = { version = "0.2", default-features = false }
+# `no_std` mode was fixed in https://github.com/BurntSushi/bstr/commit/83e8f27e
+bstr = { version = "0.2.4", default-features = false }
 
 [dev-dependencies]
 bubblebabble = "0.1"
