@@ -72,7 +72,7 @@
 //! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/boba/4.1.2")]
+#![doc(html_root_url = "https://docs.rs/boba/4.2.0")]
 
 // Without the `alloc` feature, build `boba` without alloc.
 // This configuration is unsupported and will result in a compile error.
