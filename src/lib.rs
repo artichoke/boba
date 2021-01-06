@@ -71,14 +71,16 @@
 //! [`std`]: https://doc.rust-lang.org/stable/std/index.html
 //! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
+#![no_std]
 #![doc(html_root_url = "https://docs.rs/boba/4.1.2")]
-// Without the `std` feature, build `boba` with `no_std`.
-#![cfg_attr(not(feature = "std"), no_std)]
 
 // Without the `alloc` feature, build `boba` without alloc.
 // This configuration is unsupported and will result in a compile error.
 #[cfg(feature = "alloc")]
 extern crate alloc;
+#[cfg(feature = "std")]
+extern crate std;
+
 #[cfg(feature = "alloc")]
 use alloc::string::String;
 #[cfg(feature = "alloc")]
@@ -95,7 +97,7 @@ macro_rules! readme {
         readme!(include_str!("../README.md"));
     };
 }
-#[cfg(doctest)]
+#[cfg(all(feature = "alloc", doctest))]
 readme!();
 
 use bstr::ByteSlice;
