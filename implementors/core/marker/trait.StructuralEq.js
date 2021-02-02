@@ -1,4 +1,4 @@
 (function() {var implementors = {};
-implementors["boba"] = [{"text":"impl StructuralEq for DecodeError","synthetic":false,"types":[]}];
-implementors["bstr"] = [{"text":"impl StructuralEq for Utf8Error","synthetic":false,"types":[]}];
+implementors["boba"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.StructuralEq.html\" title=\"trait core::marker::StructuralEq\">StructuralEq</a> for <a class=\"enum\" href=\"boba/enum.DecodeError.html\" title=\"enum boba::DecodeError\">DecodeError</a>","synthetic":false,"types":["boba::DecodeError"]}];
+implementors["bstr"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.StructuralEq.html\" title=\"trait core::marker::StructuralEq\">StructuralEq</a> for <a class=\"struct\" href=\"bstr/struct.Utf8Error.html\" title=\"struct bstr::Utf8Error\">Utf8Error</a>","synthetic":false,"types":["bstr::utf8::Utf8Error"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
