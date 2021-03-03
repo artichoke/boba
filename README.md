@@ -8,15 +8,13 @@
 [![API](https://docs.rs/boba/badge.svg)](https://docs.rs/boba)
 [![API trunk](https://img.shields.io/badge/docs-trunk-blue.svg)](https://artichoke.github.io/boba/boba/)
 
-Implements the the
-[Bubble Babble binary data encoding](/spec/Bubble_Babble_Encoding.txt).
+Implements the the [Bubble Babble binary data encoding][bubble-babble-spec].
 
 > The Bubble Babble Encoding encodes arbitrary binary data into pseudowords that
 > are more natural to humans and that can be pronounced relatively easily.
 
 Bubble Babble encodes 6 characters in 16 bits and includes a checksum embedded
-in the encoded data. See the
-[Bubble Babble spec](spec/Bubble_Babble_Encoding.txt).
+in the encoded data. See the [Bubble Babble spec][bubble-babble-spec].
 
 This crate depends on [`bstr`].
 
@@ -67,6 +65,7 @@ MSRV may be bumped in minor version releases.
 [MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)
 Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
 
+[bubble-babble-spec]: spec/Bubble_Babble_Encoding.txt
 [`bstr`]: https://crates.io/crates/bstr
 [`alloc`]: https://doc.rust-lang.org/stable/alloc/index.html
 [`std`]: https://doc.rust-lang.org/stable/std/index.html
