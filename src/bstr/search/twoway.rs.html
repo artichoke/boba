@@ -1431,7 +1431,7 @@
 
 <span class="kw">impl</span> <span class="ident">Suffix</span> {
     <span class="kw">fn</span> <span class="ident">forward</span>(<span class="ident">needle</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">kind</span>: <span class="ident">SuffixKind</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Suffix</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">needle</span>.<span class="ident">is_empty</span>());
+        <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">needle</span>.<span class="ident">is_empty</span>());
 
         <span class="comment">// suffix represents our maximal (or minimal) suffix, along with</span>
         <span class="comment">// its period.</span>
@@ -1481,7 +1481,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">reverse</span>(<span class="ident">needle</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">kind</span>: <span class="ident">SuffixKind</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Suffix</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">needle</span>.<span class="ident">is_empty</span>());
+        <span class="macro">debug_assert!</span>(<span class="op">!</span><span class="ident">needle</span>.<span class="ident">is_empty</span>());
 
         <span class="comment">// See the comments in `forward` for how this works.</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">suffix</span> <span class="op">=</span> <span class="ident">Suffix</span> { <span class="ident">pos</span>: <span class="ident">needle</span>.<span class="ident">len</span>(), <span class="ident">period</span>: <span class="number">1</span> };
@@ -1617,112 +1617,112 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">suffix_forward</span>() {
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">assert_suffix_min</span> {
+        <span class="macro">macro_rules!</span> <span class="ident">assert_suffix_min</span> {
             (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>:<span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>) <span class="op">=</span>
                     <span class="ident">get_suffix_forward</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>.<span class="ident">as_bytes</span>(), <span class="ident">SuffixKind</span>::<span class="ident">Minimal</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
+                <span class="macro">assert_eq!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
             };
         }
 
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">assert_suffix_max</span> {
+        <span class="macro">macro_rules!</span> <span class="ident">assert_suffix_max</span> {
             (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>:<span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>) <span class="op">=</span>
                     <span class="ident">get_suffix_forward</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>.<span class="ident">as_bytes</span>(), <span class="ident">SuffixKind</span>::<span class="ident">Maximal</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
+                <span class="macro">assert_eq!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
             };
         }
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="number">2</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;ba&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;ba&quot;</span>, <span class="number">2</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;acb&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;cb&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;acb&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;cb&quot;</span>, <span class="number">2</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;cba&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;cba&quot;</span>, <span class="number">3</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;abcabc&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;cabc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;abcabc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;cabc&quot;</span>, <span class="number">3</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;abcabcabc&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;cabcabc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;abcabcabc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;cabcabc&quot;</span>, <span class="number">3</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;abczz&quot;</span>, <span class="number">5</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;zz&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;abczz&quot;</span>, <span class="number">5</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;zz&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;zzabc&quot;</span>, <span class="number">5</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;zzabc&quot;</span>, <span class="number">5</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;foobar&quot;</span>, <span class="string">&quot;ar&quot;</span>, <span class="number">2</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;foobar&quot;</span>, <span class="string">&quot;r&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;foobar&quot;</span>, <span class="string">&quot;ar&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;foobar&quot;</span>, <span class="string">&quot;r&quot;</span>, <span class="number">1</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">suffix_reverse</span>() {
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">assert_suffix_min</span> {
+        <span class="macro">macro_rules!</span> <span class="ident">assert_suffix_min</span> {
             (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>:<span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>) <span class="op">=</span>
                     <span class="ident">get_suffix_reverse</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>.<span class="ident">as_bytes</span>(), <span class="ident">SuffixKind</span>::<span class="ident">Minimal</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
+                <span class="macro">assert_eq!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
             };
         }
 
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">assert_suffix_max</span> {
+        <span class="macro">macro_rules!</span> <span class="ident">assert_suffix_max</span> {
             (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>:<span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>) <span class="op">=</span>
                     <span class="ident">get_suffix_reverse</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">given</span>.<span class="ident">as_bytes</span>(), <span class="ident">SuffixKind</span>::<span class="ident">Maximal</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
+                <span class="macro">assert_eq!</span>((<span class="ident">B</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">expected</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">period</span>), (<span class="ident">got_suffix</span>, <span class="ident">got_period</span>));
             };
         }
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;ab&quot;</span>, <span class="string">&quot;ab&quot;</span>, <span class="number">2</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;ba&quot;</span>, <span class="number">2</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;ba&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;ba&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;ac&quot;</span>, <span class="number">2</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;acb&quot;</span>, <span class="string">&quot;ac&quot;</span>, <span class="number">2</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;cba&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;cba&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;cba&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;abca&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;abcabc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;abca&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abcabc&quot;</span>, <span class="string">&quot;abcabc&quot;</span>, <span class="number">3</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;abcabca&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;abcabcabc&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;abcabca&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abcabcabc&quot;</span>, <span class="string">&quot;abcabcabc&quot;</span>, <span class="number">3</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;abczz&quot;</span>, <span class="number">5</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;abczz&quot;</span>, <span class="string">&quot;abczz&quot;</span>, <span class="number">5</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;zza&quot;</span>, <span class="number">3</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;zz&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;zza&quot;</span>, <span class="number">3</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;zzabc&quot;</span>, <span class="string">&quot;zz&quot;</span>, <span class="number">1</span>);
 
-        <span class="macro">assert_suffix_min</span><span class="macro">!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
-        <span class="macro">assert_suffix_max</span><span class="macro">!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_min!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_suffix_max!</span>(<span class="string">&quot;aaa&quot;</span>, <span class="string">&quot;aaa&quot;</span>, <span class="number">1</span>);
     }
 
-    <span class="macro">quickcheck</span><span class="macro">!</span> {
+    <span class="macro">quickcheck!</span> {
         <span class="kw">fn</span> <span class="ident">qc_suffix_forward_maximal</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
             <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">is_empty</span>() {
                 <span class="kw">return</span> <span class="bool-val">true</span>;

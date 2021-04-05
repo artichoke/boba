@@ -1834,7 +1834,7 @@
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Utf8Error</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;invalid UTF-8 found at byte offset {}&quot;</span>, <span class="self">self</span>.<span class="ident">valid_up_to</span>)
+        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;invalid UTF-8 found at byte offset {}&quot;</span>, <span class="self">self</span>.<span class="ident">valid_up_to</span>)
     }
 }
 
@@ -2253,21 +2253,21 @@
             };
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">4</span>];
             <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">cp</span>.<span class="ident">encode_utf8</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>()));
+            <span class="macro">assert_eq!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>()));
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">validate_multiple_codepoints</span>() {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;abc&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98\x83a&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x9D\x9C\xB7a&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xF0\x9D\x9C\xB7&quot;</span>,));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;abc&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98\x83a&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x9D\x9C\xB7a&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Ok</span>(()), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xF0\x9D\x9C\xB7&quot;</span>,));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Ok</span>(()),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98\x83a\xF0\x9D\x9C\xB7a&quot;</span>,)
         );
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Ok</span>(()),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xEF\xBF\xBD\xE2\x98\x83\xEF\xBF\xBD&quot;</span>,)
         );
@@ -2276,87 +2276,87 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">validate_errors</span>() {
         <span class="comment">// single invalid byte</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xFF&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xFF&quot;</span>));
         <span class="comment">// single invalid byte after ASCII</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xFF&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xFF&quot;</span>));
         <span class="comment">// single invalid byte after 2 byte sequence</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">2</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCE\xB2\xFF&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">2</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCE\xB2\xFF&quot;</span>));
         <span class="comment">// single invalid byte after 3 byte sequence</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">3</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xFF&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">3</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xFF&quot;</span>));
         <span class="comment">// single invalid byte after 4 byte sequence</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">4</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9D\xB1\xFF&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">4</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9D\xB1\xFF&quot;</span>));
 
         <span class="comment">// An invalid 2-byte sequence with a valid 1-byte prefix.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCE\xF0&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCE\xF0&quot;</span>));
         <span class="comment">// An invalid 3-byte sequence with a valid 2-byte prefix.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">2</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\xF0&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">2</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\xF0&quot;</span>));
         <span class="comment">// An invalid 4-byte sequence with a valid 3-byte prefix.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9D\xF0&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9D\xF0&quot;</span>));
 
         <span class="comment">// An overlong sequence. Should be \xE2\x82\xAC, but we encode the</span>
         <span class="comment">// same codepoint value in 4 bytes. This not only tests that we reject</span>
         <span class="comment">// overlong sequences, but that we get valid_up_to correct.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x82\x82\xAC&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x82\x82\xAC&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x82\x82\xAC&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x82\x82\xAC&quot;</span>));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">3</span>, <span class="number">1</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xF0\x82\x82\xAC&quot;</span>,)
         );
 
         <span class="comment">// Check that encoding a surrogate codepoint using the UTF-8 scheme</span>
         <span class="comment">// fails validation.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xED\xA0\x80&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xED\xA0\x80&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xED\xA0\x80&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xED\xA0\x80&quot;</span>));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">3</span>, <span class="number">1</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xED\xA0\x80&quot;</span>,)
         );
 
         <span class="comment">// Check that an incomplete 2-byte sequence fails.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCEa&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xCEa&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCEa&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xCEa&quot;</span>));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">3</span>, <span class="number">1</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xCE\xE2\x98\x83&quot;</span>,)
         );
         <span class="comment">// Check that an incomplete 3-byte sequence fails.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">2</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98a&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">2</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98a&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">2</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98a&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">2</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98a&quot;</span>));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">3</span>, <span class="number">2</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xE2\x98\xE2\x98\x83&quot;</span>,)
         );
         <span class="comment">// Check that an incomplete 4-byte sequence fails.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9Ca&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x9D\x9Ca&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">0</span>, <span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9Ca&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">1</span>, <span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x9D\x9Ca&quot;</span>));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">4</span>, <span class="number">3</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9C\xB1\xF0\x9D\x9C\xE2\x98\x83&quot;</span>,)
         );
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">6</span>, <span class="number">3</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;foobar\xF1\x80\x80quux&quot;</span>,)
         );
 
         <span class="comment">// Check that an incomplete (EOF) 2-byte sequence fails.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">0</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCE&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xCE&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xCE&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">0</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xCE&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xCE&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xCE&quot;</span>));
         <span class="comment">// Check that an incomplete (EOF) 3-byte sequence fails.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">0</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xE2\x98&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">0</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xE2\x98&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">3</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xE2\x98\x83\xE2\x98&quot;</span>));
         <span class="comment">// Check that an incomplete (EOF) 4-byte sequence fails.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">0</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9C&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x9D\x9C&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">0</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9C&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">1</span>)), <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;a\xF0\x9D\x9C&quot;</span>));
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e</span>(<span class="number">4</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xF0\x9D\x9C\xB1\xF0\x9D\x9C&quot;</span>,)
         );
 
         <span class="comment">// Test that we errors correct even after long valid sequences. This</span>
         <span class="comment">// checks that our &quot;backup&quot; logic for detecting errors is correct.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             <span class="prelude-val">Err</span>(<span class="ident">utf8e2</span>(<span class="number">8</span>, <span class="number">1</span>)),
             <span class="ident">utf8</span>::<span class="ident">validate</span>(<span class="string">b&quot;\xe2\x98\x83\xce\xb2\xe3\x83\x84\xFF&quot;</span>,)
         );
@@ -2365,7 +2365,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_valid</span>() {
         <span class="kw">fn</span> <span class="ident">d</span>(<span class="kw-2">mut</span> <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chars</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chars</span> <span class="op">=</span> <span class="macro">vec!</span>[];
             <span class="kw">while</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">is_empty</span>() {
                 <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>());
                 <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[<span class="ident">size</span>..];
@@ -2374,107 +2374,107 @@
             <span class="ident">chars</span>
         }
 
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;☃&#39;</span>, <span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃☃&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;α&#39;</span>, <span class="string">&#39;β&#39;</span>, <span class="string">&#39;γ&#39;</span>, <span class="string">&#39;δ&#39;</span>, <span class="string">&#39;ε&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;αβγδε&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;☃&#39;</span>, <span class="string">&#39;⛄&#39;</span>, <span class="string">&#39;⛇&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃⛄⛇&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;𝗮&#39;</span>, <span class="string">&#39;𝗯&#39;</span>, <span class="string">&#39;𝗰&#39;</span>, <span class="string">&#39;𝗱&#39;</span>, <span class="string">&#39;𝗲&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;𝗮𝗯𝗰𝗱𝗲&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;☃&#39;</span>, <span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃☃&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;α&#39;</span>, <span class="string">&#39;β&#39;</span>, <span class="string">&#39;γ&#39;</span>, <span class="string">&#39;δ&#39;</span>, <span class="string">&#39;ε&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;αβγδε&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;☃&#39;</span>, <span class="string">&#39;⛄&#39;</span>, <span class="string">&#39;⛇&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃⛄⛇&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;𝗮&#39;</span>, <span class="string">&#39;𝗯&#39;</span>, <span class="string">&#39;𝗰&#39;</span>, <span class="string">&#39;𝗱&#39;</span>, <span class="string">&#39;𝗲&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;𝗮𝗯𝗰𝗱𝗲&quot;</span>));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_invalid</span>() {
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">0</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xFF&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xCE\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xE2\x98\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xF0\x9D\x9D&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xF0\x9D\x9D\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xF0\x82\x82\xAC&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xED\xA0\x80&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xCEa&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xE2\x98a&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode</span>(<span class="string">b&quot;\xF0\x9D\x9Ca&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_lossy</span>() {
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">0</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xFF&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xCE\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xE2\x98\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xF0\x9D\x9D\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xF0\x82\x82\xAC&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xED\xA0\x80&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xCEa&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xE2\x98a&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_lossy</span>(<span class="string">b&quot;\xF0\x9D\x9Ca&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_last_valid</span>() {
         <span class="kw">fn</span> <span class="ident">d</span>(<span class="kw-2">mut</span> <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chars</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">chars</span> <span class="op">=</span> <span class="macro">vec!</span>[];
             <span class="kw">while</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">is_empty</span>() {
                 <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>());
                 <span class="ident">s</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[..<span class="ident">s</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">size</span>];
@@ -2483,151 +2483,151 @@
             <span class="ident">chars</span>
         }
 
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;☃&#39;</span>, <span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃☃&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;ε&#39;</span>, <span class="string">&#39;δ&#39;</span>, <span class="string">&#39;γ&#39;</span>, <span class="string">&#39;β&#39;</span>, <span class="string">&#39;α&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;αβγδε&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;⛇&#39;</span>, <span class="string">&#39;⛄&#39;</span>, <span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃⛄⛇&quot;</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&#39;𝗲&#39;</span>, <span class="string">&#39;𝗱&#39;</span>, <span class="string">&#39;𝗰&#39;</span>, <span class="string">&#39;𝗯&#39;</span>, <span class="string">&#39;𝗮&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;𝗮𝗯𝗰𝗱𝗲&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;☃&#39;</span>, <span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃☃&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;ε&#39;</span>, <span class="string">&#39;δ&#39;</span>, <span class="string">&#39;γ&#39;</span>, <span class="string">&#39;β&#39;</span>, <span class="string">&#39;α&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;αβγδε&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;⛇&#39;</span>, <span class="string">&#39;⛄&#39;</span>, <span class="string">&#39;☃&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;☃⛄⛇&quot;</span>));
+        <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[<span class="string">&#39;𝗲&#39;</span>, <span class="string">&#39;𝗱&#39;</span>, <span class="string">&#39;𝗰&#39;</span>, <span class="string">&#39;𝗯&#39;</span>, <span class="string">&#39;𝗮&#39;</span>], <span class="ident">d</span>(<span class="string">&quot;𝗮𝗯𝗰𝗱𝗲&quot;</span>));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_last_invalid</span>() {
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">0</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xFF&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xCE\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xCE&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xE2\x98\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xE2\x98&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xF0\x9D\x9D\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xF0\x9D\x9D&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xF0\x82\x82\xAC&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xED\xA0\x80&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xED\xA0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;\xED&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;a\xCE&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;a\xE2\x98&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last</span>(<span class="string">b&quot;a\xF0\x9D\x9C&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">decode_last_lossy</span>() {
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">0</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xFF&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xCE\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xCE&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xE2\x98\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xE2\x98&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xF0\x9D\x9D\xF0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xF0\x9D\x9D&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xF0\x82\x82\xAC&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xED\xA0\x80&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xED\xA0&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;\xED&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;a\xCE&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">1</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;a\xE2\x98&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">2</span>, <span class="ident">size</span>);
 
         <span class="kw">let</span> (<span class="ident">ch</span>, <span class="ident">size</span>) <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">decode_last_lossy</span>(<span class="string">b&quot;a\xF0\x9D\x9C&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">size</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&#39;\u{FFFD}&#39;</span>, <span class="ident">ch</span>);
+        <span class="macro">assert_eq!</span>(<span class="number">3</span>, <span class="ident">size</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">chars</span>() {
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span>(<span class="ident">expected</span>, <span class="ident">input</span>)) <span class="kw">in</span> <span class="ident">LOSSY_TESTS</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
             <span class="kw">let</span> <span class="ident">got</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">B</span>(<span class="ident">input</span>).<span class="ident">chars</span>().<span class="ident">collect</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="macro">assert_eq!</span>(
                 <span class="ident">expected</span>, <span class="ident">got</span>,
                 <span class="string">&quot;chars(ith: {:?}, given: {:?})&quot;</span>,
                 <span class="ident">i</span>, <span class="ident">input</span>,
             );
             <span class="kw">let</span> <span class="ident">got</span>: <span class="ident">String</span> <span class="op">=</span>
                 <span class="ident">B</span>(<span class="ident">input</span>).<span class="ident">char_indices</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="ident">ch</span>)<span class="op">|</span> <span class="ident">ch</span>).<span class="ident">collect</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="macro">assert_eq!</span>(
                 <span class="ident">expected</span>, <span class="ident">got</span>,
                 <span class="string">&quot;char_indices(ith: {:?}, given: {:?})&quot;</span>,
                 <span class="ident">i</span>, <span class="ident">input</span>,
@@ -2636,14 +2636,14 @@
             <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">expected</span>.<span class="ident">chars</span>().<span class="ident">rev</span>().<span class="ident">collect</span>();
 
             <span class="kw">let</span> <span class="ident">got</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">B</span>(<span class="ident">input</span>).<span class="ident">chars</span>().<span class="ident">rev</span>().<span class="ident">collect</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="macro">assert_eq!</span>(
                 <span class="ident">expected</span>, <span class="ident">got</span>,
                 <span class="string">&quot;chars.rev(ith: {:?}, given: {:?})&quot;</span>,
                 <span class="ident">i</span>, <span class="ident">input</span>,
             );
             <span class="kw">let</span> <span class="ident">got</span>: <span class="ident">String</span> <span class="op">=</span>
                 <span class="ident">B</span>(<span class="ident">input</span>).<span class="ident">char_indices</span>().<span class="ident">rev</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="kw">_</span>, <span class="ident">ch</span>)<span class="op">|</span> <span class="ident">ch</span>).<span class="ident">collect</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(
+            <span class="macro">assert_eq!</span>(
                 <span class="ident">expected</span>, <span class="ident">got</span>,
                 <span class="string">&quot;char_indices.rev(ith: {:?}, given: {:?})&quot;</span>,
                 <span class="ident">i</span>, <span class="ident">input</span>,
@@ -2654,7 +2654,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">utf8_chunks</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">Utf8Chunks</span> { <span class="ident">bytes</span>: <span class="string">b&quot;123\xC0&quot;</span> };
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             (<span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>()),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">utf8</span>::<span class="ident">Utf8Chunk</span> {
@@ -2667,7 +2667,7 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">Utf8Chunks</span> { <span class="ident">bytes</span>: <span class="string">b&quot;123\xFF\xFF&quot;</span> };
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             (<span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>()),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">utf8</span>::<span class="ident">Utf8Chunk</span> {
@@ -2685,7 +2685,7 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">Utf8Chunks</span> { <span class="ident">bytes</span>: <span class="string">b&quot;123\xD0&quot;</span> };
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             (<span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>()),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">utf8</span>::<span class="ident">Utf8Chunk</span> {
@@ -2698,7 +2698,7 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">Utf8Chunks</span> { <span class="ident">bytes</span>: <span class="string">b&quot;123\xD0456&quot;</span> };
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             (<span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>()),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">utf8</span>::<span class="ident">Utf8Chunk</span> {
@@ -2716,7 +2716,7 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">Utf8Chunks</span> { <span class="ident">bytes</span>: <span class="string">b&quot;123\xE2\x98&quot;</span> };
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             (<span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>()),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">utf8</span>::<span class="ident">Utf8Chunk</span> {
@@ -2729,7 +2729,7 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">utf8</span>::<span class="ident">Utf8Chunks</span> { <span class="ident">bytes</span>: <span class="string">b&quot;123\xF4\x8F\xBF&quot;</span> };
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="macro">assert_eq!</span>(
             (<span class="ident">c</span>.<span class="ident">next</span>(), <span class="ident">c</span>.<span class="ident">next</span>()),
             (
                 <span class="prelude-val">Some</span>(<span class="ident">utf8</span>::<span class="ident">Utf8Chunk</span> {

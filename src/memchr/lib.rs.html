@@ -486,7 +486,7 @@ instead of one. Similarly for `memchr3`.
     <span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>,
     <span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>
 )))]</span>
-<span class="macro">compile_error</span><span class="macro">!</span>(<span class="string">&quot;memchr currently not supported on non-32 or non-64 bit&quot;</span>);
+<span class="macro">compile_error!</span>(<span class="string">&quot;memchr currently not supported on non-32 or non-64 bit&quot;</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span>;

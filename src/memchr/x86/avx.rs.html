@@ -746,9 +746,9 @@
     }
 
     <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span> <span class="op">-</span> (<span class="ident">start_ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">VECTOR_ALIGN</span>));
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>);
     <span class="kw">while</span> <span class="ident">loop_size</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LOOP_SIZE</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">loop_size</span>) {
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
         <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
@@ -782,13 +782,13 @@
 
             <span class="ident">at</span> <span class="op">+</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>;
             <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="ident">_mm256_movemask_epi8</span>(<span class="ident">eqd</span>);
-            <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">mask</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+            <span class="macro">debug_assert!</span>(<span class="ident">mask</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">at</span> <span class="op">+</span> <span class="ident">forward_pos</span>(<span class="ident">mask</span>));
         }
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">loop_size</span>);
     }
     <span class="kw">while</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">forward_search1</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">ptr</span>, <span class="ident">vn1</span>) {
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">i</span>);
@@ -796,9 +796,9 @@
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span>);
     }
     <span class="kw">if</span> <span class="ident">ptr</span> <span class="op">&lt;</span> <span class="ident">end_ptr</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span> <span class="op">-</span> <span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>));
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>), <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>), <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">return</span> <span class="ident">forward_search1</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">ptr</span>, <span class="ident">vn1</span>);
     }
@@ -830,9 +830,9 @@
     }
 
     <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span> <span class="op">-</span> (<span class="ident">start_ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">VECTOR_ALIGN</span>));
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>);
     <span class="kw">while</span> <span class="ident">loop_size</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LOOP_SIZE2</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">loop_size</span>) {
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
         <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
@@ -865,9 +865,9 @@
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span>);
     }
     <span class="kw">if</span> <span class="ident">ptr</span> <span class="op">&lt;</span> <span class="ident">end_ptr</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span> <span class="op">-</span> <span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>));
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>), <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>), <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">return</span> <span class="ident">forward_search2</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">ptr</span>, <span class="ident">vn1</span>, <span class="ident">vn2</span>);
     }
@@ -905,9 +905,9 @@
     }
 
     <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span> <span class="op">-</span> (<span class="ident">start_ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="ident">VECTOR_ALIGN</span>));
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>);
     <span class="kw">while</span> <span class="ident">loop_size</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LOOP_SIZE2</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">loop_size</span>) {
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
         <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
@@ -948,9 +948,9 @@
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">VECTOR_SIZE</span>);
     }
     <span class="kw">if</span> <span class="ident">ptr</span> <span class="op">&lt;</span> <span class="ident">end_ptr</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span> <span class="op">-</span> <span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>));
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>), <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">ptr</span>), <span class="ident">VECTOR_SIZE</span>);
 
         <span class="kw">return</span> <span class="ident">forward_search3</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">ptr</span>, <span class="ident">vn1</span>, <span class="ident">vn2</span>, <span class="ident">vn3</span>);
     }
@@ -982,9 +982,9 @@
     }
 
     <span class="ident">ptr</span> <span class="op">=</span> (<span class="ident">end_ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="op">!</span><span class="ident">VECTOR_ALIGN</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>);
     <span class="kw">while</span> <span class="ident">loop_size</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LOOP_SIZE</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>.<span class="ident">add</span>(<span class="ident">loop_size</span>) {
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">loop_size</span>);
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
@@ -1019,7 +1019,7 @@
 
             <span class="ident">at</span> <span class="op">-</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>;
             <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="ident">_mm256_movemask_epi8</span>(<span class="ident">eqa</span>);
-            <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">mask</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+            <span class="macro">debug_assert!</span>(<span class="ident">mask</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">at</span> <span class="op">+</span> <span class="ident">reverse_pos</span>(<span class="ident">mask</span>));
         }
     }
@@ -1030,7 +1030,7 @@
         }
     }
     <span class="kw">if</span> <span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
         <span class="kw">return</span> <span class="ident">reverse_search1</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>, <span class="ident">vn1</span>);
     }
     <span class="prelude-val">None</span>
@@ -1062,9 +1062,9 @@
     }
 
     <span class="ident">ptr</span> <span class="op">=</span> (<span class="ident">end_ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="op">!</span><span class="ident">VECTOR_ALIGN</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>);
     <span class="kw">while</span> <span class="ident">loop_size</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LOOP_SIZE2</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>.<span class="ident">add</span>(<span class="ident">loop_size</span>) {
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">loop_size</span>);
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
@@ -1097,7 +1097,7 @@
         }
     }
     <span class="kw">if</span> <span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
         <span class="kw">return</span> <span class="ident">reverse_search2</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>, <span class="ident">vn1</span>, <span class="ident">vn2</span>);
     }
     <span class="prelude-val">None</span>
@@ -1135,9 +1135,9 @@
     }
 
     <span class="ident">ptr</span> <span class="op">=</span> (<span class="ident">end_ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&amp;</span> <span class="op">!</span><span class="ident">VECTOR_ALIGN</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>);
     <span class="kw">while</span> <span class="ident">loop_size</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LOOP_SIZE2</span> <span class="op">&amp;&amp;</span> <span class="ident">ptr</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_ptr</span>.<span class="ident">add</span>(<span class="ident">loop_size</span>) {
-        <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">%</span> <span class="ident">VECTOR_SIZE</span>);
 
         <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">ptr</span>.<span class="ident">sub</span>(<span class="ident">loop_size</span>);
         <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">_mm256_load_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
@@ -1178,7 +1178,7 @@
         }
     }
     <span class="kw">if</span> <span class="ident">ptr</span> <span class="op">&gt;</span> <span class="ident">start_ptr</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
+        <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&lt;</span> <span class="ident">VECTOR_SIZE</span>);
         <span class="kw">return</span> <span class="ident">reverse_search3</span>(<span class="ident">start_ptr</span>, <span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>, <span class="ident">vn1</span>, <span class="ident">vn2</span>, <span class="ident">vn3</span>);
     }
     <span class="prelude-val">None</span>
@@ -1191,9 +1191,9 @@
     <span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
     <span class="ident">vn1</span>: <span class="ident">__m256i</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
+    <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
 
     <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">_mm256_loadu_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
     <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="ident">_mm256_movemask_epi8</span>(<span class="ident">_mm256_cmpeq_epi8</span>(<span class="ident">chunk</span>, <span class="ident">vn1</span>));
@@ -1212,9 +1212,9 @@
     <span class="ident">vn1</span>: <span class="ident">__m256i</span>,
     <span class="ident">vn2</span>: <span class="ident">__m256i</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
+    <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
 
     <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">_mm256_loadu_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
     <span class="kw">let</span> <span class="ident">eq1</span> <span class="op">=</span> <span class="ident">_mm256_cmpeq_epi8</span>(<span class="ident">chunk</span>, <span class="ident">vn1</span>);
@@ -1237,9 +1237,9 @@
     <span class="ident">vn2</span>: <span class="ident">__m256i</span>,
     <span class="ident">vn3</span>: <span class="ident">__m256i</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
+    <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
 
     <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">_mm256_loadu_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
     <span class="kw">let</span> <span class="ident">eq1</span> <span class="op">=</span> <span class="ident">_mm256_cmpeq_epi8</span>(<span class="ident">chunk</span>, <span class="ident">vn1</span>);
@@ -1263,9 +1263,9 @@
     <span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
     <span class="ident">vn1</span>: <span class="ident">__m256i</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
+    <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
 
     <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">_mm256_loadu_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
     <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="ident">_mm256_movemask_epi8</span>(<span class="ident">_mm256_cmpeq_epi8</span>(<span class="ident">vn1</span>, <span class="ident">chunk</span>));
@@ -1284,9 +1284,9 @@
     <span class="ident">vn1</span>: <span class="ident">__m256i</span>,
     <span class="ident">vn2</span>: <span class="ident">__m256i</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
+    <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
 
     <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">_mm256_loadu_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
     <span class="kw">let</span> <span class="ident">eq1</span> <span class="op">=</span> <span class="ident">_mm256_cmpeq_epi8</span>(<span class="ident">chunk</span>, <span class="ident">vn1</span>);
@@ -1309,9 +1309,9 @@
     <span class="ident">vn2</span>: <span class="ident">__m256i</span>,
     <span class="ident">vn3</span>: <span class="ident">__m256i</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
+    <span class="macro">debug_assert!</span>(<span class="ident">sub</span>(<span class="ident">end_ptr</span>, <span class="ident">start_ptr</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">VECTOR_SIZE</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">start_ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">ptr</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">ptr</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">end_ptr</span>.<span class="ident">sub</span>(<span class="ident">VECTOR_SIZE</span>));
 
     <span class="kw">let</span> <span class="ident">chunk</span> <span class="op">=</span> <span class="ident">_mm256_loadu_si256</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">__m256i</span>);
     <span class="kw">let</span> <span class="ident">eq1</span> <span class="op">=</span> <span class="ident">_mm256_cmpeq_epi8</span>(<span class="ident">chunk</span>, <span class="ident">vn1</span>);
@@ -1347,7 +1347,7 @@
 <span class="doccomment">/// The masks given are expected to be the result of _mm256_movemask_epi8,</span>
 <span class="doccomment">/// where at least one of the masks is non-zero (i.e., indicates a match).</span>
 <span class="kw">fn</span> <span class="ident">forward_pos2</span>(<span class="ident">mask1</span>: <span class="ident">i32</span>, <span class="ident">mask2</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
 
     <span class="ident">forward_pos</span>(<span class="ident">mask1</span> <span class="op">|</span> <span class="ident">mask2</span>)
 }
@@ -1359,7 +1359,7 @@
 <span class="doccomment">/// The masks given are expected to be the result of _mm256_movemask_epi8,</span>
 <span class="doccomment">/// where at least one of the masks is non-zero (i.e., indicates a match).</span>
 <span class="kw">fn</span> <span class="ident">forward_pos3</span>(<span class="ident">mask1</span>: <span class="ident">i32</span>, <span class="ident">mask2</span>: <span class="ident">i32</span>, <span class="ident">mask3</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask3</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask3</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
 
     <span class="ident">forward_pos</span>(<span class="ident">mask1</span> <span class="op">|</span> <span class="ident">mask2</span> <span class="op">|</span> <span class="ident">mask3</span>)
 }
@@ -1385,7 +1385,7 @@
 <span class="doccomment">/// The masks given are expected to be the result of _mm256_movemask_epi8,</span>
 <span class="doccomment">/// where at least one of the masks is non-zero (i.e., indicates a match).</span>
 <span class="kw">fn</span> <span class="ident">reverse_pos2</span>(<span class="ident">mask1</span>: <span class="ident">i32</span>, <span class="ident">mask2</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
 
     <span class="ident">reverse_pos</span>(<span class="ident">mask1</span> <span class="op">|</span> <span class="ident">mask2</span>)
 }
@@ -1397,7 +1397,7 @@
 <span class="doccomment">/// The masks given are expected to be the result of _mm256_movemask_epi8,</span>
 <span class="doccomment">/// where at least one of the masks is non-zero (i.e., indicates a match).</span>
 <span class="kw">fn</span> <span class="ident">reverse_pos3</span>(<span class="ident">mask1</span>: <span class="ident">i32</span>, <span class="ident">mask2</span>: <span class="ident">i32</span>, <span class="ident">mask3</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask3</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">mask1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">mask3</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
 
     <span class="ident">reverse_pos</span>(<span class="ident">mask1</span> <span class="op">|</span> <span class="ident">mask2</span> <span class="op">|</span> <span class="ident">mask3</span>)
 }
@@ -1405,7 +1405,7 @@
 <span class="doccomment">/// Subtract `b` from `a` and return the difference. `a` should be greater than</span>
 <span class="doccomment">/// or equal to `b`.</span>
 <span class="kw">fn</span> <span class="ident">sub</span>(<span class="ident">a</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">b</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">a</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">b</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">a</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">b</span>);
     (<span class="ident">a</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">-</span> (<span class="ident">b</span> <span class="kw">as</span> <span class="ident">usize</span>)
 }
 </pre></div>
