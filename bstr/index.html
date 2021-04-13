@@ -34,7 +34,7 @@ APIs but are provided by this crate. For example, this code iterates over all
 of occurrences of a subtring:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">bstr</span>::<span class="ident">ByteSlice</span>;
+<span class="kw">use</span> <span class="ident">bstr::ByteSlice</span>;
 
 <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">b&quot;foo bar foo foo quux foo&quot;</span>;
 
@@ -58,7 +58,7 @@ invalid UTF-8:</p>
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">bstr</span>::{<span class="ident">ByteSlice</span>, <span class="ident">ByteVec</span>};
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lower</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">from</span>(<span class="string">&quot;hello β&quot;</span>);
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lower</span> <span class="op">=</span> <span class="ident">Vec::from</span>(<span class="string">&quot;hello β&quot;</span>);
 <span class="ident">lower</span>[<span class="number">0</span>] <span class="op">=</span> <span class="string">b&#39;\xFF&#39;</span>;
 <span class="comment">// lowercase β is uppercased to Β</span>
 <span class="macro">assert_eq!</span>(<span class="ident">lower</span>.<span class="ident">to_uppercase</span>(), <span class="string">b&quot;\xFFELLO \xCE\x92&quot;</span>);</pre></div>
@@ -71,9 +71,9 @@ this crate does provide the <code>BStr</code> and <code>BString</code> types whi
 <p>For example, this</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">bstr</span>::<span class="ident">ByteSlice</span>;
+<span class="kw">use</span> <span class="ident">bstr::ByteSlice</span>;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">from</span>(<span class="string">&quot;hello β&quot;</span>);
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec::from</span>(<span class="string">&quot;hello β&quot;</span>);
 <span class="ident">bytes</span>[<span class="number">0</span>] <span class="op">=</span> <span class="string">b&#39;\xFF&#39;</span>;
 
 <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">bytes</span>.<span class="ident">as_bstr</span>());</pre></div>
@@ -192,7 +192,7 @@ codepoint, <code>U+FFFD</code>, which looks like this: <code>�</code>. For exa
 replacement codepoint whenever it comes across bytes that are not valid UTF-8:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">bstr</span>::<span class="ident">ByteSlice</span>;
+<span class="kw">use</span> <span class="ident">bstr::ByteSlice</span>;
 
 <span class="kw">let</span> <span class="ident">bs</span> <span class="op">=</span> <span class="string">b&quot;a\xFF\xFFz&quot;</span>;
 <span class="kw">let</span> <span class="ident">chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">bs</span>.<span class="ident">chars</span>().<span class="ident">collect</span>();
@@ -210,7 +210,7 @@ sequence, then all of those bytes (up to 3) are substituted with a single
 replacement codepoint. For example:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">bstr</span>::<span class="ident">ByteSlice</span>;
+<span class="kw">use</span> <span class="ident">bstr::ByteSlice</span>;
 
 <span class="kw">let</span> <span class="ident">bs</span> <span class="op">=</span> <span class="string">b&quot;a\xF0\x9F\x87z&quot;</span>;
 <span class="kw">let</span> <span class="ident">chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">bs</span>.<span class="ident">chars</span>().<span class="ident">collect</span>();

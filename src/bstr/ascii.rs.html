@@ -338,7 +338,7 @@
 <span id="335">335</span>
 <span id="336">336</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>;
+<span class="kw">use</span> <span class="ident">core::mem</span>;
 
 <span class="comment">// The following ~400 lines of code exists for exactly one purpose, which is</span>
 <span class="comment">// to optimize this code:</span>
@@ -364,7 +364,7 @@
 <span class="comment">// _mm_movemask_epi8.</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>)))]</span>
-<span class="kw">const</span> <span class="ident">USIZE_BYTES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>();
+<span class="kw">const</span> <span class="ident">USIZE_BYTES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>();
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>)))]</span>
 <span class="kw">const</span> <span class="ident">FALLBACK_LOOP_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span> <span class="op">*</span> <span class="ident">USIZE_BYTES</span>;
 
@@ -457,9 +457,9 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>)]</span>
 <span class="kw">fn</span> <span class="ident">first_non_ascii_byte_sse2</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">arch</span>::<span class="ident">x86_64</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">core::arch::x86_64</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">const</span> <span class="ident">VECTOR_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">__m128i</span><span class="op">&gt;</span>();
+    <span class="kw">const</span> <span class="ident">VECTOR_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">mem::size_of</span>::<span class="op">&lt;</span><span class="ident">__m128i</span><span class="op">&gt;</span>();
     <span class="kw">const</span> <span class="ident">VECTOR_ALIGN</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">VECTOR_SIZE</span> <span class="op">-</span> <span class="number">1</span>;
     <span class="kw">const</span> <span class="ident">VECTOR_LOOP_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">4</span> <span class="op">*</span> <span class="ident">VECTOR_SIZE</span>;
 
@@ -575,22 +575,22 @@
 
 <span class="doccomment">/// Increment the given pointer by the given amount.</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">ptr_add</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">amt</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span> {
-    <span class="macro">debug_assert!</span>(<span class="ident">amt</span> <span class="op">&lt;</span> ::<span class="ident">core</span>::<span class="ident">isize</span>::<span class="ident">MAX</span> <span class="kw">as</span> <span class="ident">usize</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">amt</span> <span class="op">&lt;</span> <span class="ident">::core::isize::MAX</span> <span class="kw">as</span> <span class="ident">usize</span>);
     <span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">amt</span> <span class="kw">as</span> <span class="ident">isize</span>)
 }
 
 <span class="doccomment">/// Decrement the given pointer by the given amount.</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">ptr_sub</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">amt</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span> {
-    <span class="macro">debug_assert!</span>(<span class="ident">amt</span> <span class="op">&lt;</span> ::<span class="ident">core</span>::<span class="ident">isize</span>::<span class="ident">MAX</span> <span class="kw">as</span> <span class="ident">usize</span>);
+    <span class="macro">debug_assert!</span>(<span class="ident">amt</span> <span class="op">&lt;</span> <span class="ident">::core::isize::MAX</span> <span class="kw">as</span> <span class="ident">usize</span>);
     <span class="ident">ptr</span>.<span class="ident">offset</span>((<span class="ident">amt</span> <span class="kw">as</span> <span class="ident">isize</span>).<span class="ident">wrapping_neg</span>())
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>)))]</span>
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">read_unaligned_usize</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ptr</span>;
+    <span class="kw">use</span> <span class="ident">core::ptr</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="ident">ptr</span>::<span class="ident">copy_nonoverlapping</span>(<span class="ident">ptr</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">n</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="kw">_</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">USIZE_BYTES</span>);
+    <span class="ident">ptr::copy_nonoverlapping</span>(<span class="ident">ptr</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">n</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="kw">_</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">USIZE_BYTES</span>);
     <span class="ident">n</span>
 }
 

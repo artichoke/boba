@@ -426,10 +426,10 @@
 <span id="423">423</span>
 <span id="424">424</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>;
+<span class="kw">use</span> <span class="ident">core::mem</span>;
 
-<span class="kw">use</span> <span class="ident">ext_slice</span>::<span class="ident">ByteSlice</span>;
-<span class="kw">use</span> <span class="ident">search</span>::<span class="ident">byte_frequencies</span>::<span class="ident">BYTE_FREQUENCIES</span>;
+<span class="kw">use</span> <span class="ident">ext_slice::ByteSlice</span>;
+<span class="kw">use</span> <span class="ident">search::byte_frequencies::BYTE_FREQUENCIES</span>;
 
 <span class="doccomment">/// PrefilterState tracks state associated with the effectiveness of a</span>
 <span class="doccomment">/// prefilter. It is used to track how many bytes, on average, are skipped by</span>
@@ -470,7 +470,7 @@
     <span class="doccomment">/// Create a fresh prefilter state.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">max_match_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PrefilterState</span> {
         <span class="kw">if</span> <span class="ident">max_match_len</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="ident">PrefilterState</span>::<span class="ident">inert</span>();
+            <span class="kw">return</span> <span class="ident">PrefilterState::inert</span>();
         }
         <span class="ident">PrefilterState</span> { <span class="ident">skips</span>: <span class="number">0</span>, <span class="ident">skipped</span>: <span class="number">0</span>, <span class="ident">max_match_len</span>, <span class="ident">inert</span>: <span class="bool-val">false</span> }
     }
@@ -495,10 +495,10 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inert</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">skips</span> <span class="op">&lt;</span> <span class="ident">PrefilterState</span>::<span class="ident">MIN_SKIPS</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">skips</span> <span class="op">&lt;</span> <span class="ident">PrefilterState::MIN_SKIPS</span> {
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">skipped</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">PrefilterState</span>::<span class="ident">MIN_SKIP_BYTES</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">skips</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">skipped</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">PrefilterState::MIN_SKIP_BYTES</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">skips</span> {
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
 
@@ -553,9 +553,9 @@
     <span class="doccomment">/// on a different haystack, then a new prefilter state should be used.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prefilter_state</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PrefilterState</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inert</span> {
-            <span class="ident">PrefilterState</span>::<span class="ident">inert</span>()
+            <span class="ident">PrefilterState::inert</span>()
         } <span class="kw">else</span> {
-            <span class="ident">PrefilterState</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">needle_len</span>)
+            <span class="ident">PrefilterState::new</span>(<span class="self">self</span>.<span class="ident">needle_len</span>)
         }
     }
 
@@ -578,7 +578,7 @@
     <span class="doccomment">/// Return search info for the given needle in the forward direction.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward</span>(<span class="ident">needle</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Freqy</span> {
         <span class="kw">if</span> <span class="ident">needle</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="ident">Freqy</span>::<span class="ident">inert</span>();
+            <span class="kw">return</span> <span class="ident">Freqy::inert</span>();
         }
 
         <span class="comment">// Find the rarest two bytes. Try to make them distinct (but it&#39;s not</span>
@@ -589,23 +589,23 @@
             <span class="ident">rare2</span> <span class="op">=</span> <span class="ident">needle</span>[<span class="number">1</span>];
             <span class="ident">rare2i</span> <span class="op">=</span> <span class="number">1</span>;
         }
-        <span class="kw">if</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare2</span>) <span class="op">&lt;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare1</span>) {
-            <span class="ident">mem</span>::<span class="ident">swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2</span>);
-            <span class="ident">mem</span>::<span class="ident">swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1i</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2i</span>);
+        <span class="kw">if</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare2</span>) <span class="op">&lt;</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare1</span>) {
+            <span class="ident">mem::swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2</span>);
+            <span class="ident">mem::swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1i</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2i</span>);
         }
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">b</span>) <span class="kw">in</span> <span class="ident">needle</span>.<span class="ident">bytes</span>().<span class="ident">enumerate</span>().<span class="ident">skip</span>(<span class="number">2</span>) {
-            <span class="kw">if</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare1</span>) {
+            <span class="kw">if</span> <span class="ident">Freqy::rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare1</span>) {
                 <span class="ident">rare2</span> <span class="op">=</span> <span class="ident">rare1</span>;
                 <span class="ident">rare2i</span> <span class="op">=</span> <span class="ident">rare1i</span>;
                 <span class="ident">rare1</span> <span class="op">=</span> <span class="ident">b</span>;
                 <span class="ident">rare1i</span> <span class="op">=</span> <span class="ident">i</span>;
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">b</span> <span class="op">!</span><span class="op">=</span> <span class="ident">rare1</span> <span class="op">&amp;&amp;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare2</span>) {
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">b</span> <span class="op">!</span><span class="op">=</span> <span class="ident">rare1</span> <span class="op">&amp;&amp;</span> <span class="ident">Freqy::rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare2</span>) {
                 <span class="ident">rare2</span> <span class="op">=</span> <span class="ident">b</span>;
                 <span class="ident">rare2i</span> <span class="op">=</span> <span class="ident">i</span>;
             }
         }
-        <span class="kw">if</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare1</span>) <span class="op">&gt;</span> <span class="ident">Freqy</span>::<span class="ident">MAX_RANK</span> {
-            <span class="kw">return</span> <span class="ident">Freqy</span>::<span class="ident">inert</span>();
+        <span class="kw">if</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare1</span>) <span class="op">&gt;</span> <span class="ident">Freqy::MAX_RANK</span> {
+            <span class="kw">return</span> <span class="ident">Freqy::inert</span>();
         }
         <span class="kw">let</span> <span class="ident">needle_len</span> <span class="op">=</span> <span class="ident">needle</span>.<span class="ident">len</span>();
         <span class="ident">Freqy</span> { <span class="ident">inert</span>: <span class="bool-val">false</span>, <span class="ident">needle_len</span>, <span class="ident">rare1</span>, <span class="ident">rare1i</span>, <span class="ident">rare2</span>, <span class="ident">rare2i</span> }
@@ -614,7 +614,7 @@
     <span class="doccomment">/// Return search info for the given needle in the reverse direction.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reverse</span>(<span class="ident">needle</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Freqy</span> {
         <span class="kw">if</span> <span class="ident">needle</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="ident">Freqy</span>::<span class="ident">inert</span>();
+            <span class="kw">return</span> <span class="ident">Freqy::inert</span>();
         }
 
         <span class="comment">// Find the rarest two bytes. Try to make them distinct (but it&#39;s not</span>
@@ -626,23 +626,23 @@
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rare1</span> <span class="op">=</span> <span class="ident">needle</span>[<span class="ident">needle</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">rare1i</span> <span class="op">-</span> <span class="number">1</span>];
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rare2</span> <span class="op">=</span> <span class="ident">needle</span>[<span class="ident">needle</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">rare2i</span> <span class="op">-</span> <span class="number">1</span>];
-        <span class="kw">if</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare2</span>) <span class="op">&lt;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare1</span>) {
-            <span class="ident">mem</span>::<span class="ident">swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2</span>);
-            <span class="ident">mem</span>::<span class="ident">swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1i</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2i</span>);
+        <span class="kw">if</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare2</span>) <span class="op">&lt;</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare1</span>) {
+            <span class="ident">mem::swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2</span>);
+            <span class="ident">mem::swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare1i</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rare2i</span>);
         }
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">b</span>) <span class="kw">in</span> <span class="ident">needle</span>.<span class="ident">bytes</span>().<span class="ident">rev</span>().<span class="ident">enumerate</span>().<span class="ident">skip</span>(<span class="number">2</span>) {
-            <span class="kw">if</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare1</span>) {
+            <span class="kw">if</span> <span class="ident">Freqy::rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare1</span>) {
                 <span class="ident">rare2</span> <span class="op">=</span> <span class="ident">rare1</span>;
                 <span class="ident">rare2i</span> <span class="op">=</span> <span class="ident">rare1i</span>;
                 <span class="ident">rare1</span> <span class="op">=</span> <span class="ident">b</span>;
                 <span class="ident">rare1i</span> <span class="op">=</span> <span class="ident">i</span>;
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">b</span> <span class="op">!</span><span class="op">=</span> <span class="ident">rare1</span> <span class="op">&amp;&amp;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare2</span>) {
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">b</span> <span class="op">!</span><span class="op">=</span> <span class="ident">rare1</span> <span class="op">&amp;&amp;</span> <span class="ident">Freqy::rank</span>(<span class="ident">b</span>) <span class="op">&lt;</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare2</span>) {
                 <span class="ident">rare2</span> <span class="op">=</span> <span class="ident">b</span>;
                 <span class="ident">rare2i</span> <span class="op">=</span> <span class="ident">i</span>;
             }
         }
-        <span class="kw">if</span> <span class="ident">Freqy</span>::<span class="ident">rank</span>(<span class="ident">rare1</span>) <span class="op">&gt;</span> <span class="ident">Freqy</span>::<span class="ident">MAX_RANK</span> {
-            <span class="kw">return</span> <span class="ident">Freqy</span>::<span class="ident">inert</span>();
+        <span class="kw">if</span> <span class="ident">Freqy::rank</span>(<span class="ident">rare1</span>) <span class="op">&gt;</span> <span class="ident">Freqy::MAX_RANK</span> {
+            <span class="kw">return</span> <span class="ident">Freqy::inert</span>();
         }
         <span class="kw">let</span> <span class="ident">needle_len</span> <span class="op">=</span> <span class="ident">needle</span>.<span class="ident">len</span>();
         <span class="ident">Freqy</span> { <span class="ident">inert</span>: <span class="bool-val">false</span>, <span class="ident">needle_len</span>, <span class="ident">rare1</span>, <span class="ident">rare1i</span>, <span class="ident">rare2</span>, <span class="ident">rare2i</span> }
@@ -770,7 +770,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">ext_slice</span>::<span class="ident">B</span>;
+    <span class="kw">use</span> <span class="ident">ext_slice::B</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">freqy_forward</span>() {
@@ -778,35 +778,35 @@
         <span class="comment">// will be constructable. Lowercase letters may be too common for freqy</span>
         <span class="comment">// to work.</span>
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;BARFOO&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;FOOBAR&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;zyzz&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;zzzy&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;zazb&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;yzyy&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;yyyz&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">forward</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::forward</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">s</span>.<span class="ident">find_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;yayb&quot;</span>)));
     }
@@ -817,35 +817,35 @@
         <span class="comment">// will be constructable. Lowercase letters may be too common for freqy</span>
         <span class="comment">// to work.</span>
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;BARFOO&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;BAR&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">6</span>), <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;FOOBAR&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;zyzz&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;zzzy&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;zyzy&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;zazb&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;yzyy&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;yyyz&quot;</span>)));
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy</span>::<span class="ident">reverse</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Freqy::reverse</span>(<span class="ident">B</span>(<span class="string">&quot;yzyz&quot;</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pre</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">prefilter_state</span>();
         <span class="macro">assert_eq!</span>(<span class="prelude-val">None</span>, <span class="ident">s</span>.<span class="ident">rfind_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">pre</span>, <span class="ident">B</span>(<span class="string">&quot;yayb&quot;</span>)));
     }
