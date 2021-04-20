@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 10
+    assignees:
+      - lopopolo
+    labels:
+      - A-deps
   - package-ecosystem: cargo
     directory: "/fuzz"
     schedule:
