@@ -8,17 +8,17 @@ encode binary data to pseudowords that can be pronounced more easily than
 arbitrary lists of hexadecimal digits.</p>
 <p>Bubble Babble is part of the Digest libraries in Perl and Ruby.</p>
 <h1 id="usage" class="section-header"><a href="#usage">Usage</a></h1>
-<p>You can encode binary data by calling <a href="../boba/fn.encode.html" title="encode"><code>encode</code></a>:</p>
+<p>You can encode binary data by calling <a href="fn.encode.html" title="encode"><code>encode</code></a>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="ident">encoded</span> <span class="op">=</span> <span class="ident">boba::encode</span>(<span class="string">&quot;Pineapple&quot;</span>);
 <span class="macro">assert_eq!</span>(<span class="ident">encoded</span>, <span class="string">&quot;xigak-nyryk-humil-bosek-sonax&quot;</span>);</pre></div>
-<p>Decoding binary data is done by calling <a href="../boba/fn.decode.html" title="decode"><code>decode</code></a>:</p>
+<p>Decoding binary data is done by calling <a href="fn.decode.html" title="decode"><code>decode</code></a>:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">boba::decode</span>(<span class="string">&quot;xexax&quot;</span>)<span class="question-mark">?</span>;
 <span class="macro">assert_eq!</span>(<span class="ident">decoded</span>, <span class="macro">vec!</span>[]);</pre></div>
-<p>Decoding data is fallible and can return <a href="../boba/enum.DecodeError.html" title="DecodeError"><code>DecodeError</code></a>. For example, all
+<p>Decoding data is fallible and can return <a href="enum.DecodeError.html" title="DecodeError"><code>DecodeError</code></a>. For example, all
 Bubble Babble–encoded data has an ASCII alphabet, so attempting to decode an
 emoji will fail.</p>
 
@@ -40,9 +40,9 @@ collections library. Currently, Boba requires this feature to build, but
 may relax this requirement in the future.</li>
 </ul>
 </div><h2 id="enums" class="section-header"><a href="#enums">Enums</a></h2>
-<table><tr class="module-item"><td><a class="enum" href="enum.DecodeError.html" title="boba::DecodeError enum">DecodeError</a></td><td class="docblock-short"><p>Decoding errors from <a href="../boba/fn.decode.html"><code>boba::decode</code></a>.</p>
+<table><tr class="module-item"><td><a class="enum" href="enum.DecodeError.html" title="boba::DecodeError enum">DecodeError</a></td><td class="docblock-short"><p>Decoding errors from <a href="fn.decode.html"><code>boba::decode</code></a>.</p>
 </td></tr></table><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2>
 <table><tr class="module-item"><td><a class="fn" href="fn.decode.html" title="boba::decode fn">decode</a></td><td class="docblock-short"><p>Decode Bubble Babble-encoded byte slice to a <a href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html"><code>Vec&lt;u8&gt;</code></a>.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.encode.html" title="boba::encode fn">encode</a></td><td class="docblock-short"><p>Encode a byte slice with the Bubble Babble encoding to a <a href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="String"><code>String</code></a>.</p>
-</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="boba" data-search-js="../search-index.js"></div>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="boba" data-search-index-js="../search-index.js" data-search-js="../search.js"></div>
     <script src="../main.js"></script></body></html>
