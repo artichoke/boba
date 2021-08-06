@@ -74,18 +74,6 @@
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/boba/4.2.0")]
 
-// Without the `alloc` feature, build `boba` without alloc.
-// This configuration is unsupported and will result in a compile error.
-#[cfg(feature = "alloc")]
-extern crate alloc;
-#[cfg(feature = "std")]
-extern crate std;
-
-#[cfg(feature = "alloc")]
-use alloc::string::String;
-#[cfg(feature = "alloc")]
-use alloc::vec::Vec;
-
 // Ensure code blocks in README.md compile
 #[cfg(doctest)]
 macro_rules! readme {
@@ -100,8 +88,20 @@ macro_rules! readme {
 #[cfg(all(feature = "alloc", doctest))]
 readme!();
 
-use bstr::ByteSlice;
+// Without the `alloc` feature, build `boba` without alloc.
+// This configuration is unsupported and will result in a compile error.
+#[cfg(feature = "alloc")]
+extern crate alloc;
+#[cfg(feature = "std")]
+extern crate std;
+
+#[cfg(feature = "alloc")]
+use alloc::string::String;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 use core::fmt;
+
+use bstr::ByteSlice;
 
 const VOWELS: [u8; 6] = *b"aeiouy";
 const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
