@@ -658,17 +658,17 @@
 <span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">DecodeError</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="self">Self</span><span class="ident">::ChecksumMismatch</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Checksum mismatch&quot;</span>),
-            <span class="self">Self</span><span class="ident">::Corrupted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Corrupted input&quot;</span>),
-            <span class="self">Self</span><span class="ident">::ExpectedConsonant</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Expected consonant, got something else&quot;</span>),
-            <span class="self">Self</span><span class="ident">::ExpectedVowel</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Expected vowel, got something else&quot;</span>),
-            <span class="self">Self</span><span class="ident">::InvalidByte</span>(<span class="ident">pos</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(
+            <span class="ident"><span class="self">Self</span>::ChecksumMismatch</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Checksum mismatch&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::Corrupted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Corrupted input&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::ExpectedConsonant</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Expected consonant, got something else&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::ExpectedVowel</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Expected vowel, got something else&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::InvalidByte</span>(<span class="ident">pos</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(
                 <span class="ident">f</span>,
                 <span class="string">&quot;Encountered byte outside of encoding alphabet at position {}&quot;</span>,
                 <span class="ident">pos</span>
             ),
-            <span class="self">Self</span><span class="ident">::MalformedHeader</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Missing required &#39;x&#39; header&quot;</span>),
-            <span class="self">Self</span><span class="ident">::MalformedTrailer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Missing required &#39;x&#39; trailer&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::MalformedHeader</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Missing required &#39;x&#39; header&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::MalformedTrailer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;Missing required &#39;x&#39; trailer&quot;</span>),
         }
     }
 }

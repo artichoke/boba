@@ -805,22 +805,22 @@ Windows.
 
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstr::BStr</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstr::BStr</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstring::BString</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ext_slice</span>::{
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstring::BString</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ext_slice</span>::{
     <span class="ident">ByteSlice</span>, <span class="ident">Bytes</span>, <span class="ident">Fields</span>, <span class="ident">FieldsWith</span>, <span class="ident">Find</span>, <span class="ident">FindReverse</span>, <span class="ident">Finder</span>,
     <span class="ident">FinderReverse</span>, <span class="ident">Lines</span>, <span class="ident">LinesWithTerminator</span>, <span class="ident">Split</span>, <span class="ident">SplitN</span>, <span class="ident">SplitNReverse</span>,
     <span class="ident">SplitReverse</span>, <span class="ident">B</span>,
 };
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ext_vec</span>::{<span class="ident">concat</span>, <span class="ident">join</span>, <span class="ident">ByteVec</span>, <span class="ident">DrainBytes</span>, <span class="ident">FromUtf8Error</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ext_vec</span>::{<span class="ident">concat</span>, <span class="ident">join</span>, <span class="ident">ByteVec</span>, <span class="ident">DrainBytes</span>, <span class="ident">FromUtf8Error</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unicode&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::unicode</span>::{
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::unicode</span>::{
     <span class="ident">GraphemeIndices</span>, <span class="ident">Graphemes</span>, <span class="ident">SentenceIndices</span>, <span class="ident">Sentences</span>, <span class="ident">WordIndices</span>,
     <span class="ident">Words</span>, <span class="ident">WordsWithBreakIndices</span>, <span class="ident">WordsWithBreaks</span>,
 };
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::utf8</span>::{
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utf8</span>::{
     <span class="ident">decode</span> <span class="kw">as</span> <span class="ident">decode_utf8</span>, <span class="ident">decode_last</span> <span class="kw">as</span> <span class="ident">decode_last_utf8</span>, <span class="ident">CharIndices</span>,
     <span class="ident">Chars</span>, <span class="ident">Utf8Chunk</span>, <span class="ident">Utf8Chunks</span>, <span class="ident">Utf8Error</span>,
 };
@@ -844,9 +844,9 @@ Windows.
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">apitests</span> {
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstr::BStr</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstring::BString</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ext_slice</span>::{<span class="ident">Finder</span>, <span class="ident">FinderReverse</span>};
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstr::BStr</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstring::BString</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ext_slice</span>::{<span class="ident">Finder</span>, <span class="ident">FinderReverse</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">oibits</span>() {

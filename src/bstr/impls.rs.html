@@ -1055,9 +1055,9 @@
     <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
     <span class="kw">use</span> <span class="ident">std::ops</span>;
 
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstr::BStr</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstring::BString</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ext_vec::ByteVec</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstr::BStr</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstring::BString</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ext_vec::ByteVec</span>;
 
     <span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">BString</span> {
         <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1296,8 +1296,8 @@
     <span class="kw">use</span> <span class="ident">core::fmt</span>;
     <span class="kw">use</span> <span class="ident">core::ops</span>;
 
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstr::BStr</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ext_slice::ByteSlice</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstr::BStr</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ext_slice::ByteSlice</span>;
 
     <span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">BStr</span> {
         <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1676,7 +1676,7 @@
         <span class="ident">Serializer</span>,
     };
 
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstr::BStr</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstr::BStr</span>;
 
     <span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">BStr</span> {
         <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1735,7 +1735,7 @@
         <span class="ident">Serialize</span>, <span class="ident">Serializer</span>,
     };
 
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstring::BString</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstring::BString</span>;
 
     <span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">BString</span> {
         <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1815,8 +1815,8 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">display</span> {
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstring::BString</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ByteSlice</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstring::BString</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ByteSlice</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">clean</span>() {
@@ -1924,7 +1924,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">bstring_arbitrary</span> {
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::bstring::BString</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::bstring::BString</span>;
 
     <span class="kw">use</span> <span class="ident">quickcheck</span>::{<span class="ident">Arbitrary</span>, <span class="ident">Gen</span>};
 
@@ -1962,7 +1962,7 @@
 <span class="comment">// See: https://github.com/BurntSushi/bstr/issues/82</span>
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test_cows_regression</span>() {
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ByteSlice</span>;
+    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ByteSlice</span>;
     <span class="kw">use</span> <span class="ident">std::borrow::Cow</span>;
 
     <span class="kw">let</span> <span class="ident">c1</span> <span class="op">=</span> <span class="ident">Cow::from</span>(<span class="string">b&quot;hello bstr&quot;</span>.<span class="ident">as_bstr</span>());
