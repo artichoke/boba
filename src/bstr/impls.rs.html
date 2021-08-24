@@ -985,8 +985,7 @@
 <span id="985">985</span>
 <span id="986">986</span>
 <span id="987">987</span>
-</pre><pre class="rust">
-<span class="macro">macro_rules!</span> <span class="ident">impl_partial_eq</span> {
+</pre><pre class="rust"><code><span class="macro">macro_rules!</span> <span class="ident">impl_partial_eq</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lhs</span> {
             <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1973,7 +1972,7 @@
     <span class="kw">let</span> <span class="ident">c4</span> <span class="op">=</span> <span class="string">&quot;goodbye str&quot;</span>;
     <span class="macro">assert_ne!</span>(<span class="ident">c3</span>, <span class="ident">c4</span>);
 }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bstr" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
 </body></html>
