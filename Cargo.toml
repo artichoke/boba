@@ -29,8 +29,6 @@ alloc = []
 bstr = { version = "0.2.4", default-features = false }
 
 [dev-dependencies]
-# Alternative algorthim implementation for bench comparisons.
-bubblebabble = "0.1"
 
 # Check that crate versions are properly updated in documentation and code when
 # bumping the version.
