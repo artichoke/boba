@@ -40,4 +40,6 @@ features = ["markdown_deps_updated", "html_root_url_updated"]
 [package.metadata.docs.rs]
 # This sets the default target to `x86_64-unknown-linux-gnu` and only builds
 # that target. `boba` has the same API and code on all targets.
-targets = ["x86_64-unknown-linux-gnu"]
+default-target = "x86_64-unknown-linux-gnu"
+targets = []
+rustdoc-args = ["--cfg", "docsrs"]
