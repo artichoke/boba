@@ -192,6 +192,10 @@ impl fmt::Display for DecodeError {
 #[must_use]
 pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
     let data = data.as_ref();
+    if data.is_empty() {
+        return String::from("xexax");
+    }
+
     let mut encoded = String::with_capacity(6 * (data.len() / 2) + 3 + 2);
     encoded.push(HEADER.into());
     let mut checksum = 1_u8;
