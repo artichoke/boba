@@ -1,7 +1,12 @@
 #[cfg(feature = "alloc")]
 use alloc::string::String;
 
-use crate::{CONSONANTS, HEADER, TRAILER, VOWELS};
+const VOWELS: [u8; 6] = *b"aeiouy";
+const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
+const HEADER: &str = "x";
+const TRAILER: &str = "x";
+const SEPARATOR: &str = "-";
+const MID: &str = "x";
 
 #[must_use]
 pub fn inner(data: &[u8]) -> String {
@@ -10,7 +15,7 @@ pub fn inner(data: &[u8]) -> String {
     }
 
     let mut encoded = String::with_capacity(6 * (data.len() / 2) + 3 + 2);
-    encoded.push(HEADER.into());
+    encoded.push_str(HEADER);
     let mut checksum = 1_u8;
     let mut chunks = data.chunks_exact(2);
     while let Some(&[left, right]) = chunks.next() {
@@ -23,7 +28,7 @@ pub fn inner(data: &[u8]) -> String {
         // - `CONSONANTS` is a fixed size array with 16 elements.
         // - Maximum value of `d` is 15.
         encoded.push(CONSONANTS[d as usize].into());
-        encoded.push('-');
+        encoded.push_str(SEPARATOR);
         // Panic safety:
         //
         // - `e` is constructed with a mask of `0b1111`.
@@ -37,7 +42,7 @@ pub fn inner(data: &[u8]) -> String {
     } else {
         even_partial(checksum, &mut encoded);
     }
-    encoded.push(TRAILER.into());
+    encoded.push_str(TRAILER);
     encoded
 }
 
@@ -77,7 +82,7 @@ fn even_partial(checksum: u8, buf: &mut String) {
     // - `VOWELS` is a fixed size array with 6 elements.
     // - Maximum value of `a` is 5.
     buf.push(VOWELS[a as usize].into());
-    buf.push('x');
+    buf.push_str(MID);
     // Panic safety:
     //
     // - `c` is constructed with divide by 6.

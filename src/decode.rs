@@ -3,7 +3,11 @@ use alloc::vec::Vec;
 
 use bstr::ByteSlice;
 
-use crate::{DecodeError, ALPHABET, CONSONANTS, HEADER, TRAILER, VOWELS};
+use crate::DecodeError;
+
+const ALPHABET: [u8; 24] = *b"aeiouybcdfghklmnprstvzx-";
+const HEADER: u8 = b'x';
+const TRAILER: u8 = b'x';
 
 pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
     // `xexax` is the encoded representation of an empty bytestring. Test for it
@@ -36,20 +40,14 @@ pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
     let mut chunks = enc.chunks_exact(6);
     while let Some(&[left, mid, right, up, b'-', down]) = chunks.next() {
         let byte1 = decode_3_tuple(
-            VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8,
-            CONSONANTS
-                .find_byte(mid)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8,
-            VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8,
+            index_from_vowel(left).ok_or(DecodeError::ExpectedVowel)?,
+            index_from_consonant(mid).ok_or(DecodeError::ExpectedConsonant)?,
+            index_from_vowel(right).ok_or(DecodeError::ExpectedVowel)?,
             checksum,
         )?;
         let byte2 = decode_2_tuple(
-            CONSONANTS
-                .find_byte(up)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8,
-            CONSONANTS
-                .find_byte(down)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8,
+            index_from_consonant(up).ok_or(DecodeError::ExpectedConsonant)?,
+            index_from_consonant(down).ok_or(DecodeError::ExpectedConsonant)?,
         );
         checksum =
             ((u16::from(checksum * 5) + (u16::from(byte1) * 7) + u16::from(byte2)) % 36) as u8;
@@ -57,16 +55,14 @@ pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
         decoded.push(byte2);
     }
     if let [left, mid, right] = *chunks.remainder() {
-        let a = VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8;
-        let c = VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8;
+        let a = index_from_vowel(left).ok_or(DecodeError::ExpectedVowel)?;
+        let c = index_from_vowel(right).ok_or(DecodeError::ExpectedVowel)?;
 
         match mid {
             b'x' if a != checksum % 6 || c != checksum / 6 => Err(DecodeError::ChecksumMismatch),
             b'x' => Ok(decoded),
             _ => {
-                let b = CONSONANTS
-                    .find_byte(mid)
-                    .ok_or(DecodeError::ExpectedConsonant)? as u8;
+                let b = index_from_consonant(mid).ok_or(DecodeError::ExpectedConsonant)?;
                 let byte = decode_3_tuple(a, b, c, checksum)?;
                 decoded.push(byte);
                 Ok(decoded)
@@ -75,6 +71,44 @@ pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
     } else {
         Err(DecodeError::Corrupted)
     }
+}
+
+#[inline]
+fn index_from_consonant(consonant: u8) -> Option<u8> {
+    let index = match consonant {
+        b'b' => 0,
+        b'c' => 1,
+        b'd' => 2,
+        b'f' => 3,
+        b'g' => 4,
+        b'h' => 5,
+        b'k' => 6,
+        b'l' => 7,
+        b'm' => 8,
+        b'n' => 9,
+        b'p' => 10,
+        b'r' => 11,
+        b's' => 12,
+        b't' => 13,
+        b'v' => 14,
+        b'z' => 15,
+        _ => return None,
+    };
+    Some(index)
+}
+
+#[inline]
+fn index_from_vowel(vowel: u8) -> Option<u8> {
+    let index = match vowel {
+        b'a' => 0,
+        b'e' => 1,
+        b'i' => 2,
+        b'o' => 3,
+        b'u' => 4,
+        b'y' => 5,
+        _ => return None,
+    };
+    Some(index)
 }
 
 #[inline]
