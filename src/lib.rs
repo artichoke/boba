@@ -107,7 +107,8 @@ use alloc::string::String;
 use alloc::vec::Vec;
 use core::fmt;
 
-use bstr::ByteSlice;
+mod decode;
+mod encode;
 
 const VOWELS: [u8; 6] = *b"aeiouy";
 const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
@@ -191,41 +192,7 @@ impl fmt::Display for DecodeError {
 /// ```
 #[must_use]
 pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
-    let data = data.as_ref();
-    if data.is_empty() {
-        return String::from("xexax");
-    }
-
-    let mut encoded = String::with_capacity(6 * (data.len() / 2) + 3 + 2);
-    encoded.push(HEADER.into());
-    let mut checksum = 1_u8;
-    let mut chunks = data.chunks_exact(2);
-    while let Some(&[left, right]) = chunks.next() {
-        odd_partial(left, checksum, &mut encoded);
-        let d = (right >> 4) & 15;
-        let e = right & 15;
-        // Panic safety:
-        //
-        // - `d` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 16 elements.
-        // - Maximum value of `d` is 15.
-        encoded.push(CONSONANTS[d as usize].into());
-        encoded.push('-');
-        // Panic safety:
-        //
-        // - `e` is constructed with a mask of `0b1111`.
-        // - `CONSONANTS` is a fixed size array with 16 elements.
-        // - Maximum value of `e` is 15.
-        encoded.push(CONSONANTS[e as usize].into());
-        checksum = ((u16::from(checksum * 5) + u16::from(left) * 7 + u16::from(right)) % 36) as u8;
-    }
-    if let [byte] = chunks.remainder() {
-        odd_partial(*byte, checksum, &mut encoded);
-    } else {
-        even_partial(checksum, &mut encoded);
-    }
-    encoded.push(TRAILER.into());
-    encoded
+    encode::inner(data.as_ref())
 }
 
 /// Decode Bubble Babble-encoded byte slice to a [`Vec<u8>`](Vec).
@@ -265,147 +232,7 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// assert_eq!(boba::decode("xx"), Err(DecodeError::Corrupted));
 /// ```
 pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
-    let encoded = encoded.as_ref();
-    // `xexax` is the encoded representation of an empty bytestring. Test for it
-    // directly to short circuit.
-    if encoded == b"xexax" {
-        return Ok(Vec::new());
-    }
-    let enc = match encoded {
-        [HEADER, enc @ .., TRAILER] => enc,
-        [HEADER, ..] => return Err(DecodeError::MalformedTrailer),
-        [.., TRAILER] => return Err(DecodeError::MalformedHeader),
-        _ => return Err(DecodeError::Corrupted),
-    };
-    // This validation step ensures that the encoded bytestring only contains
-    // ASCII bytes in the 24 character encoding alphabet.
-    //
-    // Code below must still handle None results from find_byte because bytes
-    // may not be from the right subset of the alphabet, e.g. a vowel present
-    // when a consonant is expected.
-    if let Some(pos) = enc.find_not_byteset(ALPHABET) {
-        // Return `pos + 1` because the subslicing above removes the initial 'x'
-        // header byte.
-        return Err(DecodeError::InvalidByte(pos + 1));
-    }
-    let mut decoded = {
-        let len = encoded.len();
-        Vec::with_capacity(if len == 5 { 1 } else { 2 * ((len + 1) / 6) })
-    };
-    let mut checksum = 1_u8;
-    let mut chunks = enc.chunks_exact(6);
-    while let Some(&[left, mid, right, up, b'-', down]) = chunks.next() {
-        let byte1 = decode_3_tuple(
-            VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8,
-            CONSONANTS
-                .find_byte(mid)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8,
-            VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8,
-            checksum,
-        )?;
-        let byte2 = decode_2_tuple(
-            CONSONANTS
-                .find_byte(up)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8,
-            CONSONANTS
-                .find_byte(down)
-                .ok_or(DecodeError::ExpectedConsonant)? as u8,
-        );
-        checksum =
-            ((u16::from(checksum * 5) + (u16::from(byte1) * 7) + u16::from(byte2)) % 36) as u8;
-        decoded.push(byte1);
-        decoded.push(byte2);
-    }
-    if let [left, mid, right] = *chunks.remainder() {
-        let a = VOWELS.find_byte(left).ok_or(DecodeError::ExpectedVowel)? as u8;
-        let c = VOWELS.find_byte(right).ok_or(DecodeError::ExpectedVowel)? as u8;
-
-        match mid {
-            b'x' if a != checksum % 6 || c != checksum / 6 => Err(DecodeError::ChecksumMismatch),
-            b'x' => Ok(decoded),
-            _ => {
-                let b = CONSONANTS
-                    .find_byte(mid)
-                    .ok_or(DecodeError::ExpectedConsonant)? as u8;
-                let byte = decode_3_tuple(a, b, c, checksum)?;
-                decoded.push(byte);
-                Ok(decoded)
-            }
-        }
-    } else {
-        Err(DecodeError::Corrupted)
-    }
-}
-
-#[inline]
-fn odd_partial(raw_byte: u8, checksum: u8, buf: &mut String) {
-    let a = (((raw_byte >> 6) & 3) + checksum) % 6;
-    let b = (raw_byte >> 2) & 15;
-    let c = ((raw_byte & 3) + checksum / 6) % 6;
-    // Panic safety:
-    //
-    // - `a` is constructed with mod 6.
-    // - `VOWELS` is a fixed size array with 6 elements.
-    // - Maximum value of `a` is 5.
-    buf.push(VOWELS[a as usize].into());
-    // Panic safety:
-    //
-    // - `b` is constructed with a mask of `0b1111`.
-    // - `CONSONANTS` is a fixed size array with 16 elements.
-    // - Maximum value of `e` is 15.
-    buf.push(CONSONANTS[b as usize].into());
-    // Panic safety:
-    //
-    // - `c` is constructed with mod 6.
-    // - `VOWELS` is a fixed size array with 6 elements.
-    // - Maximum value of `c` is 5.
-    buf.push(VOWELS[c as usize].into());
-}
-
-#[inline]
-fn even_partial(checksum: u8, buf: &mut String) {
-    let a = checksum % 6;
-    // let b = 16;
-    let c = checksum / 6;
-    // Panic safety:
-    //
-    // - `a` is constructed with mod 6.
-    // - `VOWELS` is a fixed size array with 6 elements.
-    // - Maximum value of `a` is 5.
-    buf.push(VOWELS[a as usize].into());
-    buf.push('x');
-    // Panic safety:
-    //
-    // - `c` is constructed with divide by 6.
-    // - Maximum value of `checksum` is 36 -- see `encode` loop.
-    // - `VOWELS` is a fixed size array with 6 elements.
-    // - Maximum value of `c` is 5.
-    buf.push(VOWELS[c as usize].into());
-}
-
-#[inline]
-fn decode_3_tuple(byte1: u8, byte2: u8, byte3: u8, checksum: u8) -> Result<u8, DecodeError> {
-    // Will not overflow since:
-    // - byte1 is guaranteed to be ASCII or < 128.
-    // Will not underflow since:
-    // - 6 - (checksum % 6) > 0
-    let high = (byte1 + 6 - (checksum % 6)) % 6;
-    let mid = byte2;
-    // Will not overflow since:
-    // - byte3 is guaranteed to be ASCII or < 128.
-    // Will not underflow since:
-    // - 6 - ((checksum / 6) % 6) > 0
-    let low = (byte3 + 6 - ((checksum / 6) % 6)) % 6;
-    if high >= 4 || low >= 4 {
-        Err(DecodeError::Corrupted)
-    } else {
-        Ok((high << 6) | (mid << 2) | low)
-    }
-}
-
-#[inline]
-fn decode_2_tuple(byte1: u8, byte2: u8) -> u8 {
-    (byte1 << 4) | byte2
+    decode::inner(encoded.as_ref())
 }
 
 #[cfg(test)]
