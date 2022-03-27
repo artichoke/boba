@@ -29,14 +29,14 @@
 //!
 //! # Usage
 //!
-//! You can encode binary data by calling [`encode`]:
+//! You can encode binary data by calling [`encode`](encode()):
 //!
 //! ```
 //! let encoded = boba::encode("Pineapple");
 //! assert_eq!(encoded, "xigak-nyryk-humil-bosek-sonax");
 //! ```
 //!
-//! Decoding binary data is done by calling [`decode`]:
+//! Decoding binary data is done by calling [`decode`](decode()):
 //!
 //! ```
 //! # use boba::DecodeError;
@@ -117,7 +117,7 @@ const ALPHABET: [u8; 24] = *b"aeiouybcdfghklmnprstvzx-";
 const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
 
-/// Decoding errors from [`boba::decode`](decode).
+/// Decoding errors from [`boba::decode`](decode()).
 ///
 /// `decode` will return a `DecodeError` if:
 ///
