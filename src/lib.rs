@@ -110,13 +110,6 @@ use core::fmt;
 mod decode;
 mod encode;
 
-const VOWELS: [u8; 6] = *b"aeiouy";
-const CONSONANTS: [u8; 16] = *b"bcdfghklmnprstvz";
-const ALPHABET: [u8; 24] = *b"aeiouybcdfghklmnprstvzx-";
-
-const HEADER: u8 = b'x';
-const TRAILER: u8 = b'x';
-
 /// Decoding errors from [`boba::decode`](decode()).
 ///
 /// `decode` will return a `DecodeError` if:
