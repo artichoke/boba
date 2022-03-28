@@ -25,8 +25,6 @@ std = ["alloc"]
 alloc = []
 
 [dependencies]
-# `no_std` mode was fixed in https://github.com/BurntSushi/bstr/commit/83e8f27e
-bstr = { version = "0.2.4", default-features = false }
 
 [dev-dependencies]
 
