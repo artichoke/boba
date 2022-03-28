@@ -1,13 +1,36 @@
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 
-use bstr::ByteSlice;
-
 use crate::DecodeError;
 
-const ALPHABET: [u8; 24] = *b"aeiouybcdfghklmnprstvzx-";
 const HEADER: u8 = b'x';
 const TRAILER: u8 = b'x';
+
+// one `bool` for every byte. The positions that are set to `true` are the byte
+// values for characters in the alphabet:
+//
+// ```
+// const ALPHABET: [u8; 24] = *b"aeiouybcdfghklmnprstvzx-";
+// ```
+//
+// This table is generated with the following Ruby script:
+//
+// ```ruby
+// a = Array.new(256, 0)
+// bytes = "aeiouybcdfghklmnprstvzx-".split("").map(&:ord)
+// bytes.each {|b| a[b] = 1}
+// puts a.inspect
+// ```
+const ALPHABET_TABLE: [u8; 256] = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
 
 pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
     // `xexax` is the encoded representation of an empty bytestring. Test for it
@@ -27,10 +50,12 @@ pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
     // Code below must still handle None results from find_byte because bytes
     // may not be from the right subset of the alphabet, e.g. a vowel present
     // when a consonant is expected.
-    if let Some(pos) = enc.find_not_byteset(ALPHABET) {
-        // Return `pos + 1` because the subslicing above removes the initial 'x'
-        // header byte.
-        return Err(DecodeError::InvalidByte(pos + 1));
+    if let Some((_, pos)) = enc
+        .iter()
+        .zip(1_usize..) // start pos at 1 because we stripped off a leading 'x'
+        .find(|(&byte, _)| ALPHABET_TABLE[usize::from(byte)] == 0)
+    {
+        return Err(DecodeError::InvalidByte(pos));
     }
     let mut decoded = {
         let len = encoded.len();
