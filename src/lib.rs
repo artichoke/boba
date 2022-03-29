@@ -25,7 +25,8 @@
 //! encode binary data to pseudowords that can be pronounced more easily than
 //! arbitrary lists of hexadecimal digits.
 //!
-//! Bubble Babble is part of the Digest libraries in Perl and Ruby.
+//! Bubble Babble is part of the Digest libraries in [Perl][perl-bubblebabble]
+//! and [Ruby][ruby-bubblebabble].
 //!
 //! # Usage
 //!
@@ -74,11 +75,13 @@
 //!   collections library. Currently, Boba requires this feature to build, but
 //!   may relax this requirement in the future.
 //!
+//! [perl-bubblebabble]: https://metacpan.org/pod/Digest::BubbleBabble
+//! [ruby-bubblebabble]: https://ruby-doc.org/stdlib-3.1.1/libdoc/digest/rdoc/Digest.html#method-c-bubblebabble
 //! [`std`]: https://doc.rust-lang.org/stable/std/index.html
 //! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/boba/4.2.0")]
+#![doc(html_root_url = "https://docs.rs/boba/4.3.0")]
 
 // Ensure code blocks in README.md compile
 #[cfg(doctest)]
@@ -114,12 +117,12 @@ mod encode;
 ///
 /// `decode` will return a `DecodeError` if:
 ///
-/// - The input is not an ASCII string, an error is returned.
+/// - The input is not an ASCII string.
 /// - The input contains an ASCII character outside of the Bubble Babble
-///   encoding alphabet, an error is returned.
-/// - The input does not start with a leading 'x', an error is returned.
-/// - The input does not end with a trailing 'x', an error is returned.
-/// - The decoded result does not checksum properly, an error is returned.
+///   encoding alphabet.
+/// - The input does not start with a leading 'x'.
+/// - The input does not end with a trailing 'x'.
+/// - The decoded result does not checksum properly.
 ///
 /// # Examples
 ///
@@ -207,12 +210,12 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 ///
 /// Decoding is fallible and might return [`DecodeError`] if:
 ///
-/// - The input is not an ASCII string, an error is returned.
+/// - The input is not an ASCII string.
 /// - The input contains an ASCII character outside of the Bubble Babble
-///   encoding alphabet, an error is returned.
-/// - The input does not start with a leading 'x', an error is returned.
-/// - The input does not end with a trailing 'x', an error is returned.
-/// - The decoded result does not checksum properly, an error is returned.
+///   encoding alphabet.
+/// - The input does not start with a leading 'x'.
+/// - The input does not end with a trailing 'x'.
+/// - The decoded result does not checksum properly.
 ///
 /// ```
 /// # use boba::DecodeError;
