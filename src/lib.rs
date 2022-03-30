@@ -81,7 +81,7 @@
 //! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/boba/4.3.0")]
+#![doc(html_root_url = "https://docs.rs/boba/4.3.1")]
 
 // Ensure code blocks in README.md compile
 #[cfg(doctest)]

@@ -22,7 +22,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-boba = "4.3.0"
+boba = "4.3.1"
 ```
 
 Then encode and decode data like:
@@ -56,12 +56,6 @@ MSRV may be bumped in minor version releases.
 ## License
 
 `boba` is licensed under the [MIT License](LICENSE) (c) Ryan Lopopolo.
-
-`boba` is derived from `bubble-babble-ts` @
-[v1.0.1](https://github.com/JonathanWilbur/bubble-babble-ts/tree/v1.0.1).
-`bubble-babble-ts` is licensed under the
-[MIT License](https://github.com/JonathanWilbur/bubble-babble-ts/blob/v1.0.1/LICENSE.txt)
-Copyright (c) 2018 Jonathan M. Wilbur \<jonathan@wilbur.space\>.
 
 [bubble-babble-spec]: spec/Bubble_Babble_Encoding.txt
 [`alloc`]: https://doc.rust-lang.org/stable/alloc/index.html
