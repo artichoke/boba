@@ -3,8 +3,11 @@
 👋 Hi and welcome to [Artichoke]. Thanks for taking the time to contribute!
 💪💎🙌
 
-Artichoke aspires to be a Ruby 2.6.3-compatible implementation of the Ruby
-programming language. [There is lots to do].
+Artichoke aspires to be a [recent MRI Ruby][mri-target]-compatible
+implementation of the Ruby programming language. [There is lots to do].
+
+[mri-target]:
+  https://github.com/artichoke/artichoke/blob/trunk/RUBYSPEC.md#mri-target
 
 Boba is used to implement an obscure function in the [`Digest` package].
 
@@ -197,7 +200,7 @@ Regular dependency bumps are handled by [@dependabot].
 [artichoke]: https://github.com/artichoke
 [there is lots to do]: https://github.com/artichoke/artichoke/issues
 [`digest` package]:
-  https://ruby-doc.org/stdlib-2.6.3/libdoc/digest/rdoc/Digest.html#method-c-bubblebabble
+  https://ruby-doc.org/stdlib-3.1.2/libdoc/digest/rdoc/Digest.html#method-c-bubblebabble
 [filed an issue so we can fix it]:
   https://github.com/artichoke/artichoke/issues/new
 [file bugs specific to boba in this repository]:
