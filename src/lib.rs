@@ -236,6 +236,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, DecodeError> {
 mod tests {
     use alloc::string::String;
     use alloc::vec;
+    use core::fmt::Write as _;
 
     use crate::{decode, encode, DecodeError};
 
@@ -327,5 +328,24 @@ mod tests {
             decode("xIGAK-NYRYK-HUMIL-BOSEK-SONAx"),
             Err(DecodeError::InvalidByte(1))
         );
+    }
+
+    #[test]
+    fn error_display_is_not_empty() {
+        let test_cases = [
+            DecodeError::ChecksumMismatch,
+            DecodeError::Corrupted,
+            DecodeError::ExpectedConsonant,
+            DecodeError::ExpectedVowel,
+            DecodeError::InvalidByte(0),
+            DecodeError::InvalidByte(123),
+            DecodeError::MalformedHeader,
+            DecodeError::MalformedTrailer,
+        ];
+        for tc in test_cases {
+            let mut buf = String::new();
+            write!(&mut buf, "{}", tc).unwrap();
+            assert!(!buf.is_empty());
+        }
     }
 }
