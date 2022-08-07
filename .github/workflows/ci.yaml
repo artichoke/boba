@@ -42,15 +42,8 @@ jobs:
       - name: Test with all features
         run: cargo test --all-features
 
-      - name: Test with only alloc feature
-        shell: bash
-        run: cargo test --no-default-features --features alloc
-
       - name: Test with no default features
-        shell: bash
-        run: |
-          # known failing since boba requires the alloc feature to build
-          cargo test --no-default-features || :
+        run: cargo test --no-default-features
 
   build-msrv:
     name: Build (1.42.0)
@@ -80,15 +73,8 @@ jobs:
       - name: Test with all features
         run: cargo test --all-features
 
-      - name: Test with only alloc feature
-        shell: bash
-        run: cargo test --no-default-features --features alloc
-
       - name: Test with no default features
-        shell: bash
-        run: |
-          # known failing since boba requires the alloc feature to build
-          cargo test --no-default-features || :
+        run: cargo test --no-default-features
 
   rust-minimal-versions:
     name: Compile with minimum dependency versions

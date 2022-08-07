@@ -17,12 +17,7 @@ include = ["src/**/*", "tests/**/*", "LICENSE", "README.md"]
 default = ["std"]
 # Enable dependency on `std`, the Rust standard library. This feature enables
 # `std::error::Error` implementations on the error types in `boba`.
-std = ["alloc"]
-# Enable a dependency on the `alloc` crate. This feature grants `boba` access to
-# the `Vec` and `String` types. This feature is currently required to build
-# `boba`, but exists to enable adding a slice-based, no allocator API in a
-# backwards-compatible way.
-alloc = []
+std = []
 
 [dependencies]
 

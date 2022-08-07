@@ -1,4 +1,3 @@
-#[cfg(feature = "alloc")]
 use alloc::string::String;
 
 const VOWELS: [u8; 6] = *b"aeiouy";

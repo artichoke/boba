@@ -1,4 +1,3 @@
-#[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 
 use crate::DecodeError;

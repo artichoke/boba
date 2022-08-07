@@ -71,9 +71,6 @@
 //!   feature enables [`std::error::Error`] implementations on error types in
 //!   this crate. Enabling the **std** feature also enables the **alloc**
 //!   feature.
-//! - **alloc** - Adds a dependency on [`alloc`], the Rust allocation and
-//!   collections library. Currently, Boba requires this feature to build, but
-//!   may relax this requirement in the future.
 //!
 //! [perl-bubblebabble]: https://metacpan.org/pod/Digest::BubbleBabble
 //! [ruby-bubblebabble]: https://ruby-doc.org/stdlib-3.1.1/libdoc/digest/rdoc/Digest.html#method-c-bubblebabble
@@ -94,19 +91,14 @@ macro_rules! readme {
         readme!(include_str!("../README.md"));
     };
 }
-#[cfg(all(feature = "alloc", doctest))]
+#[cfg(doctest)]
 readme!();
 
-// Without the `alloc` feature, build `boba` without alloc.
-// This configuration is unsupported and will result in a compile error.
-#[cfg(feature = "alloc")]
 extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
-#[cfg(feature = "alloc")]
 use alloc::string::String;
-#[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use core::fmt;
 
