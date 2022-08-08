@@ -22,7 +22,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-boba = "4.3.1"
+boba = "5.0.0"
 ```
 
 Then encode and decode data like:
