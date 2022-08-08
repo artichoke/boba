@@ -41,9 +41,6 @@ Boba has several Cargo features, all of which are enabled by default:
 - **std** - Adds a dependency on [`std`], the Rust Standard Library. This
   feature enables [`std::error::Error`] implementations on error types in this
   crate. Enabling the **std** feature also enables the **alloc** feature.
-- **alloc** - Adds a dependency on [`alloc`], the Rust allocation and
-  collections library. Currently, Boba requires this feature to build, but may
-  relax this requirement in the future.
 
 `boba` is [fuzzed](fuzz/fuzz_targets) with [cargo-fuzz].
 
