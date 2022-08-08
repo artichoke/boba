@@ -72,13 +72,19 @@
 //!   this crate. Enabling the **std** feature also enables the **alloc**
 //!   feature.
 //!
+#![cfg_attr(
+    not(feature = "std"),
+    doc = "[`std`]: https://doc.rust-lang.org/stable/std/index.html"
+)]
+#![cfg_attr(
+    not(feature = "std"),
+    doc = "[`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html"
+)]
 //! [perl-bubblebabble]: https://metacpan.org/pod/Digest::BubbleBabble
 //! [ruby-bubblebabble]: https://ruby-doc.org/stdlib-3.1.1/libdoc/digest/rdoc/Digest.html#method-c-bubblebabble
-//! [`std`]: https://doc.rust-lang.org/stable/std/index.html
-//! [`std::error::Error`]: https://doc.rust-lang.org/stable/std/error/trait.Error.html
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/boba/4.3.1")]
+#![doc(html_root_url = "https://docs.rs/boba/5.0.0")]
 
 // Ensure code blocks in README.md compile
 #[cfg(doctest)]
