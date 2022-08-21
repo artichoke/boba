@@ -86,20 +86,6 @@
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/boba/5.0.0")]
 
-// Ensure code blocks in README.md compile
-#[cfg(doctest)]
-macro_rules! readme {
-    ($x:expr) => {
-        #[doc = $x]
-        mod readme {}
-    };
-    () => {
-        readme!(include_str!("../README.md"));
-    };
-}
-#[cfg(doctest)]
-readme!();
-
 extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
@@ -347,3 +333,20 @@ mod tests {
         }
     }
 }
+
+// Ensure code blocks in README.md compile
+//
+// This module and macro declaration should be kept at the end of the file, in
+// order to not interfere with code coverage.
+#[cfg(doctest)]
+macro_rules! readme {
+    ($x:expr) => {
+        #[doc = $x]
+        mod readme {}
+    };
+    () => {
+        readme!(include_str!("../README.md"));
+    };
+}
+#[cfg(doctest)]
+readme!();
