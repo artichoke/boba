@@ -104,8 +104,8 @@ mod encode;
 /// - The input is not an ASCII string.
 /// - The input contains an ASCII character outside of the Bubble Babble
 ///   encoding alphabet.
-/// - The input does not start with a leading 'x'.
-/// - The input does not end with a trailing 'x'.
+/// - The input does not start with a leading `x`.
+/// - The input does not end with a trailing `x`.
 /// - The decoded result does not checksum properly.
 ///
 /// # Examples
@@ -197,8 +197,8 @@ pub fn encode<T: AsRef<[u8]>>(data: T) -> String {
 /// - The input is not an ASCII string.
 /// - The input contains an ASCII character outside of the Bubble Babble
 ///   encoding alphabet.
-/// - The input does not start with a leading 'x'.
-/// - The input does not end with a trailing 'x'.
+/// - The input does not start with a leading `x`.
+/// - The input does not end with a trailing `x`.
 /// - The decoded result does not checksum properly.
 ///
 /// ```
@@ -334,7 +334,7 @@ mod tests {
     }
 }
 
-// Ensure code blocks in README.md compile
+// Ensure code blocks in `README.md` compile.
 //
 // This module and macro declaration should be kept at the end of the file, in
 // order to not interfere with code coverage.

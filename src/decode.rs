@@ -32,8 +32,8 @@ const ALPHABET_TABLE: [u8; 256] = [
 ];
 
 pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
-    // `xexax` is the encoded representation of an empty bytestring. Test for it
-    // directly to short circuit.
+    // `xexax` is the encoded representation of an empty byte string. Test for
+    // it directly to short circuit.
     if encoded == b"xexax" {
         return Ok(Vec::new());
     }
@@ -43,15 +43,15 @@ pub fn inner(encoded: &[u8]) -> Result<Vec<u8>, DecodeError> {
         [.., TRAILER] => return Err(DecodeError::MalformedHeader),
         _ => return Err(DecodeError::Corrupted),
     };
-    // This validation step ensures that the encoded bytestring only contains
+    // This validation step ensures that the encoded byte string only contains
     // ASCII bytes in the 24 character encoding alphabet.
     //
-    // Code below must still handle None results from find_byte because bytes
+    // Code below must still handle None results from `find_byte` because bytes
     // may not be from the right subset of the alphabet, e.g. a vowel present
     // when a consonant is expected.
     if let Some((_, pos)) = enc
         .iter()
-        .zip(1_usize..) // start pos at 1 because we stripped off a leading 'x'
+        .zip(1_usize..) // start `pos` at 1 because we stripped off a leading 'x'
         .find(|(&byte, _)| ALPHABET_TABLE[usize::from(byte)] == 0)
     {
         return Err(DecodeError::InvalidByte(pos));
@@ -138,13 +138,13 @@ fn index_from_vowel(vowel: u8) -> Option<u8> {
 #[inline]
 fn decode_3_tuple(byte1: u8, byte2: u8, byte3: u8, checksum: u8) -> Result<u8, DecodeError> {
     // Will not overflow since:
-    // - byte1 is guaranteed to be ASCII or < 128.
+    // - `byte1` is guaranteed to be ASCII or < 128.
     // Will not underflow since:
     // - 6 - (checksum % 6) > 0
     let high = (byte1 + 6 - (checksum % 6)) % 6;
     let mid = byte2;
     // Will not overflow since:
-    // - byte3 is guaranteed to be ASCII or < 128.
+    // - `byte3` is guaranteed to be ASCII or < 128.
     // Will not underflow since:
     // - 6 - ((checksum / 6) % 6) > 0
     let low = (byte3 + 6 - ((checksum / 6) % 6)) % 6;
