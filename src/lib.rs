@@ -234,6 +234,8 @@ mod tests {
             encode("💎🦀❤️✨💪"),
             "xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"
         );
+
+        assert_eq!(encode("xyz!x6"), "xival-neved-cavuf-kexyx");
     }
 
     #[test]
@@ -252,6 +254,8 @@ mod tests {
             decode("xusan-zugom-vesin-zenom-bumun-tanav-zyvam-zomon-sapaz-bulin-dypux"),
             Ok(String::from("💎🦀❤️✨💪").into_bytes())
         );
+
+        assert_eq!(decode("xival-neved-cavuf-kexyx"), Ok(b"xyz!x6".to_vec()));
     }
 
     #[test]
