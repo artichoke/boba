@@ -1,6 +1,7 @@
 # boba
 
 [![GitHub Actions](https://github.com/artichoke/boba/workflows/CI/badge.svg)](https://github.com/artichoke/boba/actions)
+[![Code Coverage](https://codecov.artichokeruby.org/boba/badges/flat.svg?nocache=2)](https://codecov.artichokeruby.org/boba/index.html)
 [![Discord](https://img.shields.io/discord/607683947496734760)](https://discord.gg/QCe2tp2)
 [![Twitter](https://img.shields.io/twitter/follow/artichokeruby?label=Follow&style=social)](https://twitter.com/artichokeruby)
 <br>
