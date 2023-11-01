@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
 
       - name: Install Rust toolchain
-        uses: artichoke/setup-rust/build-and-test@v1.10.0
+        uses: artichoke/setup-rust/build-and-test@v1.11.0
         with:
           toolchain: nightly
 
@@ -33,10 +33,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
 
       - name: Install Rust toolchain
-        uses: artichoke/setup-rust/build-and-test@v1.10.0
+        uses: artichoke/setup-rust/build-and-test@v1.11.0
         with:
           toolchain: nightly
 
@@ -54,10 +54,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.0
+        uses: actions/checkout@v4.1.1
 
       - name: Install Rust toolchain
-        uses: artichoke/setup-rust/build-and-test@v1.10.0
+        uses: artichoke/setup-rust/build-and-test@v1.11.0
         with:
           toolchain: nightly
 
