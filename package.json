@@ -1,0 +1,22 @@
+{
+  "name": "@artichokeruby/boba",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Encoder and decoder for the Bubble Babble binary data encoding",
+  "keywords": [
+    "encode",
+    "decode",
+    "bubblebabble",
+    "rust"
+  ],
+  "repository": "github:artichoke/boba",
+  "author": "Ryan Lopopolo <rjl@hyperbo.la> (https://hyperbo.la/)",
+  "homepage": "https://www.artichokeruby.org",
+  "bugs": "https://github.com/artichoke/boba/issues",
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  },
+  "scripts": {
+    "fmt": "prettier --write \"**/*\""
+  }
+}
