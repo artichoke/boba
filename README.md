@@ -6,6 +6,10 @@
 [![Crate](https://img.shields.io/crates/v/boba.svg)](https://crates.io/crates/boba)
 [![API](https://docs.rs/boba/badge.svg)](https://docs.rs/boba)
 
+> [!NOTE]  
+> This crate is feature complete and frozen. It will not receive further
+> development.
+
 Implements the the [Bubble Babble binary data encoding][bubble-babble-spec].
 
 > The Bubble Babble Encoding encodes arbitrary binary data into pseudowords that
@@ -20,7 +24,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-boba = "6.0.0"
+boba = "6.0.1"
 ```
 
 Then encode and decode data like:
