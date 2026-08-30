@@ -124,6 +124,12 @@ cargo test encode
 
 Tests are run for every PR. All builds must pass before merging a PR.
 
+## Publishing
+
+Maintainers publish releases through crates.io trusted publishing. See
+[`docs/publishing.md`](docs/publishing.md) for the trust configuration, release
+procedure, and failure-recovery guidance.
+
 ## Updating Dependencies
 
 ### Rust Crates
