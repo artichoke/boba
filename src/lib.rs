@@ -18,7 +18,6 @@
 //
 // This approach is borrowed from tokio.
 #![cfg_attr(docsrs, feature(doc_cfg))]
-#![cfg_attr(docsrs, feature(doc_alias))]
 
 //! This crate provides an implementation of a Bubble Babble encoder and
 //! decoder.
