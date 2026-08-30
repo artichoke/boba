@@ -5,7 +5,6 @@
 <br>
 [![Crate](https://img.shields.io/crates/v/boba.svg)](https://crates.io/crates/boba)
 [![API](https://docs.rs/boba/badge.svg)](https://docs.rs/boba)
-[![API trunk](https://img.shields.io/badge/docs-trunk-blue.svg)](https://artichoke.github.io/boba/boba/)
 
 Implements the the [Bubble Babble binary data encoding][bubble-babble-spec].
 
