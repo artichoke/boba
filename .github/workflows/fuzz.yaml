@@ -7,20 +7,21 @@ permissions: {}
 jobs:
   encode:
     name: Fuzz encode
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       RUST_BACKTRACE: 1
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Install Rust toolchain
-        uses: artichoke/setup-rust/build-and-test@v2.0.1
-        with:
-          toolchain: nightly
+      - name: Install nightly Rust toolchain
+        run: |
+          rustup set profile minimal
+          rustup toolchain install nightly --no-self-update
+          rustup default nightly
 
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz
@@ -30,20 +31,21 @@ jobs:
 
   decode:
     name: Fuzz decode
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       RUST_BACKTRACE: 1
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Install Rust toolchain
-        uses: artichoke/setup-rust/build-and-test@v2.0.1
-        with:
-          toolchain: nightly
+      - name: Install nightly Rust toolchain
+        run: |
+          rustup set profile minimal
+          rustup toolchain install nightly --no-self-update
+          rustup default nightly
 
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz
@@ -53,20 +55,21 @@ jobs:
 
   roundtrip:
     name: Fuzz encode/decode roundtrip
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       RUST_BACKTRACE: 1
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Install Rust toolchain
-        uses: artichoke/setup-rust/build-and-test@v2.0.1
-        with:
-          toolchain: nightly
+      - name: Install nightly Rust toolchain
+        run: |
+          rustup set profile minimal
+          rustup toolchain install nightly --no-self-update
+          rustup default nightly
 
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz
