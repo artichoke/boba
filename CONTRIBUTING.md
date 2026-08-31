@@ -3,6 +3,10 @@
 👋 Hi and welcome to [Artichoke]. Thanks for taking the time to contribute!
 💪💎🙌
 
+> [!NOTE]  
+> This crate is feature complete and frozen. It will not receive further
+> development.
+
 Artichoke aspires to be a [recent MRI Ruby][mri-target]-compatible
 implementation of the Ruby programming language. [There is lots to do].
 
